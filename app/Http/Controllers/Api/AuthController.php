@@ -5,14 +5,18 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Profile\UserResource;
 use App\Http\Responses\ApiResponseTrait;
+use App\Models\Member;
 use App\Models\User;
 use App\Services\TwilioWhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
     use ApiResponseTrait;
+
+
 
 
     public function requestOtp(Request $request , TwilioWhatsAppService $whatsapp)
@@ -32,13 +36,13 @@ class AuthController extends Controller
         );
 
         $otp = $user->generateOtp(minutes: 5, length: 6);
-        $whatsapp->sendOtp($phone, $otp);
+//        $whatsapp->sendOtp($phone, $otp);
         return response()->json([
             'success' => true,
             'message' => __('auth.otp_sent'),
             'status'  => 200,
             'data' => [
-                'otp' => $otp,
+                'otp_code' => $otp,
             ],
         ]);
         }catch(\Exception $e){
@@ -102,10 +106,15 @@ class AuthController extends Controller
             'name' => 'required|string|min:2|max:100',
         ]);
 
-        $user = $request->user();
+        $user = Auth::user();
 
         if (blank($user->name)) {
             $user->update(['name' => $request->name]);
+        }
+
+        $member = $user->member ;
+        if (!$member) {
+            $user->member()->create();
         }
 
         return response()->json([

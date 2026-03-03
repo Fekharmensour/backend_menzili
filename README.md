@@ -44,8 +44,6 @@ The API is fully documented using OpenAPI 3.0 specification with interactive Swa
 The `openapi.yaml` file contains all endpoint definitions with request/response schemas, making it easier to test endpoints and generate client code.
 
 ## API Documentation
-### Auth
-Authentication-related endpoints. I removed other routes — add other sections later and I'll document them similarly.
 
 Headers (apply to every request unless stated):
 
@@ -55,6 +53,9 @@ Headers (apply to every request unless stated):
 Requests that require token authentication are marked with 🔒; include header:
 
 - `Authorization: Bearer <token>`
+
+### Auth
+Authentication-related endpoints.
 
 #### Request OTP (login)
 - URL: `/api/auth/login`
@@ -136,6 +137,108 @@ Requests that require token authentication are marked with 🔒; include header:
 Notes:
 - See controller implementations in [app/Http/Controllers/Api/AuthController.php](app/Http/Controllers/Api/AuthController.php) for validation rules and exact response shapes.
 - Twilio WhatsApp sending is implemented in [app/Services/TwilioWhatsAppService.php](app/Services/TwilioWhatsAppService.php).
+
+### Listings
+Property listing endpoints for browsing available rentals.
+
+#### Get All Listings
+- URL: `/api/listings`
+- Method: `GET`
+- Auth: none
+- Headers:
+	- `Accept: application/json`
+	- `Accept-Language: ar | fr | en`
+- Query Parameters:
+	- `per_page` (optional): Number of results per page (default: 4)
+- Success Response (200):
+```
+{
+	"success": true,
+	"message": "Listings retrieved successfully",
+	"data": {
+		"listing": [
+			{
+                "id": 1,
+                "title": "شقة عصرية في وسط المدينة",
+                "description": "شقة جميلة ومجهزة بالكامل تقع في قلب المدينة، قريبة من جميع المرافق مثل المحلات التجارية ووسائل النقل. مناسبة للعائلات أو الأزواج.",
+                "price": "45000.00",
+                "floor": 3,
+                "surface": "95.00",
+                "min_duration": 6,
+                "number_rooms": 3,
+                "number_persons": 5,
+                "is_ready": true,
+                "is_negotiable": false,
+                "boost_level": 1,
+                "moderation_status": "approved",
+                "image": "listings/img-1.jpg",
+                "rent_duration": {
+                    "id": 1,
+                    "name": "يومي"
+                },
+                "location": {
+                    "id": 1,
+                    "latitude": "36.36500000",
+                    "longitude": "6.61470000",
+                    "zip_code": "25000",
+                    "city": "قسنطينة",
+                    "wilaya": "قسنطينة",
+                    "Wilaya_code": "25",
+                    "country": "الجزائر"
+                },
+                "categories": [
+                    {
+                        "id": 1,
+                        "name": "شقة",
+                        "icon_path": "/storage/category_listings/apartment.png"
+                    }
+                ],
+                "features": [
+                    {
+                        "id": 1,
+                        "name": "تلفاز",
+                        "icon_path": "/storage/featured_listings/tv.png"
+                    },
+                    {
+                        "id": 2,
+                        "name": "مسبح",
+                        "icon_path": "/storage/featured_listings/pool.png"
+                    }
+                ],
+                "near_places": [
+                    {
+                        "id": 1,
+                        "name": "مسجد",
+                        "icon_path": "/storage/near_places/mosque.png"
+                    }
+                ],
+                "time_post": "2026-03-02T15:37:31.000000Z"
+            },
+		],
+		"pagination": {
+            "total": 5,
+            "count": 2,
+            "per_page": 2,
+            "current_page": 1,
+            "total_pages": 3,
+            "has_pages": true,
+            "has_more_pages": true,
+            "first_page_url": "http://127.0.0.1:8000/api/listings?page=1",
+            "last_page_url": "http://127.0.0.1:8000/api/listings?page=3",
+            "next_page_url": "http://127.0.0.1:8000/api/listings?page=2",
+            "prev_page_url": null,
+            "from": 1,
+            "to": 2,
+            "path": "http://127.0.0.1:8000/api/listings",
+            "current_page_url": "http://127.0.0.1:8000/api/listings?page=1"
+        }
+	}
+}
+```
+
+Notes:
+- See controller implementation in [app/Http/Controllers/Api/Listing/ListingController.php](app/Http/Controllers/Api/Listing/ListingController.php)
+- Listings include related data: member, location hierarchy (country/wilaya/city), rent duration, categories, features, and nearby places
 
 ## Running with Docker
 This project includes Docker configuration for development. To start using Docker:

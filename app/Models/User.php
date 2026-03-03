@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -76,5 +77,14 @@ class User extends Authenticatable
             'otp_code'       => null,
             'otp_expires_at' => null,
         ]);
+    }
+
+
+
+//    =====================[ Relations ]==============================
+
+    public function member(): HasOne
+    {
+        return $this->hasOne(Member::class);
     }
 }

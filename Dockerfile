@@ -2,27 +2,35 @@ FROM php:8.2-cli
 
 WORKDIR /var/www/html
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
+    curl \
     libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql
+    nodejs \
+    npm
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_pgsql
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy project
+# Copy project files
 COPY . .
 
-# Install PHP dependencies
+# Install backend dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Cache config
-RUN php artisan config:cache
-RUN php artisan route:cache
+# Install frontend dependencies and build Vite
+RUN npm install
+RUN npm run build
 
-# Expose dynamic port
+# Expose port
 EXPOSE 10000
 
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
+# Runtime command (IMPORTANT PART)
+CMD php artisan migrate --force && \
+    php artisan scribe:generate && \
+    php -S 0.0.0.0:${PORT:-10000} -t public
