@@ -139,9 +139,9 @@ Notes:
 - Twilio WhatsApp sending is implemented in [app/Services/TwilioWhatsAppService.php](app/Services/TwilioWhatsAppService.php).
 
 ### Listings
-Property listing endpoints for browsing available rentals.
+Property listing endpoints for browsing, filtering, and retrieving rental properties.
 
-#### Get All Listings
+#### Get All Listings (with Filters)
 - URL: `/api/listings`
 - Method: `GET`
 - Auth: none
@@ -150,6 +150,13 @@ Property listing endpoints for browsing available rentals.
 	- `Accept-Language: ar | fr | en`
 - Query Parameters:
 	- `per_page` (optional): Number of results per page (default: 4)
+	- `search` (optional): Search in title and description
+	- `type_id` (optional): Filter by property type (1 = rent, 2 = sale, etc.)
+	- `rent_duration_id` (optional): Filter by rent duration (only if type_id = 1)
+	- `city_id` (optional): Filter by city
+	- `category_ids[]` (optional): Filter by categories (array, multi-select)
+	- `feature_ids[]` (optional): Filter by features (array, multi-select)
+	- `near_place_ids[]` (optional): Filter by nearby places (array, multi-select)
 - Success Response (200):
 ```
 {
@@ -236,9 +243,107 @@ Property listing endpoints for browsing available rentals.
 }
 ```
 
+#### Get Listing Details Metadata
+Get all available options for filtering listings (types, categories, features, etc.)
+- URL: `/api/listings/details`
+- Method: `GET`
+- Auth: none
+- Headers:
+	- `Accept: application/json`
+	- `Accept-Language: ar | fr | en`
+- Success Response (200):
+```json
+{
+	"success": true,
+	"message": "Listings retrieved successfully",
+	"data": {
+		"features": [
+			{"id": 1, "name": "Swimming Pool", "icon_path": "/storage/featured_listings/pool.png"},
+			{"id": 2, "name": "Parking", "icon_path": "/storage/featured_listings/parking.png"}
+		],
+		"categories": [
+			{"id": 1, "name": "Apartment", "icon_path": "/storage/category_listings/apartment.png"},
+			{"id": 2, "name": "House", "icon_path": "/storage/category_listings/house.png"}
+		],
+		"near_places": [
+			{"id": 1, "name": "School", "icon_path": "/storage/near_places/school.png"},
+			{"id": 2, "name": "Hospital", "icon_path": "/storage/near_places/hospital.png"}
+		],
+		"types": [
+			{"id": 1, "name": "Rent"},
+			{"id": 2, "name": "Sale"}
+		],
+		"rent_durations": [
+			{"id": 1, "name": "Daily"},
+			{"id": 2, "name": "Monthly"},
+			{"id": 3, "name": "Yearly"}
+		]
+	}
+}
+```
+
+#### Get All Wilayas
+- URL: `/api/listings/wilayas`
+- Method: `GET`
+- Auth: none
+- Headers:
+	- `Accept: application/json`
+	- `Accept-Language: ar | fr | en`
+- Success Response (200):
+```json
+{
+	"success": true,
+	"message": "Listings retrieved successfully",
+	"data": {
+		"wilayas": [
+			{"id": 1, "name": "Alger", "code": "16"},
+			{"id": 2, "name": "Oran", "code": "31"},
+			{"id": 3, "name": "Constantine", "code": "25"}
+		]
+	}
+}
+```
+
+#### Get Cities by Wilaya
+- URL: `/api/listings/cities`
+- Method: `GET`
+- Auth: none
+- Headers:
+	- `Accept: application/json`
+	- `Accept-Language: ar | fr | en`
+- Query Parameters:
+	- `wilaya_id` (required): Wilaya ID to get cities for
+- Success Response (200):
+```json
+{
+	"success": true,
+	"message": "Listings retrieved successfully",
+	"data": {
+		"cities": [
+			{"id": 1, "name": "Algiers Centre"},
+			{"id": 2, "name": "Bab El Oued"},
+			{"id": 3, "name": "Hydra"}
+		]
+	}
+}
+```
+- Error Response (422):
+```json
+{
+	"message": "The wilaya_id field is required.",
+	"errors": {
+		"wilaya_id": ["The wilaya_id field is required."]
+	}
+}
+```
+
 Notes:
-- See controller implementation in [app/Http/Controllers/Api/Listing/ListingController.php](app/Http/Controllers/Api/Listing/ListingController.php)
+- Controller implementation: [app/Http/Controllers/Api/Listing/ListingController.php](app/Http/Controllers/Api/Listing/ListingController.php)
+- Details controller: [app/Http/Controllers/Api/Listing/DetailsController.php](app/Http/Controllers/Api/Listing/DetailsController.php)
+- Filter implementation: [app/Filters/ListingFilter.php](app/Filters/ListingFilter.php)
 - Listings include related data: member, location hierarchy (country/wilaya/city), rent duration, categories, features, and nearby places
+- Multi-select filters accept arrays: `?category_ids[]=1&category_ids[]=2&feature_ids[]=3`
+- The filter logic applies AND conditions between different filter types
 
 ## Running with Docker
 This project includes Docker configuration for development. To start using Docker:

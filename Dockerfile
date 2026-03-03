@@ -1,4 +1,4 @@
-FROM php:8.2-cli
+FROM php:8.2-fpm
 
 WORKDIR /var/www/html
 
@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     curl \
     libpq-dev \
     nodejs \
-    npm
+    npm \
+    nginx
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_pgsql
@@ -27,10 +28,18 @@ RUN composer install --no-dev --optimize-autoloader
 RUN npm install
 RUN npm run build
 
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Copy nginx config
+COPY docker/nginx/default.conf /etc/nginx/sites-available/default
+
 # Expose port
 EXPOSE 10000
 
 # Runtime command (IMPORTANT PART)
 CMD php artisan migrate --force && \
+    php artisan storage:link && \
     php artisan scribe:generate && \
-    php -S 0.0.0.0:${PORT:-10000} -t public
+    service nginx start && \
+    php-fpm

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Listing;
 
+use App\Filters\ListingFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Listing\ListingResource;
 use App\Http\Resources\Api\Listing\PaginateResource;
@@ -12,21 +13,24 @@ use OpenApi\Attributes as OA;
 class ListingController extends Controller
 {
 
+
     public function index(Request $request)
     {
-
-        $listings = Listing::with([
+        $query = Listing::with([
             'rentDuration',
             'member',
             'features',
             'categories',
             'nearPlaces',
             'location.city.wilaya.country'
-        ])->paginate($request->get('per_page', 4));
+        ]);
+
+        $query = (new ListingFilter($request, $query))->apply();
+
+        $listings = $query->paginate($request->get('per_page', 4));
 
         return response()->json([
             'success' => true,
-            'message' => trans('api.listings.index.success'),
             'data' => new PaginateResource($listings)
         ]);
     }

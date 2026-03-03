@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api;
 
+use App\Models\Wilaya;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,4 +22,6 @@ class FeatureResource extends JsonResource
             'icon_path' => $this->icon_path,
         ];
     }
+
+
 }
