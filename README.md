@@ -243,6 +243,120 @@ Property listing endpoints for browsing, filtering, and retrieving rental proper
 }
 ```
 
+#### 🔒 Create New Listing
+- URL: `/api/listings`
+- Method: `POST`
+- Auth: required (`auth:sanctum`)
+- Headers:
+	- `Accept: application/json`
+	- `Accept-Language: ar | fr | en`
+	- `Authorization: Bearer <token>`
+	- `Content-Type: multipart/form-data`
+- Request Body (multipart/form-data):
+```json
+{
+	"title": "Modern apartment in city center",
+	"description": "Beautiful fully equipped apartment",
+	"price": 45000,
+	"floor": 3,
+	"surface": 95.5,
+	"boost_level": 7,
+	"min_duration": 6,
+	"number_rooms": 3,
+	"number_persons": 5,
+	"is_ready": true,
+	"is_negotiable": false,
+	"main_image": "<file>",
+	"images[]": ["<file1>", "<file2>"],
+	"member_id": 1,
+	"rent_duration_id": 1,
+	"type_id": 1,
+	"location": {
+		"latitude": 36.365,
+		"longitude": 6.6147,
+		"altitude": 640,
+		"zip_code": "25000",
+		"city_id": 1
+	},
+	"categories": [1, 2],
+	"features": [1, 2, 3],
+	"near_places": [1, 2]
+}
+```
+- Success Response (201):
+```json
+{
+	"success": true,
+	"message": "Listing created successfully",
+	"data": { /* Listing object */ }
+}
+```
+
+#### Get Single Listing
+- URL: `/api/listings/{id}`
+- Method: `GET`
+- Auth: none
+- Headers:
+	- `Accept: application/json`
+	- `Accept-Language: ar | fr | en`
+- Success Response (200):
+```json
+{
+	"success": true,
+	"message": "Listing retrieved successfully",
+	"data": { /* Complete Listing object with all relations */ }
+}
+```
+
+#### 🔒 Update Listing
+- URL: `/api/listings/{id}`
+- Method: `PUT` or `PATCH`
+- Auth: required (`auth:sanctum`)
+- Headers:
+	- `Accept: application/json`
+	- `Accept-Language: ar | fr | en`
+	- `Authorization: Bearer <token>`
+	- `Content-Type: multipart/form-data`
+- Request Body: All fields are optional (only send fields to update)
+```json
+{
+	"title": "Updated title",
+	"price": 50000,
+	"main_image": "<file>",
+	"images[]": ["<new_files>"],
+	"location": {
+		"latitude": 36.365,
+		"longitude": 6.6147,
+		"city_id": 1
+	}
+}
+```
+- Success Response (200):
+```json
+{
+	"success": true,
+	"message": "Listing updated successfully",
+	"data": { /* Updated Listing object */ }
+}
+```
+
+#### 🔒 Delete Listing
+- URL: `/api/listings/{id}`
+- Method: `DELETE`
+- Auth: required (`auth:sanctum`)
+- Headers:
+	- `Accept: application/json`
+	- `Accept-Language: ar | fr | en`
+	- `Authorization: Bearer <token>`
+- Success Response (200):
+```json
+{
+	"success": true,
+	"message": "Listing deleted successfully"
+}
+```
+- Note: This permanently deletes the listing, its location, all images (main + gallery), and all relations (categories, features, near_places)
+
 #### Get Listing Details Metadata
 Get all available options for filtering listings (types, categories, features, etc.)
 - URL: `/api/listings/details`
@@ -341,9 +455,13 @@ Notes:
 - Controller implementation: [app/Http/Controllers/Api/Listing/ListingController.php](app/Http/Controllers/Api/Listing/ListingController.php)
 - Details controller: [app/Http/Controllers/Api/Listing/DetailsController.php](app/Http/Controllers/Api/Listing/DetailsController.php)
 - Filter implementation: [app/Filters/ListingFilter.php](app/Filters/ListingFilter.php)
+- Store request validation: [app/Http/Requests/Listing/StoreRequest.php](app/Http/Requests/Listing/StoreRequest.php)
+- Update request validation: [app/Http/Requests/Listing/UpdateRequest.php](app/Http/Requests/Listing/UpdateRequest.php)
 - Listings include related data: member, location hierarchy (country/wilaya/city), rent duration, categories, features, and nearby places
 - Multi-select filters accept arrays: `?category_ids[]=1&category_ids[]=2&feature_ids[]=3`
 - The filter logic applies AND conditions between different filter types
+- Image uploads support: jpg, jpeg, png, webp (max 2MB per file)
+- Update endpoint replaces all gallery images if new ones are provided
 
 ## Running with Docker
 This project includes Docker configuration for development. To start using Docker:

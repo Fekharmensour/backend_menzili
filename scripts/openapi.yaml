@@ -1,0 +1,1388 @@
+openapi: 3.0.0
+info:
+  title: Menzili Backend API
+  description: REST API for Menzili platform with OTP authentication and user management
+  version: 1.0.0
+  contact:
+    name: Menzili Support
+
+servers:
+  - url: http://localhost:8000/api
+    description: Local Development
+  - url: https://api.menzili.com/api
+    description: Production
+
+tags:
+  - name: Auth
+    description: Authentication endpoints
+  - name: Listings
+    description: Property listing endpoints for browsing and filtering rentals
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Request OTP for login
+      description: Send OTP via WhatsApp to user's phone number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+              properties:
+                phone:
+                  type: string
+                  example: "+201234567890"
+                  description: Phone number with country code
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+            enum: [ar, fr, en]
+            default: en
+          required: true
+      responses:
+        '200':
+          description: OTP sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "OTP sent"
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      otp:
+                        type: string
+                        example: "123456"
+        '422':
+          description: Validation error
+
+  /auth/valid-otp:
+    post:
+      tags:
+        - Auth
+      summary: Verify OTP
+      description: Verify OTP code and get authentication token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+                - otp_code
+              properties:
+                phone:
+                  type: string
+                  example: "+201234567890"
+                otp_code:
+                  type: string
+                  example: "123456"
+                  description: 6-digit OTP
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+            enum: [ar, fr, en]
+            default: en
+          required: true
+      responses:
+        '200':
+          description: OTP verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "OTP verified"
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: "<plain-text-token>"
+                      fill_name:
+                        type: boolean
+                        example: false
+        '404':
+          description: User not found
+        '422':
+          description: Invalid or expired OTP
+
+  /auth/fill-name:
+    post:
+      tags:
+        - Auth
+      summary: Complete user profile (fill name)
+      description: Update user name after OTP verification. Requires authentication token.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "Alice"
+                  description: User's full name (2-100 characters)
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+            enum: [ar, fr, en]
+            default: en
+          required: true
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+            example: "Bearer <token>"
+          required: true
+          description: Token received from /auth/valid-otp
+      responses:
+        '200':
+          description: Profile completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Profile completed"
+                  status:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        description: User resource object
+        '401':
+          description: Unauthorized - invalid or missing token
+        '422':
+          description: Validation error
+
+  /listings:
+    get:
+      tags:
+        - Listings
+      summary: Get all listings with filters
+      description: Retrieve paginated property listings with optional filtering by search, type, location, categories, features, and nearby places
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+            enum: [ar, fr, en]
+            default: en
+          required: true
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 4
+          description: Number of results per page
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search in title and description
+        - name: type_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by property type (1=rent, 2=sale, etc.)
+        - name: rent_duration_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by rent duration (only if type_id=1)
+        - name: city_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by city ID
+        - name: category_ids[]
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+          description: Filter by category IDs (multi-select)
+        - name: feature_ids[]
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+          description: Filter by feature IDs (multi-select)
+        - name: near_place_ids[]
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+          description: Filter by nearby place IDs (multi-select)
+      responses:
+        '200':
+          description: Listings retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Listing'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+              example:
+                success: true
+                data:
+                  data:
+                    - id: 1
+                      title: "Modern apartment in city center"
+                      description: "Beautiful fully equipped apartment"
+                      price: "45000.00"
+                      floor: 3
+                      surface: "95.00"
+                      min_duration: 6
+                      number_rooms: 3
+                      number_persons: 5
+                      is_ready: true
+                      is_negotiable: false
+                      boost_level: 7
+                      moderation_status: "approved"
+                      image: "listings/img-1.jpg"
+                      rent_duration:
+                        id: 1
+                        name: "Monthly"
+                      location:
+                        id: 1
+                        latitude: "36.36500000"
+                        longitude: "6.61470000"
+                        zip_code: "25000"
+                        city: "Constantine"
+                        wilaya: "Constantine"
+                        Wilaya_code: "25"
+                        country: "Algeria"
+                      categories:
+                        - id: 1
+                          name: "Apartment"
+                          icon_path: "/storage/category_listings/apartment.png"
+                      features:
+                        - id: 1
+                          name: "TV"
+                          icon_path: "/storage/featured_listings/tv.png"
+                        - id: 2
+                          name: "Pool"
+                          icon_path: "/storage/featured_listings/pool.png"
+                      near_places:
+                        - id: 1
+                          name: "Mosque"
+                          icon_path: "/storage/near_places/mosque.png"
+                      time_post: "2026-03-02T15:37:31.000000Z"
+                    - id: 2
+                      title: "Luxury villa with garden"
+                      description: "Spacious villa with private garden"
+                      price: "120000.00"
+                      floor: 0
+                      surface: "250.00"
+                      min_duration: 12
+                      number_rooms: 5
+                      number_persons: 8
+                      is_ready: true
+                      is_negotiable: true
+                      boost_level: 9
+                      moderation_status: "approved"
+                      image: "listings/img-2.jpg"
+                      rent_duration:
+                        id: 3
+                        name: "Yearly"
+                      location:
+                        id: 2
+                        latitude: "36.75380000"
+                        longitude: "3.05880000"
+                        zip_code: "16000"
+                        city: "Algiers"
+                        wilaya: "Algiers"
+                        Wilaya_code: "16"
+                        country: "Algeria"
+                      categories:
+                        - id: 2
+                          name: "Villa"
+                          icon_path: "/storage/category_listings/villa.png"
+                      features:
+                        - id: 3
+                          name: "Garden"
+                          icon_path: "/storage/featured_listings/garden.png"
+                      near_places:
+                        - id: 2
+                          name: "School"
+                          icon_path: "/storage/near_places/school.png"
+                      time_post: "2026-03-03T10:20:15.000000Z"
+                  pagination:
+                    total: 25
+                    count: 2
+                    per_page: 2
+                    current_page: 1
+                    total_pages: 13
+                    has_pages: true
+                    has_more_pages: true
+                    first_page_url: "http://127.0.0.1:8000/api/listings?page=1"
+                    last_page_url: "http://127.0.0.1:8000/api/listings?page=13"
+                    next_page_url: "http://127.0.0.1:8000/api/listings?page=2"
+                    prev_page_url: null
+                    from: 1
+                    to: 2
+                    path: "http://127.0.0.1:8000/api/listings"
+                    current_page_url: "http://127.0.0.1:8000/api/listings?page=1"
+
+    post:
+      tags:
+        - Listings
+      summary: Create a new listing
+      description: Create a new property listing with images and location. Requires authentication.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+            enum: [ar, fr, en]
+            default: en
+          required: true
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+            example: "Bearer <token>"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - price
+                - surface
+                - main_image
+                - member_id
+                - rent_duration_id
+                - type_id
+                - location
+              properties:
+                title:
+                  type: string
+                  maxLength: 255
+                  example: "Modern apartment in city center"
+                description:
+                  type: string
+                  example: "Beautiful fully equipped apartment"
+                price:
+                  type: number
+                  minimum: 0
+                  example: 45000
+                floor:
+                  type: integer
+                  minimum: 0
+                  example: 3
+                surface:
+                  type: number
+                  minimum: 0
+                  example: 95.5
+                boost_level:
+                  type: integer
+                  minimum: 1
+                  maximum: 10
+                  example: 7
+                min_duration:
+                  type: integer
+                  minimum: 1
+                  example: 6
+                number_rooms:
+                  type: integer
+                  minimum: 1
+                  example: 3
+                number_persons:
+                  type: integer
+                  minimum: 1
+                  example: 5
+                is_ready:
+                  type: boolean
+                  example: true
+                is_negotiable:
+                  type: boolean
+                  example: false
+                main_image:
+                  type: string
+                  description: Main listing image URL or base64 (jpg, jpeg, png, webp, max 2MB)
+                  example: "data:image/jpeg;base64,/9j/4AAQSkZJRg..."
+                images:
+                  type: array
+                  items:
+                    type: string
+                  description: Additional gallery images (URLs or base64)
+                  example: ["data:image/jpeg;base64,/9j/...", "data:image/png;base64,iVBORw0KG..."]
+                member_id:
+                  type: integer
+                  example: 1
+                rent_duration_id:
+                  type: integer
+                  example: 1
+                type_id:
+                  type: integer
+                  example: 1
+                location:
+                  type: object
+                  required:
+                    - latitude
+                    - longitude
+                    - city_id
+                  properties:
+                    latitude:
+                      type: number
+                      minimum: -90
+                      maximum: 90
+                      example: 36.365
+                    longitude:
+                      type: number
+                      minimum: -180
+                      maximum: 180
+                      example: 6.6147
+                    altitude:
+                      type: number
+                      example: 640
+                    zip_code:
+                      type: string
+                      maxLength: 20
+                      example: "25000"
+                    city_id:
+                      type: integer
+                      example: 1
+                categories:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1, 2]
+                features:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1, 2, 3]
+                near_places:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1, 2]
+            example:
+              title: "Modern apartment in city center"
+              description: "Beautiful fully equipped apartment"
+              price: 45000
+              floor: 3
+              surface: 95.5
+              boost_level: 7
+              min_duration: 6
+              number_rooms: 3
+              number_persons: 5
+              is_ready: true
+              is_negotiable: false
+              main_image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAA..."
+              images:
+                - "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAA..."
+                - "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+              member_id: 1
+              rent_duration_id: 1
+              type_id: 1
+              location:
+                latitude: 36.365
+                longitude: 6.6147
+                altitude: 640
+                zip_code: "25000"
+                city_id: 1
+              categories: [1, 2]
+              features: [1, 2, 3]
+              near_places: [1, 2]
+      responses:
+        '201':
+          description: Listing created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Listing created successfully"
+                  data:
+                    $ref: '#/components/schemas/Listing'
+              example:
+                success: true
+                message: "Listing created successfully"
+                data:
+                  id: 1
+                  title: "Modern apartment in city center"
+                  description: "Beautiful fully equipped apartment"
+                  price: "45000.00"
+                  floor: 3
+                  surface: "95.00"
+                  min_duration: 6
+                  number_rooms: 3
+                  number_persons: 5
+                  is_ready: true
+                  is_negotiable: false
+                  boost_level: 7
+                  moderation_status: "pending"
+                  main_image: "listings/main-123.jpg"
+                  rent_duration:
+                    id: 1
+                    name: "Monthly"
+                  location:
+                    id: 1
+                    latitude: "36.36500000"
+                    longitude: "6.61470000"
+                    zip_code: "25000"
+                    city: "Constantine"
+                    wilaya: "Constantine"
+                    Wilaya_code: "25"
+                    country: "Algeria"
+                  categories:
+                    - id: 1
+                      name: "Apartment"
+                      icon_path: "/storage/category_listings/apartment.png"
+                  features:
+                    - id: 1
+                      name: "TV"
+                      icon_path: "/storage/featured_listings/tv.png"
+                  near_places:
+                    - id: 1
+                      name: "Mosque"
+                      icon_path: "/storage/near_places/mosque.png"
+                  time_post: "2026-03-04T15:37:31.000000Z"
+        '401':
+          description: Unauthorized
+        '422':
+          description: Validation error
+
+  /listings/{id}:
+    get:
+      tags:
+        - Listings
+      summary: Get single listing details
+      description: Retrieve detailed information about a specific listing
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+            enum: [ar, fr, en]
+            default: en
+          required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Listing ID
+      responses:
+        '200':
+          description: Listing retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Listing retrieved successfully"
+                  data:
+                    $ref: '#/components/schemas/Listing'
+              example:
+                success: true
+                message: "Listing retrieved successfully"
+                data:
+                  id: 1
+                  title: "Modern apartment in city center"
+                  description: "Beautiful fully equipped apartment"
+                  price: "45000.00"
+                  floor: 3
+                  surface: "95.00"
+                  min_duration: 6
+                  number_rooms: 3
+                  number_persons: 5
+                  is_ready: true
+                  is_negotiable: false
+                  boost_level: 7
+                  moderation_status: "approved"
+                  main_image: "listings/main-123.jpg"
+                  member:
+                    id: 1
+                    name: "John Doe"
+                    phone: "+213555123456"
+                    email: "john@example.com"
+                  rent_duration:
+                    id: 1
+                    name: "Monthly"
+                  type:
+                    id: 1
+                    name: "Rent"
+                  location:
+                    id: 1
+                    latitude: "36.36500000"
+                    longitude: "6.61470000"
+                    zip_code: "25000"
+                    city: "Constantine"
+                    wilaya: "Constantine"
+                    Wilaya_code: "25"
+                    country: "Algeria"
+                  categories:
+                    - id: 1
+                      name: "Apartment"
+                      icon_path: "/storage/category_listings/apartment.png"
+                  features:
+                    - id: 1
+                      name: "TV"
+                      icon_path: "/storage/featured_listings/tv.png"
+                    - id: 2
+                      name: "Pool"
+                      icon_path: "/storage/featured_listings/pool.png"
+                  near_places:
+                    - id: 1
+                      name: "Mosque"
+                      icon_path: "/storage/near_places/mosque.png"
+                  images:
+                    - id: 1
+                      path: "/storage/listings/gallery/img1.jpg"
+                    - id: 2
+                      path: "/storage/listings/gallery/img2.jpg"
+                  time_post: "2026-03-04T15:37:31.000000Z"
+        '404':
+          description: Listing not found
+
+    put:
+      tags:
+        - Listings
+      summary: Update a listing
+      description: Update an existing listing. Requires authentication.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+            enum: [ar, fr, en]
+            default: en
+          required: true
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+            example: "Bearer <token>"
+          required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Listing ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  maxLength: 255
+                  example: "Updated apartment title"
+                description:
+                  type: string
+                  example: "Updated description"
+                price:
+                  type: number
+                  minimum: 0
+                  example: 50000
+                floor:
+                  type: integer
+                  minimum: 0
+                  example: 5
+                surface:
+                  type: number
+                  minimum: 0
+                  example: 100.5
+                boost_level:
+                  type: integer
+                  minimum: 1
+                  maximum: 10
+                  example: 8
+                min_duration:
+                  type: integer
+                  minimum: 1
+                  example: 12
+                number_rooms:
+                  type: integer
+                  minimum: 1
+                  example: 4
+                number_persons:
+                  type: integer
+                  minimum: 1
+                  example: 6
+                is_ready:
+                  type: boolean
+                  example: true
+                is_negotiable:
+                  type: boolean
+                  example: true
+                main_image:
+                  type: string
+                  description: Main listing image URL or base64
+                  example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAA..."
+                images:
+                  type: array
+                  items:
+                    type: string
+                  description: Gallery images (URLs or base64)
+                  example: ["data:image/jpeg;base64,/9j/...", "data:image/png;base64,iVBORw0KG..."]
+                location:
+                  type: object
+                  properties:
+                    latitude:
+                      type: number
+                      example: 36.365
+                    longitude:
+                      type: number
+                      example: 6.6147
+                    altitude:
+                      type: number
+                      example: 640
+                    zip_code:
+                      type: string
+                      example: "25000"
+                    city_id:
+                      type: integer
+                      example: 1
+                categories:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1, 3]
+                features:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1, 2, 4]
+                near_places:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1, 2]
+            example:
+              title: "Updated apartment title"
+              description: "Updated beautiful apartment with new features"
+              price: 50000
+              floor: 5
+              surface: 100.5
+              is_negotiable: true
+              main_image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAA..."
+              images:
+                - "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAA..."
+                - "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+              location:
+                latitude: 36.365
+                longitude: 6.6147
+                altitude: 640
+                zip_code: "25000"
+                city_id: 1
+              categories: [1, 3]
+              features: [1, 2, 4]
+              near_places: [1, 2]
+      responses:
+        '200':
+          description: Listing updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Listing updated successfully"
+                  data:
+                    $ref: '#/components/schemas/Listing'
+              example:
+                success: true
+                message: "Listing updated successfully"
+                data:
+                  id: 1
+                  title: "Updated apartment title"
+                  description: "Beautiful fully equipped apartment"
+                  price: "50000.00"
+                  floor: 3
+                  surface: "95.00"
+                  min_duration: 6
+                  number_rooms: 3
+                  number_persons: 5
+                  is_ready: true
+                  is_negotiable: true
+                  boost_level: 7
+                  moderation_status: "approved"
+                  main_image: "listings/main-123.jpg"
+                  time_post: "2026-03-04T15:37:31.000000Z"
+        '401':
+          description: Unauthorized
+        '404':
+          description: Listing not found
+        '422':
+          description: Validation error
+
+    delete:
+      tags:
+        - Listings
+      summary: Delete a listing
+      description: Delete a listing and all associated data (location, images, relations). Requires authentication.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+            enum: [ar, fr, en]
+            default: en
+          required: true
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+            example: "Bearer <token>"
+          required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Listing ID
+      responses:
+        '200':
+          description: Listing deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Listing deleted successfully"
+        '401':
+          description: Unauthorized
+        '404':
+          description: Listing not found
+
+  /listings/details:
+    get:
+      tags:
+        - Listings
+      summary: Get listing filter metadata
+      description: Get all available options for filtering listings (types, categories, features, near places, rent durations)
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+            enum: [ar, fr, en]
+            default: en
+          required: true
+      responses:
+        '200':
+          description: Metadata retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Listings retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      features:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Feature'
+                      categories:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Category'
+                      near_places:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/NearPlace'
+                      types:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Type'
+                      rent_durations:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/RentDuration'
+
+  /listings/wilayas:
+    get:
+      tags:
+        - Listings
+      summary: Get all wilayas (provinces)
+      description: Retrieve all Algerian wilayas with their codes
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+            enum: [ar, fr, en]
+            default: en
+          required: true
+      responses:
+        '200':
+          description: Wilayas retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Listings retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      wilayas:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Wilaya'
+
+  /listings/cities:
+    get:
+      tags:
+        - Listings
+      summary: Get cities by wilaya
+      description: Retrieve all cities for a specific wilaya
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+            default: application/json
+          required: true
+        - name: Accept-Language
+          in: header
+          schema:
+            type: string
+            enum: [ar, fr, en]
+            default: en
+          required: true
+        - name: wilaya_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Wilaya ID to get cities for
+      responses:
+        '200':
+          description: Cities retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Listings retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      cities:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/City'
+        '422':
+          description: Validation error - wilaya_id is required
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "The wilaya_id field is required."
+                  errors:
+                    type: object
+                    properties:
+                      wilaya_id:
+                        type: array
+                        items:
+                          type: string
+                        example: ["The wilaya_id field is required."]
+
+components:
+  schemas:
+    Listing:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "شقة عصرية في وسط المدينة"
+        description:
+          type: string
+          example: "شقة جميلة ومجهزة بالكامل"
+        price:
+          type: string
+          example: "45000.00"
+        floor:
+          type: integer
+          example: 3
+        surface:
+          type: string
+          example: "95.00"
+        min_duration:
+          type: integer
+          example: 6
+        number_rooms:
+          type: integer
+          example: 3
+        number_persons:
+          type: integer
+          example: 5
+        is_ready:
+          type: boolean
+          example: true
+        is_negotiable:
+          type: boolean
+          example: false
+        boost_level:
+          type: integer
+          example: 1
+        moderation_status:
+          type: string
+          example: "approved"
+        image:
+          type: string
+          example: "listings/img-1.jpg"
+        rent_duration:
+          $ref: '#/components/schemas/RentDuration'
+        location:
+          $ref: '#/components/schemas/Location'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feature'
+        near_places:
+          type: array
+          items:
+            $ref: '#/components/schemas/NearPlace'
+        time_post:
+          type: string
+          format: date-time
+          example: "2026-03-02T15:37:31.000000Z"
+
+    Location:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        latitude:
+          type: string
+          example: "36.36500000"
+        longitude:
+          type: string
+          example: "6.61470000"
+        zip_code:
+          type: string
+          example: "25000"
+        city:
+          type: string
+          example: "قسنطينة"
+        wilaya:
+          type: string
+          example: "قسنطينة"
+        Wilaya_code:
+          type: string
+          example: "25"
+        country:
+          type: string
+          example: "الجزائر"
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "شقة"
+        icon_path:
+          type: string
+          example: "/storage/category_listings/apartment.png"
+
+    Feature:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "تلفاز"
+        icon_path:
+          type: string
+          example: "/storage/featured_listings/tv.png"
+
+    NearPlace:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "مسجد"
+        icon_path:
+          type: string
+          example: "/storage/near_places/mosque.png"
+
+    Type:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Rent"
+
+    RentDuration:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "يومي"
+
+    Wilaya:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Alger"
+        code:
+          type: string
+          example: "16"
+
+    City:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Algiers Centre"
+
+    Pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 5
+        count:
+          type: integer
+          example: 2
+        per_page:
+          type: integer
+          example: 2
+        current_page:
+          type: integer
+          example: 1
+        total_pages:
+          type: integer
+          example: 3
+        has_pages:
+          type: boolean
+          example: true
+        has_more_pages:
+          type: boolean
+          example: true
+        first_page_url:
+          type: string
+          example: "http://127.0.0.1:8000/api/listings?page=1"
+        last_page_url:
+          type: string
+          example: "http://127.0.0.1:8000/api/listings?page=3"
+        next_page_url:
+          type: string
+          example: "http://127.0.0.1:8000/api/listings?page=2"
+        prev_page_url:
+          type: string
+          nullable: true
+          example: null
+        from:
+          type: integer
+          example: 1
+        to:
+          type: integer
+          example: 2
+        path:
+          type: string
+          example: "http://127.0.0.1:8000/api/listings"
+        current_page_url:
+          type: string
+          example: "http://127.0.0.1:8000/api/listings?page=1"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'Token received from /auth/valid-otp endpoint'

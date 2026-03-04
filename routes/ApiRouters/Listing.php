@@ -7,6 +7,9 @@ use App\Http\Controllers\Api\AuthController;
 Route::resource('listings', \App\Http\Controllers\Api\Listing\ListingController::class)->only([
     'index'
 ]);
+Route::resource('listings', \App\Http\Controllers\Api\Listing\ListingController::class)->only([
+    'store','update', 'destroy'
+])->middleware('auth:sanctum');
 Route::get('listings/details', [\App\Http\Controllers\Api\Listing\DetailsController::class, 'index']);
 Route::get('listings/wilayas', [\App\Http\Controllers\Api\Listing\DetailsController::class, 'wilayas']);
 Route::get('listings/cities', [\App\Http\Controllers\Api\Listing\DetailsController::class, 'cities']);

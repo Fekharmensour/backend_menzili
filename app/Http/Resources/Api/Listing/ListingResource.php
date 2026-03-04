@@ -38,7 +38,7 @@ class ListingResource extends JsonResource
             'boost_level' => $this->boost_level,
             'moderation_status' => $this->moderation_status,
 
-            'image' => $this->main_image,
+            'image' => $this->main_image_url,
 
             // BelongsTo
             'rent_duration' => new RentDurationResource(
@@ -68,6 +68,9 @@ class ListingResource extends JsonResource
 
             'members' => MemberResource::collection(
                 $this->whenLoaded('members')
+            ),
+            'images' => ImagesResource::collection(
+                $this->whenLoaded('images')
             ),
 
 

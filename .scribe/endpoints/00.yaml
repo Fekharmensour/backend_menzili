@@ -70,7 +70,47 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '[{"id":1,"name":"Rent","icon":null,"icon_path":"\/storage\/listing_types\/rent.png"},{"id":2,"name":"Sell","icon":null,"icon_path":"\/storage\/listing_types\/sell.png"},{"id":3,"name":"Exchange","icon":null,"icon_path":"\/storage\/listing_types\/exchange.png"}]'
+        content: '[{"id":1,"name":"Rent","icon_path":"\/storage\/listing_types\/rent.png"},{"id":2,"name":"Sell","icon_path":"\/storage\/listing_types\/sell.png"},{"id":3,"name":"Exchange","icon_path":"\/storage\/listing_types\/exchange.png"}]'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/listings/update
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 422
+        content: '{"message":"The id field is required. (and 1 more error)","errors":{"id":["The id field is required."],"url":["The url field is required."]}}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
@@ -118,7 +158,16 @@ endpoints:
     cleanBodyParameters:
       phone: vmqeopfuudtds
     fileParameters: []
-    responses: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"success":true,"message":"OTP has been sent to your phone number.","status":200,"data":{"otp_code":"797939"}}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
     responseFields: []
     auth: []
     controller: null
@@ -173,7 +222,16 @@ endpoints:
       phone: consequatur
       otp_code: '810798'
     fileParameters: []
-    responses: []
+    responses:
+      -
+        custom: []
+        status: 404
+        content: '{"success":false,"message":"User not found.","status":404}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
     responseFields: []
     auth: []
     controller: null
@@ -216,7 +274,16 @@ endpoints:
     cleanBodyParameters:
       name: vmqeopfuudtdsufvyvddq
     fileParameters: []
-    responses: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
     responseFields: []
     auth: []
     controller: null
@@ -251,7 +318,821 @@ endpoints:
       -
         custom: []
         status: 200
-        content: '{"success":true,"message":"Data retrieved successfully","data":{"listing":[{"id":1,"title":"\u0634\u0642\u0629 \u0639\u0635\u0631\u064a\u0629 \u0641\u064a \u0648\u0633\u0637 \u0627\u0644\u0645\u062f\u064a\u0646\u0629","description":"\u0634\u0642\u0629 \u062c\u0645\u064a\u0644\u0629 \u0648\u0645\u062c\u0647\u0632\u0629 \u0628\u0627\u0644\u0643\u0627\u0645\u0644 \u062a\u0642\u0639 \u0641\u064a \u0642\u0644\u0628 \u0627\u0644\u0645\u062f\u064a\u0646\u0629\u060c \u0642\u0631\u064a\u0628\u0629 \u0645\u0646 \u062c\u0645\u064a\u0639 \u0627\u0644\u0645\u0631\u0627\u0641\u0642 \u0645\u062b\u0644 \u0627\u0644\u0645\u062d\u0644\u0627\u062a \u0627\u0644\u062a\u062c\u0627\u0631\u064a\u0629 \u0648\u0648\u0633\u0627\u0626\u0644 \u0627\u0644\u0646\u0642\u0644. \u0645\u0646\u0627\u0633\u0628\u0629 \u0644\u0644\u0639\u0627\u0626\u0644\u0627\u062a \u0623\u0648 \u0627\u0644\u0623\u0632\u0648\u0627\u062c.","price":"45000.00","floor":3,"surface":"95.00","min_duration":6,"number_rooms":3,"number_persons":5,"is_ready":true,"is_negotiable":false,"boost_level":1,"moderation_status":"approved","image":"listings\/img-1.jpg","rent_duration":{"id":1,"name":"Day","icon":null,"icon_path":null},"categories":[{"id":1,"name":"Apartment","icon":null,"icon_path":"\/storage\/category_listings\/apartment.png"}],"features":[{"id":1,"name":"TV","icon":null,"icon_path":"\/storage\/featured_listings\/tv.png"},{"id":2,"name":"Pool","icon":null,"icon_path":"\/storage\/featured_listings\/pool.png"}],"near_places":[{"id":1,"name":"Mosque","icon":null,"icon_path":"\/storage\/near_places\/mosque.png"}],"time_post":"2026-03-02T15:37:31.000000Z"},{"id":2,"title":"\u0641\u064a\u0644\u0627 \u0641\u0627\u062e\u0631\u0629 \u0645\u0639 \u0645\u0633\u0628\u062d \u062e\u0627\u0635","description":"\u0641\u064a\u0644\u0627 \u0631\u0627\u0642\u064a\u0629 \u062a\u062d\u062a\u0648\u064a \u0639\u0644\u0649 \u0645\u0633\u0628\u062d \u062e\u0627\u0635 \u0648\u062d\u062f\u064a\u0642\u0629 \u0648\u0627\u0633\u0639\u0629\u060c \u062a\u0642\u0639 \u0641\u064a \u062d\u064a \u0647\u0627\u062f\u0626 \u0648\u0622\u0645\u0646. \u0645\u062b\u0627\u0644\u064a\u0629 \u0644\u0644\u0639\u0627\u0626\u0644\u0627\u062a \u0627\u0644\u0643\u0628\u064a\u0631\u0629.","price":"180000.00","floor":1,"surface":"320.00","min_duration":12,"number_rooms":6,"number_persons":10,"is_ready":true,"is_negotiable":false,"boost_level":1,"moderation_status":"approved","image":"listings\/img-2.jpg","rent_duration":{"id":1,"name":"Day","icon":null,"icon_path":null},"categories":[{"id":1,"name":"Apartment","icon":null,"icon_path":"\/storage\/category_listings\/apartment.png"}],"features":[{"id":1,"name":"TV","icon":null,"icon_path":"\/storage\/featured_listings\/tv.png"},{"id":2,"name":"Pool","icon":null,"icon_path":"\/storage\/featured_listings\/pool.png"}],"near_places":[{"id":1,"name":"Mosque","icon":null,"icon_path":"\/storage\/near_places\/mosque.png"}],"time_post":"2026-03-02T15:37:31.000000Z"},{"id":3,"title":"\u0627\u0633\u062a\u0648\u062f\u064a\u0648 \u0645\u0641\u0631\u0648\u0634 \u0628\u0627\u0644\u0642\u0631\u0628 \u0645\u0646 \u0627\u0644\u062c\u0627\u0645\u0639\u0629","description":"\u0627\u0633\u062a\u0648\u062f\u064a\u0648 \u0635\u063a\u064a\u0631 \u0648\u0645\u0631\u064a\u062d \u0645\u0641\u0631\u0648\u0634 \u0628\u0627\u0644\u0643\u0627\u0645\u0644\u060c \u0642\u0631\u064a\u0628 \u062c\u062f\u0627\u064b \u0645\u0646 \u0627\u0644\u062c\u0627\u0645\u0639\u0629 \u0648\u0648\u0633\u0627\u0626\u0644 \u0627\u0644\u0646\u0642\u0644. \u0645\u0646\u0627\u0633\u0628 \u0644\u0644\u0637\u0644\u0628\u0629.","price":"25000.00","floor":2,"surface":"45.00","min_duration":3,"number_rooms":1,"number_persons":2,"is_ready":true,"is_negotiable":false,"boost_level":1,"moderation_status":"approved","image":"listings\/img-3.jpg","rent_duration":{"id":1,"name":"Day","icon":null,"icon_path":null},"categories":[{"id":1,"name":"Apartment","icon":null,"icon_path":"\/storage\/category_listings\/apartment.png"}],"features":[{"id":1,"name":"TV","icon":null,"icon_path":"\/storage\/featured_listings\/tv.png"},{"id":2,"name":"Pool","icon":null,"icon_path":"\/storage\/featured_listings\/pool.png"}],"near_places":[{"id":1,"name":"Mosque","icon":null,"icon_path":"\/storage\/near_places\/mosque.png"}],"time_post":"2026-03-02T15:37:31.000000Z"},{"id":4,"title":"\u0645\u0646\u0632\u0644 \u0639\u0627\u0626\u0644\u064a \u0648\u0627\u0633\u0639 \u0641\u064a \u062d\u064a \u0647\u0627\u062f\u0626","description":"\u0645\u0646\u0632\u0644 \u0639\u0627\u0626\u0644\u064a \u0628\u0645\u0633\u0627\u062d\u0629 \u0643\u0628\u064a\u0631\u0629 \u064a\u062d\u062a\u0648\u064a \u0639\u0644\u0649 \u062d\u062f\u064a\u0642\u0629 \u0648\u0645\u0648\u0642\u0641 \u0633\u064a\u0627\u0631\u0627\u062a\u060c \u064a\u0642\u0639 \u0641\u064a \u062d\u064a \u0633\u0643\u0646\u064a \u0647\u0627\u062f\u0626 \u0648\u0622\u0645\u0646.","price":"90000.00","floor":2,"surface":"210.00","min_duration":12,"number_rooms":5,"number_persons":8,"is_ready":true,"is_negotiable":false,"boost_level":1,"moderation_status":"approved","image":"listings\/img-4.jpg","rent_duration":{"id":1,"name":"Day","icon":null,"icon_path":null},"categories":[{"id":1,"name":"Apartment","icon":null,"icon_path":"\/storage\/category_listings\/apartment.png"}],"features":[{"id":1,"name":"TV","icon":null,"icon_path":"\/storage\/featured_listings\/tv.png"},{"id":2,"name":"Pool","icon":null,"icon_path":"\/storage\/featured_listings\/pool.png"}],"near_places":[{"id":1,"name":"Mosque","icon":null,"icon_path":"\/storage\/near_places\/mosque.png"}],"time_post":"2026-03-02T15:37:31.000000Z"}],"pagination":{"total":5,"count":4,"per_page":4,"current_page":1,"total_pages":2,"has_pages":true,"has_more_pages":true,"first_page_url":"http:\/\/localhost\/api\/listings?page=1","last_page_url":"http:\/\/localhost\/api\/listings?page=2","next_page_url":"http:\/\/localhost\/api\/listings?page=2","prev_page_url":null,"from":1,"to":4,"path":"http:\/\/localhost\/api\/listings","current_page_url":"http:\/\/localhost\/api\/listings?page=1"}}}'
+        content: '{"success":true,"data":{"listing":[{"id":1,"title":"\u0634\u0642\u0629 \u0639\u0635\u0631\u064a\u0629 \u0641\u064a \u0648\u0633\u0637 \u0627\u0644\u0645\u062f\u064a\u0646\u0629","description":"\u0634\u0642\u0629 \u062c\u0645\u064a\u0644\u0629 \u0648\u0645\u062c\u0647\u0632\u0629 \u0628\u0627\u0644\u0643\u0627\u0645\u0644 \u062a\u0642\u0639 \u0641\u064a \u0642\u0644\u0628 \u0627\u0644\u0645\u062f\u064a\u0646\u0629\u060c \u0642\u0631\u064a\u0628\u0629 \u0645\u0646 \u062c\u0645\u064a\u0639 \u0627\u0644\u0645\u0631\u0627\u0641\u0642 \u0645\u062b\u0644 \u0627\u0644\u0645\u062d\u0644\u0627\u062a \u0627\u0644\u062a\u062c\u0627\u0631\u064a\u0629 \u0648\u0648\u0633\u0627\u0626\u0644 \u0627\u0644\u0646\u0642\u0644. \u0645\u0646\u0627\u0633\u0628\u0629 \u0644\u0644\u0639\u0627\u0626\u0644\u0627\u062a \u0623\u0648 \u0627\u0644\u0623\u0632\u0648\u0627\u062c.","price":45000,"floor":3,"surface":95,"min_duration":6,"number_rooms":3,"number_persons":5,"is_ready":true,"is_negotiable":false,"boost_level":1,"moderation_status":"approved","image":"\/storage\/\/storage\/listings\/img-1.jpg","rent_duration":{"id":1,"name":"Day"},"location":{"id":1,"latitude":"36.36500000","longitude":"6.61470000","zip_code":"25000","city":"Constantine","wilaya":"Constantine","Wilaya_code":"25","country":"Algeria"},"categories":[{"id":1,"name":"Apartment","icon_path":"\/storage\/category_listings\/apartment.png"}],"features":[{"id":1,"name":"TV","icon_path":"\/storage\/featured_listings\/tv.png"},{"id":2,"name":"Pool","icon_path":"\/storage\/featured_listings\/pool.png"}],"near_places":[{"id":1,"name":"Mosque","icon_path":"\/storage\/near_places\/mosque.png"}],"time_post":"2026-03-02T15:37:31.000000Z"},{"id":2,"title":"\u0641\u064a\u0644\u0627 \u0641\u0627\u062e\u0631\u0629 \u0645\u0639 \u0645\u0633\u0628\u062d \u062e\u0627\u0635","description":"\u0641\u064a\u0644\u0627 \u0631\u0627\u0642\u064a\u0629 \u062a\u062d\u062a\u0648\u064a \u0639\u0644\u0649 \u0645\u0633\u0628\u062d \u062e\u0627\u0635 \u0648\u062d\u062f\u064a\u0642\u0629 \u0648\u0627\u0633\u0639\u0629\u060c \u062a\u0642\u0639 \u0641\u064a \u062d\u064a \u0647\u0627\u062f\u0626 \u0648\u0622\u0645\u0646. \u0645\u062b\u0627\u0644\u064a\u0629 \u0644\u0644\u0639\u0627\u0626\u0644\u0627\u062a \u0627\u0644\u0643\u0628\u064a\u0631\u0629.","price":180000,"floor":1,"surface":320,"min_duration":12,"number_rooms":6,"number_persons":10,"is_ready":true,"is_negotiable":false,"boost_level":1,"moderation_status":"approved","image":"\/storage\/\/storage\/listings\/img-2.jpg","rent_duration":{"id":1,"name":"Day"},"location":{"id":1,"latitude":"36.36500000","longitude":"6.61470000","zip_code":"25000","city":"Constantine","wilaya":"Constantine","Wilaya_code":"25","country":"Algeria"},"categories":[{"id":1,"name":"Apartment","icon_path":"\/storage\/category_listings\/apartment.png"}],"features":[{"id":1,"name":"TV","icon_path":"\/storage\/featured_listings\/tv.png"},{"id":2,"name":"Pool","icon_path":"\/storage\/featured_listings\/pool.png"}],"near_places":[{"id":1,"name":"Mosque","icon_path":"\/storage\/near_places\/mosque.png"}],"time_post":"2026-03-02T15:37:31.000000Z"},{"id":3,"title":"\u0627\u0633\u062a\u0648\u062f\u064a\u0648 \u0645\u0641\u0631\u0648\u0634 \u0628\u0627\u0644\u0642\u0631\u0628 \u0645\u0646 \u0627\u0644\u062c\u0627\u0645\u0639\u0629","description":"\u0627\u0633\u062a\u0648\u062f\u064a\u0648 \u0635\u063a\u064a\u0631 \u0648\u0645\u0631\u064a\u062d \u0645\u0641\u0631\u0648\u0634 \u0628\u0627\u0644\u0643\u0627\u0645\u0644\u060c \u0642\u0631\u064a\u0628 \u062c\u062f\u0627\u064b \u0645\u0646 \u0627\u0644\u062c\u0627\u0645\u0639\u0629 \u0648\u0648\u0633\u0627\u0626\u0644 \u0627\u0644\u0646\u0642\u0644. \u0645\u0646\u0627\u0633\u0628 \u0644\u0644\u0637\u0644\u0628\u0629.","price":25000,"floor":2,"surface":45,"min_duration":3,"number_rooms":1,"number_persons":2,"is_ready":true,"is_negotiable":false,"boost_level":1,"moderation_status":"approved","image":"\/storage\/\/storage\/listings\/img-3.jpg","rent_duration":{"id":1,"name":"Day"},"location":{"id":1,"latitude":"36.36500000","longitude":"6.61470000","zip_code":"25000","city":"Constantine","wilaya":"Constantine","Wilaya_code":"25","country":"Algeria"},"categories":[{"id":1,"name":"Apartment","icon_path":"\/storage\/category_listings\/apartment.png"}],"features":[{"id":1,"name":"TV","icon_path":"\/storage\/featured_listings\/tv.png"},{"id":2,"name":"Pool","icon_path":"\/storage\/featured_listings\/pool.png"}],"near_places":[{"id":1,"name":"Mosque","icon_path":"\/storage\/near_places\/mosque.png"}],"time_post":"2026-03-02T15:37:31.000000Z"},{"id":4,"title":"\u0645\u0646\u0632\u0644 \u0639\u0627\u0626\u0644\u064a \u0648\u0627\u0633\u0639 \u0641\u064a \u062d\u064a \u0647\u0627\u062f\u0626","description":"\u0645\u0646\u0632\u0644 \u0639\u0627\u0626\u0644\u064a \u0628\u0645\u0633\u0627\u062d\u0629 \u0643\u0628\u064a\u0631\u0629 \u064a\u062d\u062a\u0648\u064a \u0639\u0644\u0649 \u062d\u062f\u064a\u0642\u0629 \u0648\u0645\u0648\u0642\u0641 \u0633\u064a\u0627\u0631\u0627\u062a\u060c \u064a\u0642\u0639 \u0641\u064a \u062d\u064a \u0633\u0643\u0646\u064a \u0647\u0627\u062f\u0626 \u0648\u0622\u0645\u0646.","price":90000,"floor":2,"surface":210,"min_duration":12,"number_rooms":5,"number_persons":8,"is_ready":true,"is_negotiable":false,"boost_level":1,"moderation_status":"approved","image":"\/storage\/\/storage\/listings\/img-4.jpg","rent_duration":{"id":1,"name":"Day"},"location":{"id":1,"latitude":"36.36500000","longitude":"6.61470000","zip_code":"25000","city":"Constantine","wilaya":"Constantine","Wilaya_code":"25","country":"Algeria"},"categories":[{"id":1,"name":"Apartment","icon_path":"\/storage\/category_listings\/apartment.png"}],"features":[{"id":1,"name":"TV","icon_path":"\/storage\/featured_listings\/tv.png"},{"id":2,"name":"Pool","icon_path":"\/storage\/featured_listings\/pool.png"}],"near_places":[{"id":1,"name":"Mosque","icon_path":"\/storage\/near_places\/mosque.png"}],"time_post":"2026-03-02T15:37:31.000000Z"}],"pagination":{"total":5,"count":4,"per_page":4,"current_page":1,"total_pages":2,"has_pages":true,"has_more_pages":true,"first_page_url":"http:\/\/localhost\/api\/listings?page=1","last_page_url":"http:\/\/localhost\/api\/listings?page=2","next_page_url":"http:\/\/localhost\/api\/listings?page=2","prev_page_url":null,"from":1,"to":4,"path":"http:\/\/localhost\/api\/listings","current_page_url":"http:\/\/localhost\/api\/listings?page=1"}}}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/listings
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Store a newly created resource in storage.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        custom: []
+        name: title
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: vmqeopfuudtdsufvyvddq
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: ''
+        required: false
+        example: 'Dolores dolorum amet iste laborum eius est dolor.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      price:
+        custom: []
+        name: price
+        description: 'Must be at least 0.'
+        required: true
+        example: 12
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      floor:
+        custom: []
+        name: floor
+        description: 'Must be at least 0.'
+        required: false
+        example: 66
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      surface:
+        custom: []
+        name: surface
+        description: 'Must be at least 0.'
+        required: true
+        example: 13
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      boost_level:
+        custom: []
+        name: boost_level
+        description: 'Must be at least 1. Must not be greater than 10.'
+        required: false
+        example: 8
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      min_duration:
+        custom: []
+        name: min_duration
+        description: 'Must be at least 1.'
+        required: false
+        example: 72
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      number_rooms:
+        custom: []
+        name: number_rooms
+        description: 'Must be at least 1.'
+        required: false
+        example: 19
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      number_persons:
+        custom: []
+        name: number_persons
+        description: 'Must be at least 1.'
+        required: false
+        example: 74
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      is_ready:
+        custom: []
+        name: is_ready
+        description: ''
+        required: false
+        example: false
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      is_negotiable:
+        custom: []
+        name: is_negotiable
+        description: ''
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      main_image:
+        custom: []
+        name: main_image
+        description: 'Must be an image. Must not be greater than 2048 kilobytes.'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      member_id:
+        custom: []
+        name: member_id
+        description: 'The <code>id</code> of an existing record in the members table.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      rent_duration_id:
+        custom: []
+        name: rent_duration_id
+        description: 'The <code>id</code> of an existing record in the rent_durations table.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      type_id:
+        custom: []
+        name: type_id
+        description: 'The <code>id</code> of an existing record in the types table.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      location:
+        custom: []
+        name: location
+        description: ''
+        required: true
+        example: []
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      location.latitude:
+        custom: []
+        name: location.latitude
+        description: 'Must be between -90 and 90.'
+        required: true
+        example: -89
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      location.longitude:
+        custom: []
+        name: location.longitude
+        description: 'Must be between -180 and 180.'
+        required: true
+        example: -180
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      location.altitude:
+        custom: []
+        name: location.altitude
+        description: ''
+        required: false
+        example: 11613.31890586
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      location.zip_code:
+        custom: []
+        name: location.zip_code
+        description: 'Must not be greater than 20 characters.'
+        required: false
+        example: opfuudtdsufvyvddq
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      location.city_id:
+        custom: []
+        name: location.city_id
+        description: 'The <code>id</code> of an existing record in the cities table.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      categories:
+        custom: []
+        name: categories
+        description: 'The <code>id</code> of an existing record in the categories table.'
+        required: false
+        example: null
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      features:
+        custom: []
+        name: features
+        description: 'The <code>id</code> of an existing record in the features table.'
+        required: false
+        example: null
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      near_places:
+        custom: []
+        name: near_places
+        description: 'The <code>id</code> of an existing record in the near_places table.'
+        required: false
+        example: null
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      images:
+        custom: []
+        name: images
+        description: 'Must be an image. Must not be greater than 2048 kilobytes.'
+        required: false
+        example:
+          - null
+        type: 'file[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      title: vmqeopfuudtdsufvyvddq
+      description: 'Dolores dolorum amet iste laborum eius est dolor.'
+      price: 12
+      floor: 66
+      surface: 13
+      boost_level: 8
+      min_duration: 72
+      number_rooms: 19
+      number_persons: 74
+      is_ready: false
+      is_negotiable: true
+      member_id: consequatur
+      rent_duration_id: consequatur
+      type_id: consequatur
+      location:
+        latitude: -89
+        longitude: -180
+        altitude: 11613.31890586
+        zip_code: opfuudtdsufvyvddq
+        city_id: consequatur
+    fileParameters:
+      main_image: null
+      images:
+        - null
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/listings/{id}'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the listing.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        custom: []
+        name: title
+        description: 'Must not be greater than 255 characters.'
+        required: false
+        example: vmqeopfuudtdsufvyvddq
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: ''
+        required: false
+        example: 'Dolores dolorum amet iste laborum eius est dolor.'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      price:
+        custom: []
+        name: price
+        description: 'Must be at least 0.'
+        required: false
+        example: 12
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      floor:
+        custom: []
+        name: floor
+        description: 'Must be at least 0.'
+        required: false
+        example: 66
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      surface:
+        custom: []
+        name: surface
+        description: 'Must be at least 0.'
+        required: false
+        example: 13
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      boost_level:
+        custom: []
+        name: boost_level
+        description: 'Must be at least 1. Must not be greater than 10.'
+        required: false
+        example: 8
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      min_duration:
+        custom: []
+        name: min_duration
+        description: 'Must be at least 1.'
+        required: false
+        example: 72
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      number_rooms:
+        custom: []
+        name: number_rooms
+        description: 'Must be at least 1.'
+        required: false
+        example: 19
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      number_persons:
+        custom: []
+        name: number_persons
+        description: 'Must be at least 1.'
+        required: false
+        example: 74
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      is_ready:
+        custom: []
+        name: is_ready
+        description: ''
+        required: false
+        example: false
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      is_negotiable:
+        custom: []
+        name: is_negotiable
+        description: ''
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      main_image:
+        custom: []
+        name: main_image
+        description: 'Must be an image. Must not be greater than 2048 kilobytes.'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      location:
+        custom: []
+        name: location
+        description: ''
+        required: false
+        example: null
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      location.latitude:
+        custom: []
+        name: location.latitude
+        description: 'This field is required when <code>location</code> is present.'
+        required: false
+        example: 11613.31890586
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      location.longitude:
+        custom: []
+        name: location.longitude
+        description: 'This field is required when <code>location</code> is present.'
+        required: false
+        example: 11613.31890586
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      location.city_id:
+        custom: []
+        name: location.city_id
+        description: 'This field is required when <code>location</code> is present. The <code>id</code> of an existing record in the cities table.'
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      categories:
+        custom: []
+        name: categories
+        description: 'The <code>id</code> of an existing record in the categories table.'
+        required: false
+        example: null
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      features:
+        custom: []
+        name: features
+        description: 'The <code>id</code> of an existing record in the features table.'
+        required: false
+        example: null
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      near_places:
+        custom: []
+        name: near_places
+        description: 'The <code>id</code> of an existing record in the near_places table.'
+        required: false
+        example: null
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      images:
+        custom: []
+        name: images
+        description: 'Must be an image. Must not be greater than 2048 kilobytes.'
+        required: false
+        example:
+          - null
+        type: 'file[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      title: vmqeopfuudtdsufvyvddq
+      description: 'Dolores dolorum amet iste laborum eius est dolor.'
+      price: 12
+      floor: 66
+      surface: 13
+      boost_level: 8
+      min_duration: 72
+      number_rooms: 19
+      number_persons: 74
+      is_ready: false
+      is_negotiable: true
+      location:
+        latitude: 11613.31890586
+        longitude: 11613.31890586
+    fileParameters:
+      main_image: null
+      images:
+        - null
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/listings/{id}'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the listing.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/listings/details
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"success":true,"message":"Data retrieved successfully","data":{"features":[{"id":1,"name":"TV","icon_path":"\/storage\/featured_listings\/tv.png"},{"id":2,"name":"Pool","icon_path":"\/storage\/featured_listings\/pool.png"},{"id":3,"name":"WiFi","icon_path":"\/storage\/featured_listings\/wifi.png"},{"id":4,"name":"AC","icon_path":"\/storage\/featured_listings\/ac.png"},{"id":5,"name":"Garage","icon_path":"\/storage\/featured_listings\/garage.png"},{"id":6,"name":"Garden","icon_path":"\/storage\/featured_listings\/garden.png"},{"id":7,"name":"Balcony","icon_path":"\/storage\/featured_listings\/balcony.png"},{"id":8,"name":"Open Kitchen","icon_path":"\/storage\/featured_listings\/kitchen.png"},{"id":9,"name":"Ensuite Bathroom","icon_path":"\/storage\/featured_listings\/bathroom.png"},{"id":10,"name":"24\/7 Security","icon_path":"\/storage\/featured_listings\/security.png"},{"id":11,"name":"Security Cameras","icon_path":"\/storage\/featured_listings\/camera.png"}],"categories":[{"id":1,"name":"Apartment","icon_path":"\/storage\/category_listings\/apartment.png"},{"id":2,"name":"House","icon_path":"\/storage\/category_listings\/house.png"},{"id":3,"name":"Villa","icon_path":"\/storage\/category_listings\/villa.png"},{"id":4,"name":"Office","icon_path":"\/storage\/category_listings\/office.png"},{"id":5,"name":"Store","icon_path":"\/storage\/category_listings\/store.png"},{"id":6,"name":"Land","icon_path":"\/storage\/category_listings\/land.png"}],"near_places":[{"id":1,"name":"Mosque","icon_path":"\/storage\/near_places\/mosque.png"},{"id":2,"name":"Child School","icon_path":"\/storage\/near_places\/child_school.png"},{"id":3,"name":"School","icon_path":"\/storage\/near_places\/school.png"},{"id":4,"name":"Police Station","icon_path":"\/storage\/near_places\/police_station.png"},{"id":5,"name":"Beach","icon_path":"\/storage\/near_places\/beach.png"},{"id":6,"name":"Cafe","icon_path":"\/storage\/near_places\/cafe.png"},{"id":7,"name":"Hospital","icon_path":"\/storage\/near_places\/hospital.png"},{"id":8,"name":"Market","icon_path":"\/storage\/near_places\/market.png"},{"id":9,"name":"Bus Station","icon_path":"\/storage\/near_places\/bus_station.png"},{"id":10,"name":"Park","icon_path":"\/storage\/near_places\/park.png"},{"id":11,"name":"Car Park","icon_path":"\/storage\/near_places\/car_park.png"}],"types":[{"id":1,"name":"Rent","icon_path":"\/storage\/listing_types\/rent.png"},{"id":2,"name":"Sell","icon_path":"\/storage\/listing_types\/sell.png"},{"id":3,"name":"Exchange","icon_path":"\/storage\/listing_types\/exchange.png"}],"rent_durations":[{"id":1,"name":"Day"},{"id":2,"name":"Month"},{"id":3,"name":"6 Months"},{"id":4,"name":"Year"}]}}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/listings/wilayas
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"success":true,"message":"Data retrieved successfully","data":{"wilayas":[{"id":1,"name":"Adrar","code":"1"},{"id":2,"name":"Chlef","code":"2"},{"id":3,"name":"Laghouat","code":"3"},{"id":4,"name":"Oum El Bouaghi","code":"4"},{"id":5,"name":"Batna","code":"5"},{"id":6,"name":"B\u00e9ja\u00efa","code":"6"},{"id":7,"name":"Biskra","code":"7"},{"id":8,"name":"Bechar","code":"8"},{"id":9,"name":"Blida","code":"9"},{"id":10,"name":"Bouira","code":"10"},{"id":11,"name":"Tamanrasset","code":"11"},{"id":12,"name":"Tbessa","code":"12"},{"id":13,"name":"Tlemcen","code":"13"},{"id":14,"name":"Tiaret","code":"14"},{"id":15,"name":"Tizi Ouzou","code":"15"},{"id":16,"name":"Alger","code":"16"},{"id":17,"name":"Djelfa","code":"17"},{"id":18,"name":"Jijel","code":"18"},{"id":19,"name":"S\u00e9tif","code":"19"},{"id":20,"name":"Sa\u00efda","code":"20"},{"id":21,"name":"Skikda","code":"21"},{"id":22,"name":"Sidi Bel Abbes","code":"22"},{"id":23,"name":"Annaba","code":"23"},{"id":24,"name":"Guelma","code":"24"},{"id":25,"name":"Constantine","code":"25"},{"id":26,"name":"Medea","code":"26"},{"id":27,"name":"Mostaganem","code":"27"},{"id":28,"name":"M''Sila","code":"28"},{"id":29,"name":"Mascara","code":"29"},{"id":30,"name":"Ouargla","code":"30"},{"id":31,"name":"Oran","code":"31"},{"id":32,"name":"El Bayadh","code":"32"},{"id":33,"name":"Illizi","code":"33"},{"id":34,"name":"Bordj Bou Arreridj","code":"34"},{"id":35,"name":"Boumerdes","code":"35"},{"id":36,"name":"El Tarf","code":"36"},{"id":37,"name":"Tindouf","code":"37"},{"id":38,"name":"Tissemsilt","code":"38"},{"id":39,"name":"El Oued","code":"39"},{"id":40,"name":"Khenchela","code":"40"},{"id":41,"name":"Souk Ahras","code":"41"},{"id":42,"name":"Tipaza","code":"42"},{"id":43,"name":"Mila","code":"43"},{"id":44,"name":"Ain Defla","code":"44"},{"id":45,"name":"Naama","code":"45"},{"id":46,"name":"Ain Temouchent","code":"46"},{"id":47,"name":"Ghardaia","code":"47"},{"id":48,"name":"Relizane","code":"48"},{"id":49,"name":"El M''ghair","code":"49"},{"id":50,"name":"El Menia","code":"50"},{"id":51,"name":"Ouled Djellal","code":"51"},{"id":52,"name":"Bordj Baji Mokhtar","code":"52"},{"id":53,"name":"B\u00e9ni Abb\u00e8s","code":"53"},{"id":54,"name":"Timimoun","code":"54"},{"id":55,"name":"Touggourt","code":"55"},{"id":56,"name":"Djanet","code":"56"},{"id":57,"name":"In Salah","code":"57"},{"id":58,"name":"In Guezzam","code":"58"},{"id":59,"name":"Aflou","code":"59"},{"id":60,"name":"Barika","code":"60"},{"id":61,"name":"Ksar Chellala","code":"61"},{"id":62,"name":"Messaad","code":"62"},{"id":63,"name":"A\u00efn Oussara","code":"63"},{"id":64,"name":"Boussa\u00e2da","code":"64"},{"id":65,"name":"El Bayadh Sidi Cheikh","code":"65"},{"id":66,"name":"El Kantara","code":"66"},{"id":67,"name":"Bir El Ater","code":"67"},{"id":68,"name":"Ksar El Boukhari","code":"68"},{"id":69,"name":"El Aricha","code":"69"}]}}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/listings/cities
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      wilaya_id:
+        custom: []
+        name: wilaya_id
+        description: 'The <code>id</code> of an existing record in the wilayas table.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      wilaya_id: consequatur
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 422
+        content: '{"message":"The selected wilaya id is invalid.","errors":{"wilaya_id":["The selected wilaya id is invalid."]}}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json

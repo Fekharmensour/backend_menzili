@@ -5,7 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 use phpDocumentor\Reflection\Types\Boolean;
+use phpDocumentor\Reflection\Types\This;
 
 class Listing extends Model
 {
@@ -15,6 +18,7 @@ class Listing extends Model
         'description',
         'location_id',
         'rent_duration_id',
+        'member_id',
         'type_id',
         'price',
         'floor',
@@ -38,8 +42,49 @@ class Listing extends Model
             'is_ready' => 'boolean',
             'is_negotiable' => 'boolean',
             'verified_at' => 'datetime',
+            'boost_level' => 'integer',
+            'price' => 'float',
+            'floor' => 'integer',
+            'surface' => 'float',
+            'min_duration' => 'integer',
+            'number_rooms' => 'integer',
+            'number_persons' => 'integer',
+
         ];
     }
+    protected $appends = ['main_image_url'];
+
+    public function getMainImageUrlAttribute()
+    {
+        if (!$this->main_image) {
+            return null;
+        }
+
+        return '/storage/' . $this->main_image;
+    }
+    public function updateMainImage($file): string
+    {
+        if ($this->main_image) {
+            Storage::disk('public')->delete($this->main_image);
+        }
+
+        return $file->store('listings', 'public');
+    }
+    public function deleteWithMedia(): void
+    {
+        // Delete main image
+        if ($this->main_image) {
+            Storage::disk('public')->delete($this->main_image);
+        }
+
+        // Delete gallery images
+        foreach ($this->images as $image) {
+            $image->deleteWithFile();
+        }
+
+        $this->delete();
+    }
+
 
     public function member(): BelongsTo
     {
@@ -70,6 +115,11 @@ class Listing extends Model
     public function nearPlaces()
     {
         return $this->belongsToMany(NearPlace::class);
+    }
+
+    public function images():HasMany
+    {
+        return $this->hasMany(ListingImage::class);
     }
 
 

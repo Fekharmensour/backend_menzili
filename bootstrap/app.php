@@ -14,12 +14,14 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         //
         $middleware->alias([
+            'skip.localization.docs'  => \App\Http\Middleware\SkipLocalizationForDocs::class,
             'localize'                => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes::class,
             'localeSessionRedirect'   => \Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect::class,
             'localeCookieRedirect'    => \Mcamara\LaravelLocalization\Middleware\LocaleCookieRedirect::class,
             'localeViewPath'          => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath::class,
             'localizationRedirect'    => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter::class,
-            'api.localize' => \App\Http\Middleware\ApiLocalization::class,
+            'api.localize'            => \App\Http\Middleware\ApiLocalization::class,
+
         ]);
 
         $middleware->api(append: [
@@ -27,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->web(append: [
+            'skip.localization.docs',      // MUST BE FIRST to run before redirect logic
             'localize',
             'localeSessionRedirect',
             'localizationRedirect',

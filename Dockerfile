@@ -40,6 +40,6 @@ EXPOSE 10000
 # Runtime command (IMPORTANT PART)
 CMD php artisan migrate --force && \
     php artisan storage:link && \
-    php artisan scribe:generate && \
+    php artisan scramble:export && \
     service nginx start && \
     php-fpm
