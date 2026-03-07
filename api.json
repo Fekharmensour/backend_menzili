@@ -48,60 +48,6 @@
                 }
             }
         },
-        "/listings/update": {
-            "post": {
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer"
-                                    },
-                                    "url": {
-                                        "type": "string",
-                                        "format": "uri"
-                                    }
-                                },
-                                "required": [
-                                    "id",
-                                    "url"
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
         "/auth/login": {
             "post": {
                 "operationId": "auth.requestOtp",
@@ -624,7 +570,7 @@
         },
         "/listings": {
             "get": {
-                "operationId": "listings.index",
+                "operationId": "index",
                 "tags": [
                     "Listing"
                 ],
@@ -664,7 +610,7 @@
                 }
             },
             "post": {
-                "operationId": "listings.store",
+                "operationId": "store",
                 "tags": [
                     "Listing"
                 ],
@@ -726,8 +672,68 @@
             }
         },
         "/listings/{listing}": {
+            "get": {
+                "operationId": "show",
+                "summary": "Display the specified resource",
+                "tags": [
+                    "Listing"
+                ],
+                "parameters": [
+                    {
+                        "name": "listing",
+                        "in": "path",
+                        "required": true,
+                        "description": "The listing ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ListingResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    }
+                }
+            },
             "put": {
-                "operationId": "listings.update",
+                "operationId": "update",
                 "tags": [
                     "Listing"
                 ],
@@ -789,6 +795,39 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
                     },
@@ -801,7 +840,7 @@
                 }
             },
             "delete": {
-                "operationId": "listings.destroy",
+                "operationId": "destroy",
                 "tags": [
                     "Listing"
                 ],
@@ -818,6 +857,39 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
                         "description": "",
                         "content": {
                             "application/json": {
@@ -971,15 +1043,11 @@
             "ImagesResource": {
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "type": "string"
-                    },
                     "image": {
                         "type": "string"
                     }
                 },
                 "required": [
-                    "id",
                     "image"
                 ],
                 "title": "ImagesResource"

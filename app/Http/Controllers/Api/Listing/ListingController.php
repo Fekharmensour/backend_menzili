@@ -11,6 +11,7 @@ use App\Http\Resources\Api\Listing\PaginateResource;
 use App\Models\Listing;
 use App\Models\Location;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 //use OpenApi\Attributes as OA;
 
@@ -22,10 +23,10 @@ class ListingController extends Controller
     {
         $query = Listing::with([
             'rentDuration',
-            'member',
-            'features',
-            'categories',
-            'nearPlaces',
+//            'member',
+//            'features',
+//            'categories',
+//            'nearPlaces',
             'location.city.wilaya.country'
         ]);
 
@@ -156,6 +157,13 @@ class ListingController extends Controller
      */
     public function update(UpdateRequest $request, Listing $listing)
     {
+        $member = Auth::user()->member;
+        if(!$member || $listing->member_id != $member->id){
+            return response()->json([
+                'success' => false,
+                'message' => __('api.listings.update.unauthorized'),
+            ], 403);
+        }
         $validated = $request->validated();
 
         DB::transaction(function () use ($validated, $request, $listing) {
@@ -233,6 +241,13 @@ class ListingController extends Controller
 
     public function destroy(Listing $listing)
     {
+        $member = Auth::user()->member;
+        if(!$member || $listing->member_id != $member->id){
+            return response()->json([
+                'success' => false,
+                'message' => __('api.listings.update.unauthorized'),
+            ], 403);
+        }
         DB::transaction(function () use ($listing) {
 
             if ($listing->main_image) {
