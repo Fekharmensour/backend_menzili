@@ -576,12 +576,180 @@
                 ],
                 "parameters": [
                     {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search in title or description",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type_id",
+                        "in": "query",
+                        "description": "Property type id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "member_id",
+                        "in": "query",
+                        "description": "Owner member id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "rent_duration_id",
+                        "in": "query",
+                        "description": "Rent duration type",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "wilaya_id",
+                        "in": "query",
+                        "description": "Filter by wilaya",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "Filter by city",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "category_ids[]",
+                        "in": "query",
+                        "description": "Filter by categories",
+                        "schema": {
+                            "type": "array",
+                            "items": {}
+                        }
+                    },
+                    {
+                        "name": "feature_ids[]",
+                        "in": "query",
+                        "description": "Filter by features",
+                        "schema": {
+                            "type": "array",
+                            "items": {}
+                        }
+                    },
+                    {
+                        "name": "near_place_ids[]",
+                        "in": "query",
+                        "description": "Filter by nearby places",
+                        "schema": {
+                            "type": "array",
+                            "items": {}
+                        }
+                    },
+                    {
+                        "name": "number_rooms",
+                        "in": "query",
+                        "description": "Minimum number of rooms",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "number_persons",
+                        "in": "query",
+                        "description": "Minimum number of persons",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "min_floor",
+                        "in": "query",
+                        "description": "Minimum floor",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "max_floor",
+                        "in": "query",
+                        "description": "Maximum floor",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "min_duration",
+                        "in": "query",
+                        "description": "User rent duration in months",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "is_ready",
+                        "in": "query",
+                        "description": "Property ready to move in",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "is_negotiable",
+                        "in": "query",
+                        "description": "Price negotiable",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "min_price",
+                        "in": "query",
+                        "description": "Minimum price",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "x-deepObject-style": "qs"
+                    },
+                    {
+                        "name": "max_price",
+                        "in": "query",
+                        "description": "Maximum price",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "x-deepObject-style": "qs"
+                    },
+                    {
+                        "name": "min_surface",
+                        "in": "query",
+                        "description": "Minimum surface",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "x-deepObject-style": "qs"
+                    },
+                    {
+                        "name": "max_surface",
+                        "in": "query",
+                        "description": "Maximum surface",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "x-deepObject-style": "qs"
+                    },
+                    {
                         "name": "per_page",
                         "in": "query",
+                        "description": "Pagination size",
                         "schema": {
-                            "type": "string",
-                            "default": 4
-                        }
+                            "type": "integer"
+                        },
+                        "example": 4
                     }
                 ],
                 "responses": {
@@ -674,7 +842,6 @@
         "/listings/{listing}": {
             "get": {
                 "operationId": "show",
-                "summary": "Display the specified resource",
                 "tags": [
                     "Listing"
                 ],

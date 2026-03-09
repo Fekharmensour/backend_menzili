@@ -35,6 +35,11 @@ class Listing extends Model
         'main_image'
     ];
 
+//    protected $with = [
+//        'rentDuration',
+//        'location.city.wilaya.country'
+//    ];
+
     protected function casts(): array
     {
         return [

@@ -14,6 +14,7 @@ return [
      * matcher, so when implementing your own, make sure you use this config if needed.
      */
     'api_domain' => null,
+    'enable' => env('SCRAMBLE_ENABLE', true),
 
     /*
      * The path where your OpenAPI specification will be exported.

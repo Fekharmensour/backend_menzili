@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Listing;
+use App\Observers\ListingObserver;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -29,5 +31,6 @@ class AppServiceProvider extends ServiceProvider
             return true;  // Allow everyone (remove in real production!)
             // Alternative (safer): return auth()->check(); // only logged-in users
         });
+//        Listing::observe(ListingObserver::class);
     }
 }
