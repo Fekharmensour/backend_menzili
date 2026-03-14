@@ -50,8 +50,6 @@ class StoreRequest extends FormRequest
             // Image
             'main_image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
 
-            // Foreign Keys
-            'member_id' => ['required', 'exists:members,id'],
             'rent_duration_id' => ['required', 'exists:rent_durations,id'],
             'type_id' => ['required', 'exists:types,id'],
 

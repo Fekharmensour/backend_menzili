@@ -1,0 +1,44 @@
+FROM php:8.2-fpm
+
+WORKDIR /var/www/html
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    curl \
+    libpq-dev \
+    nodejs \
+    npm \
+    nginx
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_pgsql
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copy project files
+COPY . .
+
+# Install backend dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Install frontend dependencies and build Vite
+RUN npm install
+RUN npm run build
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Copy nginx config
+COPY docker/nginx/default.conf /etc/nginx/sites-available/default
+
+# Expose port
+EXPOSE 10000
+
+# Runtime command (IMPORTANT PART)
+CMD php artisan storage:link && \
+    php artisan scramble:export && \
+    service nginx start && \
+    php-fpm

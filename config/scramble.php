@@ -8,6 +8,13 @@ return [
      * If you need to change this behavior, you can add your custom routes resolver using `Scramble::routes()`.
      */
     'api_path' => 'api',
+    'api_keys' => [
+        'sanctum' => [
+            'type' => 'http',
+            'scheme' => 'bearer',
+            'bearerFormat' => 'Token',
+        ],
+    ],
 
     /*
      * Your API domain. By default, app domain is used. This is also a part of the default API routes

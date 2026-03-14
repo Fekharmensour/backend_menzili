@@ -1,45 +1,61 @@
+# -------------------------
+# Stage 1 — Frontend Build
+# -------------------------
+FROM node:20 AS frontend
+
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy project and build frontend
+COPY . .
+RUN npm run build
+
+
+# -------------------------
+# Stage 2 — Laravel Runtime
+# -------------------------
 FROM php:8.2-fpm
 
 WORKDIR /var/www/html
 
-# Install system dependencies
+# Install PHP & system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     curl \
     libpq-dev \
-    nodejs \
-    npm \
     nginx
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_pgsql
+RUN docker-php-ext-install pdo pdo_pgsql opcache
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy project files
+# Copy backend code
 COPY . .
 
-# Install backend dependencies
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Install frontend dependencies and build Vite
-RUN npm install
-RUN npm run build
+# Copy built frontend from Stage 1
+COPY --from=frontend /app/public/build /var/www/html/public/build
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Copy nginx config
-COPY docker/nginx/default.conf /etc/nginx/sites-available/default
+# Laravel build tasks
+RUN php artisan storage:link --force && \
+    php artisan scramble:export
 
-# Expose port
-EXPOSE 10000
+# Copy fixed Nginx config
+COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
-# Runtime command (IMPORTANT PART)
-CMD php artisan migrate --force && \
-    php artisan storage:link && \
-    php artisan scramble:export && \
-    service nginx start && \
-    php-fpm
+# Remove any old sites-enabled symlink to avoid conflicts
+RUN rm -f /etc/nginx/sites-enabled/default
+
+# Start Nginx and PHP-FPM
+CMD ["sh", "-c", "nginx && php-fpm -F"]

@@ -124,4 +124,13 @@ class AuthController extends Controller
             'data'    => ['user' => new UserResource($user)],
         ]);
     }
+
+    public function logout(){
+        Auth::user()->currentAccessToken()->delete();
+        return response()->json([
+            'success' => true,
+            'message' => __('auth.logout'),
+            'status'  => 200,
+        ]);
+    }
 }

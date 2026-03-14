@@ -94,7 +94,7 @@ class ListingSeeder extends Seeder
                 'boost_level' => 1,
                 'moderation_status' => 'approved',
 
-                'main_image' => 'listings/img-' . ($index + 1) . '.jpg',
+                'main_image' => '/storage/listings/img-' . ($index + 1) . '.jpg',
             ]);
 
             // Attach relations (make sure IDs exist)

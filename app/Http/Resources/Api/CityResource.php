@@ -16,8 +16,7 @@ class CityResource extends JsonResource
     {
         return [
             'id'   => $this->id,
-            'name' => $this->name, // dynamic from accessor
-            'code' => $this->code,
+            'name' => $this->name,
             'country'=> new CountryResource($this->whenLoaded('country')),
             'wilaya'=> new WilayaResource($this->whenLoaded('wilaya')),
         ];

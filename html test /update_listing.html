@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Update / Delete Listing #6</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --danger: #dc2626;
+            --gray: #64748b;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: system-ui, sans-serif;
+            background: var(--light);
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container { max-width: 980px; margin: 0 auto; }
+        h1 { text-align: center; color: #0f172a; margin-bottom: 1.5rem; }
+        .section {
+            background: white;
+            padding: 1.6rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            margin: 1.5rem 0;
+        }
+        label { display: block; margin-bottom: 0.4rem; font-weight: 500; color: #334155; }
+        input, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+        }
+        .grid-2, .grid-3 { display: grid; gap: 1.2rem; }
+        .grid-2 { grid-template-columns: 1fr 1fr; }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .checkbox-row { display: flex; align-items: center; gap: 10px; margin: 1rem 0; }
+        .preview-box { margin-top: 0.6rem; max-width: 220px; }
+        .preview-img {
+            max-width: 100%;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 12px;
+        }
+        #btnUpdate { background: #f59e0b; color: white; }
+        #btnUpdate:hover { background: #d97706; }
+        #btnDelete { background: var(--danger); color: white; }
+        #btnDelete:hover { background: #b91c1c; }
+        button:disabled { background: #94a3b8; cursor: not-allowed; }
+        .status {
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+            font-weight: 500;
+        }
+        .success { background: #ecfdf5; color: #065f46; }
+        .error   { background: #fee2e2; color: #991b1b; }
+        .field-error { color: var(--danger); font-size: 0.9rem; margin-top: 0.3rem; }
+        .actions { text-align: center; margin: 2rem 0; }
+        .note { color: #666; font-size: 0.95rem; text-align: center; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Update or Delete Listing #6</h1>
+
+    <div class="section">
+        <label for="token">Bearer Token (required)</label>
+        <input type="text" id="token" placeholder="paste your token here...">
+    </div>
+
+    <div class="note">
+        Listing ID is fixed to <strong>6</strong>.<br>
+        Fill only the fields you want to change (all are optional for update).
+    </div>
+
+    <form id="listingForm">
+
+        <div class="section">
+            <h3>Basic Information</h3>
+            <div class="grid-2">
+                <div><label for="title">Title</label><input type="text" id="title"><div class="field-error" id="err-title"></div></div>
+                <div><label for="price">Price</label><input type="number" id="price" min="0" step="0.01"><div class="field-error" id="err-price"></div></div>
+            </div>
+            <label for="description">Description</label>
+            <textarea id="description" rows="4"></textarea>
+        </div>
+
+        <div class="section">
+            <h3>Property Details</h3>
+            <div class="grid-3">
+                <div><label for="surface">Surface (m²)</label><input type="number" id="surface" min="0" step="0.01"></div>
+                <div><label for="floor">Floor</label><input type="number" id="floor" min="0"></div>
+                <div><label for="number_rooms">Rooms</label><input type="number" id="number_rooms" min="1"></div>
+            </div>
+            <div class="grid-3" style="margin-top:1.2rem;">
+                <div><label for="number_persons">Max Persons</label><input type="number" id="number_persons" min="1"></div>
+                <div><label for="min_duration">Min Duration (months)</label><input type="number" id="min_duration" min="1"></div>
+                <div><label for="rent_duration_id">Rent Duration ID</label><input type="number" id="rent_duration_id" min="1"></div>
+            </div>
+            <div class="grid-2" style="margin-top:1.2rem;">
+                <div><label for="type_id">Type ID</label><input type="number" id="type_id" min="1"></div>
+                <div><label for="boost_level">Boost Level (1–10)</label><input type="number" id="boost_level" min="1" max="10"></div>
+            </div>
+            <div class="checkbox-row">
+                <input type="checkbox" id="is_ready"><label for="is_ready">Ready to move in</label>
+            </div>
+            <div class="checkbox-row">
+                <input type="checkbox" id="is_negotiable"><label for="is_negotiable">Negotiable price</label>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Location</h3>
+            <div class="grid-3">
+                <div><label for="latitude">Latitude</label><input type="number" id="latitude" step="any"></div>
+                <div><label for="longitude">Longitude</label><input type="number" id="longitude" step="any"></div>
+                <div><label for="city_id">City ID</label><input type="number" id="city_id" min="1"></div>
+            </div>
+            <div class="grid-2" style="margin-top:1.2rem;">
+                <div><label for="zip_code">Zip Code</label><input type="text" id="zip_code" maxlength="20"></div>
+                <div><label for="altitude">Altitude</label><input type="number" id="altitude" step="any"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Images (optional)</h3>
+            <div class="grid-2">
+                <div>
+                    <label for="main_image">New Main Image (file)</label>
+                    <input type="file" id="main_image" accept="image/jpeg,image/png,image/webp">
+                    <div class="preview-box">
+                        <img id="mainPreview" class="preview-img" style="display:none;" alt="Preview">
+                    </div>
+                    <div class="field-error" id="err-main_image"></div>
+                </div>
+                <div>
+                    <label for="main_image_url">Or new Main Image URL</label>
+                    <input type="url" id="main_image_url" placeholder="https://...">
+                    <div class="field-error" id="err-main_image_url"></div>
+                </div>
+            </div>
+            <div style="margin-top:1.6rem;">
+                <label for="images">Additional Images</label>
+                <input type="file" id="images" accept="image/jpeg,image/png,image/webp" multiple>
+                <div id="extraPreview" style="margin-top:0.6rem; color:var(--gray);"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Categories & Features (optional – comma separated IDs)</h3>
+            <div class="grid-3">
+                <div><label for="categories">Categories</label><input type="text" id="categories" placeholder="1,3,7"></div>
+                <div><label for="features">Features</label><input type="text" id="features" placeholder="2,5,8"></div>
+                <div><label for="near_places">Nearby Places</label><input type="text" id="near_places" placeholder="4,9"></div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button type="button" id="btnUpdate">Update Listing #6</button>
+            <button type="button" id="btnDelete">Delete Listing #6</button>
+        </div>
+
+    </form>
+
+    <div id="status" class="status" style="display:none;"></div>
+</div>
+
+<script>
+    const tokenEl     = document.getElementById('token');
+    const btnUpdate   = document.getElementById('btnUpdate');
+    const btnDelete   = document.getElementById('btnDelete');
+    const statusEl    = document.getElementById('status');
+
+    const LISTING_ID = 6;
+    const BASE_URL   = `http://localhost:8000/api/members/listings/${LISTING_ID}`;
+
+    function showStatus(text, isError = false) {
+        statusEl.textContent = text;
+        statusEl.className = 'status ' + (isError ? 'error' : 'success');
+        statusEl.style.display = 'block';
+        setTimeout(() => statusEl.style.display = 'none', 8000);
+    }
+
+    function clearFieldErrors() {
+        document.querySelectorAll('.field-error').forEach(el => el.textContent = '');
+    }
+
+    function getFormData() {
+        const formData = new FormData();
+
+        // Text & number fields (only send if filled)
+        ['title', 'price', 'surface', 'description', 'floor', 'number_rooms', 'number_persons',
+            'min_duration', 'boost_level', 'rent_duration_id', 'type_id', 'zip_code', 'altitude']
+            .forEach(id => {
+                const val = document.getElementById(id)?.value?.trim();
+                if (val) formData.append(id, val);
+            });
+
+        // Booleans
+        formData.append('is_ready', document.getElementById('is_ready').checked ? '1' : '0');
+        formData.append('is_negotiable', document.getElementById('is_negotiable').checked ? '1' : '0');
+
+        // Location (only if any field is filled)
+        const lat = document.getElementById('latitude').value.trim();
+        const lng = document.getElementById('longitude').value.trim();
+        const city = document.getElementById('city_id').value.trim();
+        if (lat || lng || city) {
+            if (lat) formData.append('location[latitude]', lat);
+            if (lng) formData.append('location[longitude]', lng);
+            if (city) formData.append('location[city_id]', city);
+            const zip = document.getElementById('zip_code').value.trim();
+            const alt = document.getElementById('altitude').value.trim();
+            if (zip) formData.append('location[zip_code]', zip);
+            if (alt) formData.append('location[altitude]', alt);
+        }
+
+        // Relations
+        ['categories', 'features', 'near_places'].forEach(key => {
+            const val = document.getElementById(key).value.trim();
+            if (val) {
+                val.split(',').map(s => s.trim()).filter(Boolean).forEach(id => {
+                    formData.append(`${key}[]`, id);
+                });
+            }
+        });
+
+        // Images
+        const mainFile = document.getElementById('main_image').files[0];
+        const mainUrl  = document.getElementById('main_image_url').value.trim();
+        if (mainFile) {
+            formData.append('main_image', mainFile);
+        } else if (mainUrl) {
+            formData.append('main_image_url', mainUrl);
+        }
+
+        const extra = document.getElementById('images').files;
+        for (let file of extra) {
+            formData.append('images[]', file);
+        }
+
+        return formData;
+    }
+
+    async function sendRequest(method, body = null) {
+        const token = tokenEl.value.trim();
+        if (!token) return showStatus('Bearer token is required', true);
+
+        try {
+            btnUpdate.disabled = btnDelete.disabled = true;
+            showStatus(`Processing... (${method})`);
+
+            const res = await fetch(BASE_URL, {
+                method,
+                headers: { 'Authorization': `Bearer ${token}` },
+                body
+            });
+
+            let json;
+            try { json = await res.json(); } catch {}
+
+            if (!res.ok) {
+                if (json?.errors) {
+                    Object.entries(json.errors).forEach(([key, msgs]) => {
+                        const clean = key.replace(/\./g, '_').replace(/\[|\]/g, '');
+                        const el = document.getElementById(`err-${clean}`);
+                        if (el) el.textContent = msgs.join(" • ");
+                    });
+                }
+                throw new Error(json?.message || `Error ${res.status}`);
+            }
+
+            showStatus(
+                method === 'PATCH' ? `Listing #${LISTING_ID} updated successfully` :
+                    `Listing #${LISTING_ID} deleted successfully`
+            );
+
+        } catch (err) {
+            console.error("Request failed:", err);
+            showStatus(err.message || "Operation failed – check console", true);
+        } finally {
+            btnUpdate.disabled = btnDelete.disabled = false;
+        }
+    }
+
+    btnUpdate.onclick = () => {
+        clearFieldErrors();
+        const formData = getFormData();
+        sendRequest('PATCH', formData);
+    };
+
+    btnDelete.onclick = () => {
+        if (!confirm(`Really delete listing #${LISTING_ID}? This cannot be undone.`)) return;
+        sendRequest('DELETE');
+    };
+
+    // Previews
+    document.getElementById('main_image').onchange = e => {
+        const file = e.target.files[0];
+        const preview = document.getElementById('mainPreview');
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    };
+
+    document.getElementById('images').onchange = e => {
+        const count = e.target.files.length;
+        document.getElementById('extraPreview').textContent =
+            count ? `${count} additional image${count > 1 ? 's' : ''}` : '';
+    };
+</script>
+</body>
+</html>

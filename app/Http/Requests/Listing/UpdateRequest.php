@@ -37,6 +37,7 @@ class UpdateRequest extends FormRequest
             'number_persons' => ['nullable','integer','min:1'],
 
             'is_ready' => ['sometimes','boolean'],
+            'is_active' => ['sometimes','boolean'],
             'is_negotiable' => ['sometimes','boolean'],
 
             'main_image' => ['nullable','image','mimes:jpg,jpeg,png,webp','max:2048'],
