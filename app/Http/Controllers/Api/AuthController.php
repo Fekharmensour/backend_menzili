@@ -112,9 +112,18 @@ class AuthController extends Controller
             $user->update(['name' => $request->name]);
         }
 
-        $member = $user->member ;
-        if (!$member) {
-            $user->member()->create();
+        // Force type hint to Member
+        /** @var \App\Models\Member $member */
+        $member = $user->member ?? $user->member()->create();
+
+        // Deposit only if balance is 0
+        if ($member->balanceInt === 0) {
+            $member->deposit(50, [
+                'reason' => 'initial_bonus',
+                'name' => 'Coins Wallet',
+                'slug' => 'coins',
+                'decimal_places' => 0
+            ]);
         }
 
         return response()->json([

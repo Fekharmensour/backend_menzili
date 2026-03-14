@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use Bavix\Wallet\Interfaces\Wallet;
+use Bavix\Wallet\Traits\HasWallet;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Member extends Model
+class Member extends Model implements Wallet
 {
+    use HasWallet;
     protected $fillable = [
         'user_id',
         'card_id_front_path',
@@ -25,6 +28,7 @@ class Member extends Model
             'agent_verified_at' => 'datetime',
         ];
     }
+
 
 
     public function user():BelongsTo

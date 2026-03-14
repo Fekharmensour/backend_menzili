@@ -10,3 +10,10 @@ Route::prefix('members')->middleware('auth:sanctum')->group(function () {
 
 });
 
+Route::prefix('wallet')->middleware('auth:sanctum')->group(function () {
+
+    Route::get('/', [\App\Http\Controllers\Api\Member\WalletController::class, 'show']); // member wallet info
+    Route::get('/transactions', [\App\Http\Controllers\Api\Member\WalletController::class, 'transactions']); // wallet transactions
+    Route::post('/coins', [\App\Http\Controllers\Api\Member\WalletController::class, 'addCoins']); // deposit coins
+
+});

@@ -17,8 +17,7 @@ RUN npm run build
 # -------------------------
 # Stage 2 — Laravel Runtime
 # -------------------------
-FROM php:8.3-fpm
-
+FROM php:8.2-fpm
 
 WORKDIR /var/www/html
 
@@ -50,9 +49,7 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 
 # Laravel build tasks
 RUN php artisan storage:link --force && \
-    php artisan scramble:export && \
-    php artisan wallets:generate
-
+    php artisan scramble:export
 
 # Copy fixed Nginx config
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf

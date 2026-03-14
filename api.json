@@ -93,7 +93,7 @@
                                             "type": "boolean"
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/PaginateResource"
+                                            "$ref": "#/components/schemas/PaginateMyListing"
                                         }
                                     },
                                     "required": [
@@ -150,7 +150,7 @@
                                             ]
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/ListingResource"
+                                            "$ref": "#/components/schemas/MyListingResource"
                                         }
                                     },
                                     "required": [
@@ -214,7 +214,7 @@
                                             ]
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/ListingResource"
+                                            "$ref": "#/components/schemas/MyListingResource"
                                         }
                                     },
                                     "required": [
@@ -285,7 +285,7 @@
                                             ]
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/ListingResource"
+                                            "$ref": "#/components/schemas/MyListingResource"
                                         }
                                     },
                                     "required": [
@@ -809,6 +809,57 @@
                 }
             }
         },
+        "/auth/logout": {
+            "post": {
+                "operationId": "auth.logout",
+                "tags": [
+                    "Auth"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "const": 200
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "status"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/listings/details": {
             "get": {
                 "operationId": "details.index",
@@ -993,7 +1044,7 @@
         },
         "/listings": {
             "get": {
-                "operationId": "index",
+                "operationId": "listing.listing.index",
                 "tags": [
                     "Listing"
                 ],
@@ -1203,7 +1254,7 @@
         },
         "/listings/{listing}": {
             "get": {
-                "operationId": "show",
+                "operationId": "listing.listing.show",
                 "tags": [
                     "Listing"
                 ],
@@ -1261,10 +1312,223 @@
                     }
                 }
             }
+        },
+        "/wallet": {
+            "get": {
+                "operationId": "wallet.show",
+                "tags": [
+                    "Wallet"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "assume user hasOne Member\nreturn new MyWalletResource($member->wallet);",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/MyWalletResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/wallet/transactions": {
+            "get": {
+                "operationId": "wallet.transactions",
+                "tags": [
+                    "Wallet"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TransactionResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/wallet/coins": {
+            "post": {
+                "operationId": "wallet.addCoins",
+                "tags": [
+                    "Wallet"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/App.Http.Requests.Api.Wallet.StoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "": {
+                                                    "$ref": "#/components/schemas/MyWalletResource"
+                                                },
+                                                "transaction": {
+                                                    "$ref": "#/components/schemas/TransactionResource"
+                                                }
+                                            },
+                                            "required": [
+                                                null,
+                                                "transaction"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
+            "App.Http.Requests.Api.Wallet.StoreRequest": {
+                "type": "object",
+                "properties": {
+                    "amount": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "reason": {
+                        "type": "string"
+                    },
+                    "payment_method": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "payment_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "listing_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "amount",
+                    "reason"
+                ],
+                "title": "App.Http.Requests.Api.Wallet.StoreRequest"
+            },
             "CategoryResource": {
                 "type": "object",
                 "properties": {
@@ -1432,11 +1696,9 @@
                     "is_negotiable": {
                         "type": "boolean"
                     },
-                    "boost_level": {
-                        "type": "integer"
-                    },
                     "moderation_status": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "'boost_level' => $this->boost_level,"
                     },
                     "image": {
                         "type": "string"
@@ -1502,7 +1764,6 @@
                     "number_persons",
                     "is_ready",
                     "is_negotiable",
-                    "boost_level",
                     "moderation_status",
                     "image",
                     "time_post"
@@ -1600,6 +1861,143 @@
                 ],
                 "title": "MemberResource"
             },
+            "MyListingResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "string"
+                    },
+                    "floor": {
+                        "type": "string"
+                    },
+                    "surface": {
+                        "type": "string"
+                    },
+                    "min_duration": {
+                        "type": "string"
+                    },
+                    "number_rooms": {
+                        "type": "string"
+                    },
+                    "number_persons": {
+                        "type": "string"
+                    },
+                    "is_ready": {
+                        "type": "string"
+                    },
+                    "is_active": {
+                        "type": "string"
+                    },
+                    "is_negotiable": {
+                        "type": "string"
+                    },
+                    "boost_level": {
+                        "type": "string"
+                    },
+                    "moderation_status": {
+                        "type": "string"
+                    },
+                    "image": {
+                        "type": "string"
+                    },
+                    "rent_duration": {
+                        "description": "BelongsTo",
+                        "$ref": "#/components/schemas/RentDurationResource"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/TypeResource"
+                    },
+                    "location": {
+                        "$ref": "#/components/schemas/LocationResource"
+                    },
+                    "categories": {
+                        "type": "array",
+                        "description": "Many To Many",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryResource"
+                        }
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FeatureResource"
+                        }
+                    },
+                    "near_places": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/NearPlaceResource"
+                        }
+                    },
+                    "members": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MemberResource"
+                        }
+                    },
+                    "images": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ImagesResource"
+                        }
+                    },
+                    "time_post": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "description",
+                    "price",
+                    "floor",
+                    "surface",
+                    "min_duration",
+                    "number_rooms",
+                    "number_persons",
+                    "is_ready",
+                    "is_active",
+                    "is_negotiable",
+                    "boost_level",
+                    "moderation_status",
+                    "image",
+                    "time_post"
+                ],
+                "title": "MyListingResource"
+            },
+            "MyWalletResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "slug",
+                    "balance"
+                ],
+                "title": "MyWalletResource"
+            },
             "NearPlaceResource": {
                 "type": "object",
                 "properties": {
@@ -1623,6 +2021,94 @@
                     "icon_path"
                 ],
                 "title": "NearPlaceResource"
+            },
+            "PaginateMyListing": {
+                "type": "object",
+                "properties": {
+                    "listing": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MyListingResource"
+                        }
+                    },
+                    "pagination": {
+                        "type": "object",
+                        "properties": {
+                            "total": {
+                                "type": "string",
+                                "description": "basic info"
+                            },
+                            "count": {
+                                "type": "string"
+                            },
+                            "per_page": {
+                                "type": "string"
+                            },
+                            "current_page": {
+                                "type": "string"
+                            },
+                            "total_pages": {
+                                "type": "string"
+                            },
+                            "has_pages": {
+                                "type": "string",
+                                "description": "navigation"
+                            },
+                            "has_more_pages": {
+                                "type": "string"
+                            },
+                            "first_page_url": {
+                                "type": "string",
+                                "description": "page URLs (very useful for frontend)"
+                            },
+                            "last_page_url": {
+                                "type": "string"
+                            },
+                            "next_page_url": {
+                                "type": "string"
+                            },
+                            "prev_page_url": {
+                                "type": "string"
+                            },
+                            "from": {
+                                "type": "string",
+                                "description": "index positions"
+                            },
+                            "to": {
+                                "type": "string"
+                            },
+                            "path": {
+                                "type": "string",
+                                "description": "query meta"
+                            },
+                            "current_page_url": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "total",
+                            "count",
+                            "per_page",
+                            "current_page",
+                            "total_pages",
+                            "has_pages",
+                            "has_more_pages",
+                            "first_page_url",
+                            "last_page_url",
+                            "next_page_url",
+                            "prev_page_url",
+                            "from",
+                            "to",
+                            "path",
+                            "current_page_url"
+                        ]
+                    }
+                },
+                "required": [
+                    "listing",
+                    "pagination"
+                ],
+                "title": "PaginateMyListing"
             },
             "PaginateResource": {
                 "type": "object",
@@ -1798,11 +2284,7 @@
                         "format": "binary",
                         "contentMediaType": "application/octet-stream",
                         "description": "Enum\n'moderation_status' => [\n'sometimes',\nRule::in(['pending', 'approved', 'rejected'])\n],\nImage",
-                        "maxLength": 2048
-                    },
-                    "member_id": {
-                        "type": "integer",
-                        "description": "Foreign Keys"
+                        "maxLength": 10240
                     },
                     "rent_duration_id": {
                         "type": "integer"
@@ -1884,8 +2366,9 @@
                             "type": "string",
                             "format": "binary",
                             "contentMediaType": "application/octet-stream",
-                            "maxLength": 2048
-                        }
+                            "maxLength": 10240
+                        },
+                        "maxItems": 5
                     }
                 },
                 "required": [
@@ -1893,12 +2376,68 @@
                     "price",
                     "surface",
                     "main_image",
-                    "member_id",
                     "rent_duration_id",
                     "type_id",
                     "location"
                 ],
                 "title": "StoreRequest"
+            },
+            "TransactionResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "integer",
+                        "description": "deposit or withdraw"
+                    },
+                    "confirmed": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "payment_method": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "payment_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "listing_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "date": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "type",
+                    "amount",
+                    "confirmed",
+                    "reason",
+                    "payment_method",
+                    "payment_id",
+                    "listing_id",
+                    "date"
+                ],
+                "title": "TransactionResource"
             },
             "TypeResource": {
                 "type": "object",
@@ -1984,6 +2523,9 @@
                     "is_ready": {
                         "type": "boolean"
                     },
+                    "is_active": {
+                        "type": "boolean"
+                    },
                     "is_negotiable": {
                         "type": "boolean"
                     },
@@ -1994,7 +2536,7 @@
                         ],
                         "format": "binary",
                         "contentMediaType": "application/octet-stream",
-                        "maxLength": 2048
+                        "maxLength": 10240
                     },
                     "location": {
                         "type": "object",
@@ -2046,8 +2588,9 @@
                             "type": "string",
                             "format": "binary",
                             "contentMediaType": "application/octet-stream",
-                            "maxLength": 2048
-                        }
+                            "maxLength": 10240
+                        },
+                        "maxItems": 5
                     }
                 },
                 "title": "UpdateRequest"

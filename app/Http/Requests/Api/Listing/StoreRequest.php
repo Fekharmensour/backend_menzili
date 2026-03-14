@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Requests\Listing;
+namespace App\Http\Requests\Api\Listing;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreRequest extends FormRequest
 {
@@ -48,7 +47,7 @@ class StoreRequest extends FormRequest
 //            ],
 
             // Image
-            'main_image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'main_image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
 
             'rent_duration_id' => ['required', 'exists:rent_durations,id'],
             'type_id' => ['required', 'exists:types,id'],
@@ -72,8 +71,8 @@ class StoreRequest extends FormRequest
             'near_places' => ['nullable', 'array'],
             'near_places.*' => ['exists:near_places,id'],
 
-            'images' => ['nullable', 'array'],
-            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'images' => ['nullable', 'array' , 'max:5'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
         ];
     }
 }
