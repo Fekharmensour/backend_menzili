@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'localeViewPath'          => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath::class,
             'localizationRedirect'    => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter::class,
             'api.localize'            => \App\Http\Middleware\ApiLocalization::class,
+            'fill_name'               => \App\Http\Middleware\EnsureFullName::class,
 
         ]);
 

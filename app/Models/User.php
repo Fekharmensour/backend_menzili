@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 
@@ -27,6 +28,14 @@ class User extends Authenticatable
         'last_login_at'
     ];
 
+    public function getImageUrlAttribute()
+    {
+        if (!$this->profile_image) {
+            return null;
+        }
+
+        return '/storage/' . $this->profile_image;
+    }
 
     protected $hidden = [
         'password',
@@ -49,10 +58,14 @@ class User extends Authenticatable
 
     public function generateOtp(int $length = 6, int $minutes = 5): string
     {
-        $otp = str_pad(rand(0, str_repeat(9, $length) - 1), $length, '0', STR_PAD_LEFT);
+        // For 6 digits: generates a number between 100000 and 999999
+        $min = pow(10, $length - 1);
+        $max = pow(10, $length) - 1;
+
+        $otp = (string) random_int($min, $max);
 
         $this->update([
-            'otp_code'       => $otp,  // For production: consider Hash::make($otp)
+            'otp_code'       => $otp,
             'otp_expires_at' => now()->addMinutes($minutes),
         ]);
 
@@ -78,6 +91,8 @@ class User extends Authenticatable
             'otp_expires_at' => null,
         ]);
     }
+
+
 
 
 

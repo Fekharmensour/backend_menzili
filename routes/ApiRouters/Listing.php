@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
 
 Route::prefix('listings')->group(function () {
     Route::get('details', [\App\Http\Controllers\Api\Listing\DetailsController::class, 'index']);
@@ -12,12 +10,7 @@ Route::prefix('listings')->group(function () {
 
     Route::get('/', [\App\Http\Controllers\Api\Listing\ListingController::class, 'index']);
     Route::get('{listing}', [\App\Http\Controllers\Api\Listing\ListingController::class, 'show']);
-//    Route::resource('/', \App\Http\Controllers\Api\Listing\ListingController::class)
-//        ->parameters(['' => 'listing'])
-//        ->only(['store', 'update', 'destroy'])
-//        ->middleware('auth:sanctum');
 
-    // Static routes
 
 });
 

@@ -4,18 +4,20 @@ namespace App\Http\Controllers\Api\Member;
 
 use App\Filters\ListingFilter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Listing\StoreRequest;
-use App\Http\Requests\Api\Listing\UpdateRequest;
+use App\Http\Requests\Listing\StoreRequest;
+use App\Http\Requests\Listing\UpdateRequest;
+use App\Http\Resources\Api\Listing\ListingResource;
 use App\Http\Resources\Api\Listing\MyListingResource;
 use App\Http\Resources\Api\Listing\PaginateMyListing;
+use App\Http\Resources\Api\Listing\PaginateResource;
 use App\Models\Listing;
 use App\Models\Location;
-use Dedoc\Scramble\Attributes\Group;
-use Dedoc\Scramble\Attributes\HeaderParameter;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\HeaderParameter;
 
 #[Group('Member Listings')]
 #[HeaderParameter('Auth')]

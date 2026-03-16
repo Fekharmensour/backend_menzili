@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api\Wallet;
+namespace App\Http\Requests\Wallet;
 
 use Illuminate\Foundation\Http\FormRequest;
 

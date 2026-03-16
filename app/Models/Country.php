@@ -16,7 +16,7 @@ class Country extends Model
     ];
     public function getNameAttribute()
     {
-        return $this->{"name_" . app()->getLocale()};
+        return app()->getLocale() == 'ar' ? $this->{"name_ar"} : $this->{"name_en"};
     }
 
     public function wilayas():HasMany

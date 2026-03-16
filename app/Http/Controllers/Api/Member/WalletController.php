@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Api\Member;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Wallet\StoreRequest;
+use App\Http\Requests\Wallet\StoreRequest;
 use App\Http\Resources\Api\Wallet\MyWalletResource;
 use App\Http\Resources\Api\Wallet\TransactionResource;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class WalletController extends Controller

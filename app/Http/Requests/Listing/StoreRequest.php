@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Requests\Api\Listing;
+namespace App\Http\Requests\Listing;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreRequest extends FormRequest
 {

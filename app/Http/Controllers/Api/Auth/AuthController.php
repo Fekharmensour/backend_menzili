@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Profile\UserResource;
 use App\Http\Responses\ApiResponseTrait;
-use App\Models\Member;
 use App\Models\User;
 use App\Services\TwilioWhatsAppService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -55,6 +54,7 @@ class AuthController extends Controller
         $request->validate([
             'phone'    => 'required|string',
             'otp_code' => 'required|digits:6',
+            'type'     => 'required|in:web,mobile'
         ]);
 
         $user = User::where('phone', $request->phone)->first();
@@ -84,7 +84,7 @@ class AuthController extends Controller
             'last_login_at'     => now(),
         ]);
 
-        $token = $user->createToken('mobile-app')->plainTextToken;
+        $token = $user->createToken($request->type .'-app')->plainTextToken;
 
 
 
@@ -140,6 +140,52 @@ class AuthController extends Controller
             'success' => true,
             'message' => __('auth.logout'),
             'status'  => 200,
+        ]);
+    }
+
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'login'    => 'required|string', // Can be email or phone
+            'password' => 'required|string',
+            'type'     => 'required|in:web,mobile'
+        ]);
+
+        // Determine if input is email or phone
+        $loginField = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+
+        $user = User::where($loginField, $request->login)->first();
+
+        // Verify User and Password
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => __('auth.failed'),
+                'status'  => 401,
+            ], 401);
+        }
+
+        if (!$user->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => __('auth.account_disabled'),
+                'status'  => 403,
+            ], 403);
+        }
+
+        $user->update(['last_login_at' => now()]);
+        $token = $user->createToken($request->type . '-app')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => __('auth.login_success'),
+            'status'  => 200,
+            'data'    => [
+                'token'     => $token,
+                'user'      => new UserResource($user),
+                'fill_name' => !blank($user->name),
+            ],
         ]);
     }
 }
