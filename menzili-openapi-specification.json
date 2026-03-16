@@ -1,477 +1,34 @@
 {
-    "openapi": "3.1.0",
-    "info": {
-        "title": "Laravel",
-        "version": "0.0.1"
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Laravel",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://menzili-backend.onrender.com/api"
+    }
+  ],
+  "paths": {
+    "/user": {
+      "get": {
+        "operationId": "user.profile",
+        "tags": ["User"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "`User`",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" }
+        }
+      }
     },
-    "servers": [
-        {
-            "url": "http://localhost/api"
-        }
-    ],
-    "tags": [
-        {
-            "name": "Member Listings"
-        }
-    ],
-    "paths": {
-        "/members/listings": {
-            "get": {
-                "operationId": "listings.index",
-                "tags": [
-                    "Member Listings"
-                ],
-                "parameters": [
-                    {
-                        "name": "type_id",
-                        "in": "query",
-                        "description": "Property type id",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "wilaya_id",
-                        "in": "query",
-                        "description": "Filter by wilaya",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "category_ids[]",
-                        "in": "query",
-                        "description": "Filter by categories",
-                        "schema": {
-                            "type": "array",
-                            "items": {}
-                        }
-                    },
-                    {
-                        "name": "number_rooms",
-                        "in": "query",
-                        "description": "Minimum number of rooms",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "is_ready",
-                        "in": "query",
-                        "description": "Property ready to move in",
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "name": "is_negotiable",
-                        "in": "query",
-                        "description": "Price negotiable",
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "name": "per_page",
-                        "in": "query",
-                        "description": "Pagination size",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 4
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/PaginateMyListing"
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            },
-            "post": {
-                "operationId": "listings.store",
-                "tags": [
-                    "Member Listings"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/StoreRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "null"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "items": {}
-                                                },
-                                                {
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/MyListingResource"
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
-        "/members/listings/{listing}": {
-            "get": {
-                "operationId": "listings.show",
-                "tags": [
-                    "Member Listings"
-                ],
-                "parameters": [
-                    {
-                        "name": "listing",
-                        "in": "path",
-                        "required": true,
-                        "description": "The listing ID",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "null"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "items": {}
-                                                },
-                                                {
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/MyListingResource"
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ModelNotFoundException"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            },
-            "put": {
-                "operationId": "listings.update",
-                "tags": [
-                    "Member Listings"
-                ],
-                "parameters": [
-                    {
-                        "name": "listing",
-                        "in": "path",
-                        "required": true,
-                        "description": "The listing ID",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UpdateRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "null"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "items": {}
-                                                },
-                                                {
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/MyListingResource"
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "null"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "items": {}
-                                                },
-                                                {
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ModelNotFoundException"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            },
-            "delete": {
-                "operationId": "listings.destroy",
-                "tags": [
-                    "Member Listings"
-                ],
-                "parameters": [
-                    {
-                        "name": "listing",
-                        "in": "path",
-                        "required": true,
-                        "description": "The listing ID",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "null"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "items": {}
-                                                },
-                                                {
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "null"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "items": {}
-                                                },
-                                                {
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ModelNotFoundException"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            }
-        },
-        "/user": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "description": "`User`",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            }
-        },
-        "/get_data": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "description": "Array of `TypeResource`",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/TypeResource"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/auth/login": {
+    "/auth/login": {
             "post": {
                 "operationId": "auth.requestOtp",
                 "tags": [
@@ -1046,459 +603,6 @@
                 }
             }
         },
-        "/listings/details": {
-            "get": {
-                "operationId": "details.index",
-                "tags": [
-                    "Details"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "features": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/components/schemas/FeatureResource"
-                                                    }
-                                                },
-                                                "categories": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/components/schemas/CategoryResource"
-                                                    }
-                                                },
-                                                "near_places": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/components/schemas/NearPlaceResource"
-                                                    }
-                                                },
-                                                "types": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/components/schemas/TypeResource"
-                                                    }
-                                                },
-                                                "rent_durations": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/components/schemas/RentDurationResource"
-                                                    }
-                                                }
-                                            },
-                                            "required": [
-                                                "features",
-                                                "categories",
-                                                "near_places",
-                                                "types",
-                                                "rent_durations"
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/listings/wilayas": {
-            "get": {
-                "operationId": "details.wilayas",
-                "tags": [
-                    "Details"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "wilayas": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/components/schemas/WilayaResource"
-                                                    }
-                                                }
-                                            },
-                                            "required": [
-                                                "wilayas"
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/listings/cities": {
-            "get": {
-                "operationId": "details.cities",
-                "tags": [
-                    "Details"
-                ],
-                "parameters": [
-                    {
-                        "name": "wilaya_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "cities": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/components/schemas/CityResource"
-                                                    }
-                                                }
-                                            },
-                                            "required": [
-                                                "cities"
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
-        "/listings": {
-            "get": {
-                "operationId": "listing.listing.index",
-                "tags": [
-                    "Listing"
-                ],
-                "parameters": [
-                    {
-                        "name": "search",
-                        "in": "query",
-                        "description": "Search in title or description",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "type_id",
-                        "in": "query",
-                        "description": "Property type id",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "member_id",
-                        "in": "query",
-                        "description": "Owner member id",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "rent_duration_id",
-                        "in": "query",
-                        "description": "Rent duration type",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "wilaya_id",
-                        "in": "query",
-                        "description": "Filter by wilaya",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "city_id",
-                        "in": "query",
-                        "description": "Filter by city",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "category_ids[]",
-                        "in": "query",
-                        "description": "Filter by categories",
-                        "schema": {
-                            "type": "array",
-                            "items": {}
-                        }
-                    },
-                    {
-                        "name": "feature_ids[]",
-                        "in": "query",
-                        "description": "Filter by features",
-                        "schema": {
-                            "type": "array",
-                            "items": {}
-                        }
-                    },
-                    {
-                        "name": "near_place_ids[]",
-                        "in": "query",
-                        "description": "Filter by nearby places",
-                        "schema": {
-                            "type": "array",
-                            "items": {}
-                        }
-                    },
-                    {
-                        "name": "number_rooms",
-                        "in": "query",
-                        "description": "Minimum number of rooms",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "number_persons",
-                        "in": "query",
-                        "description": "Minimum number of persons",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "min_floor",
-                        "in": "query",
-                        "description": "Minimum floor",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "max_floor",
-                        "in": "query",
-                        "description": "Maximum floor",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "min_duration",
-                        "in": "query",
-                        "description": "User rent duration in months",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "is_ready",
-                        "in": "query",
-                        "description": "Property ready to move in",
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "name": "is_negotiable",
-                        "in": "query",
-                        "description": "Price negotiable",
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "name": "min_price",
-                        "in": "query",
-                        "description": "Minimum price",
-                        "schema": {
-                            "type": "object"
-                        },
-                        "x-deepObject-style": "qs"
-                    },
-                    {
-                        "name": "max_price",
-                        "in": "query",
-                        "description": "Maximum price",
-                        "schema": {
-                            "type": "object"
-                        },
-                        "x-deepObject-style": "qs"
-                    },
-                    {
-                        "name": "min_surface",
-                        "in": "query",
-                        "description": "Minimum surface",
-                        "schema": {
-                            "type": "object"
-                        },
-                        "x-deepObject-style": "qs"
-                    },
-                    {
-                        "name": "max_surface",
-                        "in": "query",
-                        "description": "Maximum surface",
-                        "schema": {
-                            "type": "object"
-                        },
-                        "x-deepObject-style": "qs"
-                    },
-                    {
-                        "name": "per_page",
-                        "in": "query",
-                        "description": "Pagination size",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 4
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/PaginateResource"
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/listings/{listing}": {
-            "get": {
-                "operationId": "listing.listing.show",
-                "tags": [
-                    "Listing"
-                ],
-                "parameters": [
-                    {
-                        "name": "listing",
-                        "in": "path",
-                        "required": true,
-                        "description": "The listing ID",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "null"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "items": {}
-                                                },
-                                                {
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/ListingResource"
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ModelNotFoundException"
-                    }
-                }
-            }
-        },
         "/auth/password/request-otp": {
             "post": {
                 "operationId": "passwordReset.requestResetOtp",
@@ -1787,7 +891,402 @@
                 }
             }
         },
-        "/members/profile": {
+    "/listings/details": {
+      "get": {
+        "operationId": "details.index",
+        "tags": ["Details"],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "features": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/FeatureResource" }
+                        },
+                        "categories": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/CategoryResource" }
+                        },
+                        "near_places": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/NearPlaceResource" }
+                        },
+                        "types": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/TypeResource" }
+                        },
+                        "rent_durations": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/RentDurationResource" }
+                        }
+                      },
+                      "required": ["features", "categories", "near_places", "types", "rent_durations"]
+                    }
+                  },
+                  "required": ["success", "message", "data"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/listings/wilayas": {
+      "get": {
+        "operationId": "details.wilayas",
+        "tags": ["Details"],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "wilayas": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/WilayaResource" }
+                        }
+                      },
+                      "required": ["wilayas"]
+                    }
+                  },
+                  "required": ["success", "message", "data"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/listings/cities": {
+      "get": {
+        "operationId": "details.cities",
+        "tags": ["Details"],
+        "parameters": [
+          {
+            "name": "wilaya_id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "cities": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/CityResource" }
+                        }
+                      },
+                      "required": ["cities"]
+                    }
+                  },
+                  "required": ["success", "message", "data"]
+                }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationException" }
+        }
+      }
+    },
+    "/listings": {
+            "get": {
+                "operationId": "index",
+                "tags": [
+                    "Listing"
+                ],
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search in title or description",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type_id",
+                        "in": "query",
+                        "description": "Property type id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "member_id",
+                        "in": "query",
+                        "description": "Owner member id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "rent_duration_id",
+                        "in": "query",
+                        "description": "Rent duration type",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "wilaya_id",
+                        "in": "query",
+                        "description": "Filter by wilaya",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "Filter by city",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "category_ids[]",
+                        "in": "query",
+                        "description": "Filter by categories",
+                        "schema": {
+                            "type": "array",
+                            "items": {}
+                        }
+                    },
+                    {
+                        "name": "feature_ids[]",
+                        "in": "query",
+                        "description": "Filter by features",
+                        "schema": {
+                            "type": "array",
+                            "items": {}
+                        }
+                    },
+                    {
+                        "name": "near_place_ids[]",
+                        "in": "query",
+                        "description": "Filter by nearby places",
+                        "schema": {
+                            "type": "array",
+                            "items": {}
+                        }
+                    },
+                    {
+                        "name": "number_rooms",
+                        "in": "query",
+                        "description": "Minimum number of rooms",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "number_persons",
+                        "in": "query",
+                        "description": "Minimum number of persons",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "min_floor",
+                        "in": "query",
+                        "description": "Minimum floor",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "max_floor",
+                        "in": "query",
+                        "description": "Maximum floor",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "min_duration",
+                        "in": "query",
+                        "description": "User rent duration in months",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "is_ready",
+                        "in": "query",
+                        "description": "Property ready to move in",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "is_negotiable",
+                        "in": "query",
+                        "description": "Price negotiable",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "min_price",
+                        "in": "query",
+                        "description": "Minimum price",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "x-deepObject-style": "qs"
+                    },
+                    {
+                        "name": "max_price",
+                        "in": "query",
+                        "description": "Maximum price",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "x-deepObject-style": "qs"
+                    },
+                    {
+                        "name": "min_surface",
+                        "in": "query",
+                        "description": "Minimum surface",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "x-deepObject-style": "qs"
+                    },
+                    {
+                        "name": "max_surface",
+                        "in": "query",
+                        "description": "Maximum surface",
+                        "schema": {
+                            "type": "object"
+                        },
+                        "x-deepObject-style": "qs"
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Pagination size",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 4
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/PaginateResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+    },
+    "/listings/{listing}": {
+            "get": {
+                "operationId": "show",
+                "tags": [
+                    "Listing"
+                ],
+                "parameters": [
+                    {
+                        "name": "listing",
+                        "in": "path",
+                        "required": true,
+                        "description": "The listing ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ListingResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    }
+                }
+            }
+        },
+    "/members/profile": {
             "get": {
                 "operationId": "profile.show",
                 "tags": [
@@ -2168,61 +1667,71 @@
                 }
             }
         },
-        "/wallet": {
+    "/members/listings": {
             "get": {
-                "operationId": "wallet.show",
+                "operationId": "listings.index",
                 "tags": [
-                    "Wallet"
+                    "Member Listings"
                 ],
-                "responses": {
-                    "200": {
-                        "description": "assume user hasOne Member\nreturn new MyWalletResource($member->wallet);",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "null"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "items": {}
-                                                },
-                                                {
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/MyWalletResource"
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
+                "parameters": [
+                    {
+                        "name": "type_id",
+                        "in": "query",
+                        "description": "Property type id",
+                        "schema": {
+                            "type": "integer"
                         }
                     },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
+                    {
+                        "name": "wilaya_id",
+                        "in": "query",
+                        "description": "Filter by wilaya",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "category_ids[]",
+                        "in": "query",
+                        "description": "Filter by categories",
+                        "schema": {
+                            "type": "array",
+                            "items": {}
+                        }
+                    },
+                    {
+                        "name": "number_rooms",
+                        "in": "query",
+                        "description": "Minimum number of rooms",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "is_ready",
+                        "in": "query",
+                        "description": "Property ready to move in",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "is_negotiable",
+                        "in": "query",
+                        "description": "Price negotiable",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Pagination size",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 4
                     }
-                }
-            }
-        },
-        "/wallet/transactions": {
-            "get": {
-                "operationId": "wallet.transactions",
-                "tags": [
-                    "Wallet"
                 ],
                 "responses": {
                     "200": {
@@ -2235,30 +1744,12 @@
                                         "success": {
                                             "type": "boolean"
                                         },
-                                        "message": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "null"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "items": {}
-                                                },
-                                                {
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        },
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/TransactionResource"
-                                            }
+                                            "$ref": "#/components/schemas/PaginateResource"
                                         }
                                     },
                                     "required": [
                                         "success",
-                                        "message",
                                         "data"
                                     ]
                                 }
@@ -2269,26 +1760,24 @@
                         "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
-            }
-        },
-        "/wallet/coins": {
+            },
             "post": {
-                "operationId": "wallet.addCoins",
+                "operationId": "listings.store",
                 "tags": [
-                    "Wallet"
+                    "Member Listings"
                 ],
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/App.Http.Requests.Wallet.StoreRequest"
+                                "$ref": "#/components/schemas/StoreRequest"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "",
                         "content": {
                             "application/json": {
@@ -2313,19 +1802,7 @@
                                             ]
                                         },
                                         "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "": {
-                                                    "$ref": "#/components/schemas/MyWalletResource"
-                                                },
-                                                "transaction": {
-                                                    "$ref": "#/components/schemas/TransactionResource"
-                                                }
-                                            },
-                                            "required": [
-                                                null,
-                                                "transaction"
-                                            ]
+                                            "$ref": "#/components/schemas/ListingResource"
                                         }
                                     },
                                     "required": [
@@ -2345,46 +1822,2114 @@
                     }
                 }
             }
-        }
-    },
-    "components": {
-        "schemas": {
-            "App.Http.Requests.Wallet.StoreRequest": {
-                "type": "object",
-                "properties": {
-                    "amount": {
-                        "type": "integer",
-                        "minimum": 1
+        },
+    "/members/listings/{listing}": {
+            "get": {
+                "operationId": "listings.show",
+                "tags": [
+                    "Member Listings"
+                ],
+                "parameters": [
+                    {
+                        "name": "listing",
+                        "in": "path",
+                        "required": true,
+                        "description": "The listing ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ListingResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
                     },
-                    "reason": {
-                        "type": "string"
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
                     },
-                    "payment_method": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "payment_id": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "listing_id": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "listings.update",
+                "tags": [
+                    "Member Listings"
+                ],
+                "parameters": [
+                    {
+                        "name": "listing",
+                        "in": "path",
+                        "required": true,
+                        "description": "The listing ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRequest"
+                            }
+                        }
                     }
                 },
-                "required": [
-                    "amount",
-                    "reason"
-                ],
-                "title": "App.Http.Requests.Wallet.StoreRequest"
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ListingResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
             },
-            "CategoryResource": {
+            "delete": {
+                "operationId": "listings.destroy",
+                "tags": [
+                    "Member Listings"
+                ],
+                "parameters": [
+                    {
+                        "name": "listing",
+                        "in": "path",
+                        "required": true,
+                        "description": "The listing ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+    "/listings/{listing}/reviews": {
+      "get": {
+        "operationId": "listings.reviews.index",
+        "tags": ["Reviews"],
+        "parameters": [
+          {
+            "name": "listing",
+            "in": "path",
+            "required": true,
+            "description": "The listing ID",
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "reviews": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/CallReviewResource" }
+                        },
+                        "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+                      },
+                      "required": ["reviews", "pagination"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/ModelNotFoundException" }
+        }
+      },
+      "post": {
+        "operationId": "listings.reviews.store",
+        "tags": ["Reviews"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "listing",
+            "in": "path",
+            "required": true,
+            "description": "The listing ID",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "rating": { "type": "integer", "minimum": 1, "maximum": 5 },
+                  "comment": { "type": ["string", "null"] }
+                },
+                "required": ["rating"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/CallReviewResource" }
+                  },
+                  "required": ["success", "message", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" },
+          "422": { "$ref": "#/components/responses/ValidationException" },
+          "404": { "$ref": "#/components/responses/ModelNotFoundException" }
+        }
+      }
+    },
+    "/listings/{listing}/reviews/{review}": {
+      "delete": {
+        "operationId": "listings.reviews.destroy",
+        "tags": ["Reviews"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "listing",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "review",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" }
+                  },
+                  "required": ["success", "message"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" },
+          "404": { "$ref": "#/components/responses/ModelNotFoundException" }
+        }
+      }
+    },
+    "/members/requests": {
+        "get": {
+            "operationId": "requests.index",
+            "tags": [
+                "Member Requests"
+            ],
+            "parameters": [
+                {
+                    "name": "type_id",
+                    "in": "query",
+                    "description": "Property type id",
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "name": "wilaya_id",
+                    "in": "query",
+                    "description": "Filter by wilaya",
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "name": "category_ids[]",
+                    "in": "query",
+                    "description": "Filter by categories",
+                    "schema": {
+                        "type": "array",
+                        "items": {}
+                    }
+                },
+                {
+                    "name": "number_rooms",
+                    "in": "query",
+                    "description": "Minimum number of rooms",
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "name": "is_ready",
+                    "in": "query",
+                    "description": "Property ready to move in",
+                    "schema": {
+                        "type": "boolean"
+                    }
+                },
+                {
+                    "name": "is_negotiable",
+                    "in": "query",
+                    "description": "Price negotiable",
+                    "schema": {
+                        "type": "boolean"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "success": {
+                                        "type": "boolean"
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/PaginateResource"
+                                    }
+                                },
+                                "required": [
+                                    "success",
+                                    "data"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "$ref": "#/components/responses/AuthenticationException"
+                }
+            }
+        },
+        "post": {
+            "operationId": "requests.store",
+            "tags": [
+                "Member Requests"
+            ],
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/StoreRequestRequest"
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "201": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "success": {
+                                        "type": "boolean"
+                                    },
+                                    "message": {
+                                        "anyOf": [
+                                            {
+                                                "type": "null"
+                                            },
+                                            {
+                                                "type": "array",
+                                                "items": {}
+                                            },
+                                            {
+                                                "type": "string"
+                                            }
+                                        ]
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/RequestResource"
+                                    }
+                                },
+                                "required": [
+                                    "success",
+                                    "message",
+                                    "data"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "$ref": "#/components/responses/AuthenticationException"
+                },
+                "422": {
+                    "$ref": "#/components/responses/ValidationException"
+                }
+            }
+        }
+    },
+    "/members/requests/{request}": {
+        "get": {
+            "operationId": "requests.show",
+            "tags": [
+                "Member Requests"
+            ],
+            "parameters": [
+                {
+                    "name": "request",
+                    "in": "path",
+                    "required": true,
+                    "description": "The request ID",
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "success": {
+                                        "type": "boolean"
+                                    },
+                                    "message": {
+                                        "anyOf": [
+                                            {
+                                                "type": "null"
+                                            },
+                                            {
+                                                "type": "array",
+                                                "items": {}
+                                            },
+                                            {
+                                                "type": "string"
+                                            }
+                                        ]
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/RequestResource"
+                                    }
+                                },
+                                "required": [
+                                    "success",
+                                    "message",
+                                    "data"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "$ref": "#/components/responses/ModelNotFoundException"
+                },
+                "401": {
+                    "$ref": "#/components/responses/AuthenticationException"
+                }
+            }
+        },
+
+        "put": {
+            "operationId": "requests.update",
+            "tags": [
+                "Member Requests"
+            ],
+            "parameters": [
+                {
+                    "name": "request",
+                    "in": "path",
+                    "required": true,
+                    "description": "The request ID",
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/UpdateRequestRequest"
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "success": {
+                                        "type": "boolean"
+                                    },
+                                    "message": {
+                                        "anyOf": [
+                                            {
+                                                "type": "null"
+                                            },
+                                            {
+                                                "type": "array",
+                                                "items": {}
+                                            },
+                                            {
+                                                "type": "string"
+                                            }
+                                        ]
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/RequestResource"
+                                    }
+                                },
+                                "required": [
+                                    "success",
+                                    "message",
+                                    "data"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "success": {
+                                        "type": "boolean"
+                                    },
+                                    "message": {
+                                        "anyOf": [
+                                            {
+                                                "type": "null"
+                                            },
+                                            {
+                                                "type": "array",
+                                                "items": {}
+                                            },
+                                            {
+                                                "type": "string"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "success",
+                                    "message"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "$ref": "#/components/responses/ModelNotFoundException"
+                },
+                "401": {
+                    "$ref": "#/components/responses/AuthenticationException"
+                },
+                "422": {
+                    "$ref": "#/components/responses/ValidationException"
+                }
+            }
+        },
+
+        "delete": {
+            "operationId": "requests.destroy",
+            "tags": [
+                "Member Requests"
+            ],
+            "parameters": [
+                {
+                    "name": "request",
+                    "in": "path",
+                    "required": true,
+                    "description": "The request ID",
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "success": {
+                                        "type": "boolean"
+                                    },
+                                    "message": {
+                                        "anyOf": [
+                                            {
+                                                "type": "null"
+                                            },
+                                            {
+                                                "type": "array",
+                                                "items": {}
+                                            },
+                                            {
+                                                "type": "string"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "success",
+                                    "message"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "success": {
+                                        "type": "boolean"
+                                    },
+                                    "message": {
+                                        "anyOf": [
+                                            {
+                                                "type": "null"
+                                            },
+                                            {
+                                                "type": "array",
+                                                "items": {}
+                                            },
+                                            {
+                                                "type": "string"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "success",
+                                    "message"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "404": {
+                    "$ref": "#/components/responses/ModelNotFoundException"
+                },
+                "401": {
+                    "$ref": "#/components/responses/AuthenticationException"
+                }
+            }
+        }
+    },
+    "/reports": {
+      "post": {
+        "operationId": "member.reports.store",
+        "tags": ["Member Reports"],
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reportable_id": {
+                    "type": "integer",
+                    "description": "ID of the reported listing or member",
+                    "example": 25
+                  },
+                  "reportable_type": {
+                    "type": "string",
+                    "description": "Type of reported entity",
+                    "enum": ["listing", "member"],
+                    "example": "listing"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "Report reason",
+                    "example": "fake_listing"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "Additional details",
+                    "example": "This listing looks fake and price is unrealistic"
+                  }
+                },
+                "required": [
+                  "reportable_id",
+                  "reportable_type",
+                  "reason"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Report submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Report submitted successfully"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          }
+        }
+      }
+    },
+    "/subscriptions": {
+  "get": {
+    "tags": ["Subscriptions"],
+    "summary": "Get available subscription plans",
+    "responses": {
+      "200": {
+        "description": "List of plans",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PlanCollection"
+            }
+          }
+        }
+      }
+    }
+  }
+    },
+    "/subscriptions/current": {
+      "get": {
+        "tags": ["Subscriptions"],
+        "summary": "Get current user subscription",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Current subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Subscription"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/subscribe": {
+      "post": {
+        "tags": ["Subscriptions"],
+        "summary": "Subscribe to a plan",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "plan_id": { "type": "integer" },
+                  "payment_method": {
+                    "type": "string",
+                    "enum": ["cash", "baridimob", "stripe"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Subscription created"
+          }
+        }
+      }
+    },
+    "/notifications": {
+      "get": {
+        "operationId": "notifications.index",
+        "tags": ["Notifications"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 15 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "is_read",
+            "in": "query",
+            "description": "Filter by read status",
+            "schema": { "type": "boolean" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "notifications": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/NotificationResource" }
+                        },
+                        "pagination": { "$ref": "#/components/schemas/PaginationMeta" },
+                        "unread_count": { "type": "integer" }
+                      },
+                      "required": ["notifications", "pagination", "unread_count"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" }
+        }
+      }
+    },
+    "/notifications/{notification}/read": {
+      "post": {
+        "operationId": "notifications.markRead",
+        "tags": ["Notifications"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "notification",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" }
+                  },
+                  "required": ["success", "message"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" },
+          "404": { "$ref": "#/components/responses/ModelNotFoundException" }
+        }
+      }
+    },
+    "/notifications/read-all": {
+      "post": {
+        "operationId": "notifications.markAllRead",
+        "tags": ["Notifications"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" }
+                  },
+                  "required": ["success", "message"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" }
+        }
+      }
+    },
+    "/wallet": {
+      "get": {
+        "operationId": "wallet.show",
+        "tags": ["Finance & Wallet"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "wallet": { "$ref": "#/components/schemas/WalletResource" }
+                      },
+                      "required": ["wallet"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" }
+        }
+      }
+    },
+    "/wallet/transactions": {
+      "get": {
+        "operationId": "wallet.transactions",
+        "tags": ["Finance & Wallet"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 15 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter by transaction type (purchase, bonus, boost, refund)",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "transactions": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/CoinTransactionResource" }
+                        },
+                        "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+                      },
+                      "required": ["transactions", "pagination"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" }
+        }
+      }
+    },
+    "/wallet/coins": {
+      "post": {
+        "tags": ["Payments"],
+        "summary": "Buy coins package",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "package_id": {
+                    "type": "integer"
+                  },
+                  "payment_method": {
+                    "type": "string",
+                    "enum": ["cash", "baridimob", "stripe"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment request created"
+          }
+        }
+      }
+    },
+    "/payments": {
+      "get": {
+        "operationId": "payments.index",
+        "tags": ["Finance & Wallet"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 15 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "method",
+            "in": "query",
+            "description": "Filter by payment method (CIB, BaridiMob, Edahabia, BandMob, External)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "completed",
+            "in": "query",
+            "schema": { "type": "boolean" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "payments": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/PaymentResource" }
+                        },
+                        "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+                      },
+                      "required": ["payments", "pagination"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" }
+        }
+      },
+      "post": {
+        "operationId": "payments.store",
+        "tags": ["Finance & Wallet"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": { "type": "number", "minimum": 0 },
+                  "method": {
+                    "type": "string",
+                    "enum": ["CIB", "BaridiMob", "Edahabia", "BandMob", "External"]
+                  },
+                  "transaction_reference": { "type": ["string", "null"] }
+                },
+                "required": ["amount", "method"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/PaymentResource" }
+                  },
+                  "required": ["success", "message", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" },
+          "422": { "$ref": "#/components/responses/ValidationException" }
+        }
+      }
+    },
+    "/chat/sessions": {
+      "get": {
+        "operationId": "chat.sessions.index",
+        "tags": ["ChatBot"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 15 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "sessions": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/ChatSessionResource" }
+                        },
+                        "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+                      },
+                      "required": ["sessions", "pagination"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" }
+        }
+      },
+      "post": {
+        "operationId": "chat.sessions.store",
+        "tags": ["ChatBot"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "listing_id": { "type": ["integer", "null"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": { "$ref": "#/components/schemas/ChatSessionResource" }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" }
+        }
+      }
+    },
+    "/chat/sessions/{session}": {
+      "get": {
+        "operationId": "chat.sessions.show",
+        "tags": ["ChatBot"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "session",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": { "$ref": "#/components/schemas/ChatSessionResource" }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" },
+          "404": { "$ref": "#/components/responses/ModelNotFoundException" }
+        }
+      },
+      "delete": {
+        "operationId": "chat.sessions.destroy",
+        "tags": ["ChatBot"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "session",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" }
+                  },
+                  "required": ["success", "message"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" },
+          "404": { "$ref": "#/components/responses/ModelNotFoundException" }
+        }
+      }
+    },
+    "/chat/sessions/{session}/messages": {
+      "get": {
+        "operationId": "chat.messages.index",
+        "tags": ["ChatBot"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "session",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 50 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "messages": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/ChatMessageResource" }
+                        },
+                        "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+                      },
+                      "required": ["messages", "pagination"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" },
+          "404": { "$ref": "#/components/responses/ModelNotFoundException" }
+        }
+      },
+      "post": {
+        "operationId": "chat.messages.store",
+        "tags": ["ChatBot"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "session",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": { "type": "string" }
+                },
+                "required": ["message"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user_message": { "$ref": "#/components/schemas/ChatMessageResource" },
+                        "bot_message": { "$ref": "#/components/schemas/ChatMessageResource" }
+                      },
+                      "required": ["user_message", "bot_message"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" },
+          "404": { "$ref": "#/components/responses/ModelNotFoundException" }
+        }
+      }
+    },
+    "/ads": {
+      "get": {
+        "operationId": "ads.index",
+        "tags": ["Ads & Promotions"],
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "reference_type",
+            "in": "query",
+            "description": "Filter by target entity type (listing, promotion)",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "ads": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/AdResource" }
+                        },
+                        "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+                      },
+                      "required": ["ads", "pagination"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ads/{ad}": {
+      "get": {
+        "operationId": "ads.show",
+        "tags": ["Ads & Promotions"],
+        "parameters": [
+          {
+            "name": "ad",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": { "$ref": "#/components/schemas/AdResource" }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/ModelNotFoundException" }
+        }
+      }
+    },
+    "/app-info": {
+      "get": {
+        "operationId": "appInfo.index",
+        "tags": ["AppInfo"],
+        "parameters": [
+          {
+            "name": "key",
+            "in": "query",
+            "description": "Filter by a specific app info key",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "app_info": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/AppInfoResource" }
+                        }
+                      },
+                      "required": ["app_info"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/members/{member}": {
+      "get": {
+        "operationId": "members.show",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "member",
+            "in": "path",
+            "required": true,
+            "description": "The member ID",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "member": { "$ref": "#/components/schemas/MemberResource" }
+                      },
+                      "required": ["member"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/ModelNotFoundException" }
+        }
+      }
+    },
+    "/members/{member}/listings": {
+      "get": {
+        "operationId": "members.listings",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "member",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": { "$ref": "#/components/schemas/PaginateResource" }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/ModelNotFoundException" }
+        }
+      }
+    },
+    "/featured-listings": {
+      "get": {
+        "operationId": "featuredListings.index",
+        "tags": ["Featured Listings"],
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "category_id",
+            "in": "query",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "featured_listings": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/FeaturedListingResource" }
+                        },
+                        "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+                      },
+                      "required": ["featured_listings", "pagination"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/listings": {
+      "get": {
+        "operationId": "admin.listings.index",
+        "tags": ["Admin"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 15 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "moderation_status",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["pending", "approved", "rejected"] }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": { "$ref": "#/components/schemas/PaginateResource" }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" }
+        }
+      }
+    },
+    "/admin/listings/{listing}/moderate": {
+      "post": {
+        "operationId": "admin.listings.moderate",
+        "tags": ["Admin"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "listing",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "moderation_status": {
+                    "type": "string",
+                    "enum": ["approved", "rejected"]
+                  },
+                  "reason": { "type": ["string", "null"] }
+                },
+                "required": ["moderation_status"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/ListingResource" }
+                  },
+                  "required": ["success", "message", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" },
+          "404": { "$ref": "#/components/responses/ModelNotFoundException" },
+          "422": { "$ref": "#/components/responses/ValidationException" }
+        }
+      }
+    },
+    "/admin/reports": {
+      "get": {
+        "operationId": "admin.reports.index",
+        "tags": ["Admin"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 15 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["pending", "reviewed", "rejected"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "reports": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/ReportResource" }
+                        },
+                        "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+                      },
+                      "required": ["reports", "pagination"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" }
+        }
+      }
+    },
+    "/admin/reports/{report}": {
+      "put": {
+        "operationId": "admin.reports.update",
+        "tags": ["Admin"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "report",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["reviewed", "rejected"]
+                  },
+                  "reviewed_info": { "type": ["integer", "null"] }
+                },
+                "required": ["status"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/ReportResource" }
+                  },
+                  "required": ["success", "message", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" },
+          "404": { "$ref": "#/components/responses/ModelNotFoundException" }
+        }
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "operationId": "admin.users.index",
+        "tags": ["Admin"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 15 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "schema": { "type": "boolean" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "users": {
+                          "type": "array",
+                          "items": { "$ref": "#/components/schemas/UserResource" }
+                        },
+                        "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+                      },
+                      "required": ["users", "pagination"]
+                    }
+                  },
+                  "required": ["success", "data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" }
+        }
+      }
+    },
+    "/admin/users/{user}/toggle-active": {
+      "post": {
+        "operationId": "admin.users.toggleActive",
+        "tags": ["Admin"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" }
+                  },
+                  "required": ["success", "message"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/AuthenticationException" },
+          "404": { "$ref": "#/components/responses/ModelNotFoundException" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "CategoryResource": {
                 "type": "object",
                 "properties": {
                     "id": {
@@ -3775,77 +5320,192 @@
                     "code"
                 ],
                 "title": "WilayaResource"
-            }
+            },
+
+      "SubscriptionResource": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "max_active_listings": { "type": "integer" },
+          "monthly_coins": { "type": "integer" },
+          "transaction_types": { "type": "string" },
+          "priority_level": { "type": "integer" },
+          "price": { "type": "number" },
+          "duration_days": { "type": "integer" }
         },
-        "responses": {
-            "AuthenticationException": {
-                "description": "Unauthenticated",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "description": "Error overview."
-                                }
-                            },
-                            "required": [
-                                "message"
-                            ]
-                        }
-                    }
-                }
-            },
-            "ValidationException": {
-                "description": "Validation error",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "description": "Errors overview."
-                                },
-                                "errors": {
-                                    "type": "object",
-                                    "description": "A detailed description of each field that failed validation.",
-                                    "additionalProperties": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            },
-                            "required": [
-                                "message",
-                                "errors"
-                            ]
-                        }
-                    }
-                }
-            },
-            "ModelNotFoundException": {
-                "description": "Not found",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "description": "Error overview."
-                                }
-                            },
-                            "required": [
-                                "message"
-                            ]
-                        }
-                    }
-                }
+        "required": ["id", "name", "max_active_listings", "monthly_coins", "priority_level", "price", "duration_days"],
+        "title": "SubscriptionResource"
+      },
+      "UserSubscriptionResource": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "user_id": { "type": "integer" },
+          "subscription_id": { "type": "integer" },
+          "start_date": { "type": ["string", "null"], "format": "date" },
+          "end_date": { "type": ["string", "null"], "format": "date" },
+          "auto_renew": { "type": "boolean" },
+          "status": { "type": "string", "enum": ["active", "cancelled", "expired"] },
+          "expired": { "type": ["integer", "null"] },
+          "cancelled": { "type": ["integer", "null"] },
+          "subscription": { "$ref": "#/components/schemas/SubscriptionResource" }
+        },
+        "required": ["id", "user_id", "subscription_id", "status"],
+        "title": "UserSubscriptionResource"
+      },
+      "NotificationResource": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "title": { "type": "string" },
+          "body": { "type": "string" },
+          "is_read": { "type": "boolean" },
+          "created_at": { "type": ["string", "null"], "format": "date-time" },
+          "type": {
+            "type": "string",
+            "description": "enum(system, int_user, int_listing_update)"
+          },
+          "reference_id": { "type": ["integer", "null"] },
+          "reference_type": { "type": ["string", "null"] },
+          "content": { "type": ["string", "null"] }
+        },
+        "required": ["id", "title", "body", "is_read", "created_at", "type"],
+        "title": "NotificationResource"
+      },
+
+      
+      "PaymentResource": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "transaction_reference": { "type": ["string", "null"] },
+          "amount": { "type": "number" },
+          "method": {
+            "type": "string",
+            "description": "enum(CIB, BaridiMob, Edahabia, BandMob, External)"
+          },
+          "completed": { "type": ["integer", "null"] },
+          "failed": { "type": ["integer", "null"] },
+          "created_at": { "type": ["string", "null"], "format": "date-time" },
+          "member_id": { "type": "integer" }
+        },
+        "required": ["id", "amount", "method", "created_at", "member_id"],
+        "title": "PaymentResource"
+      },
+      "ChatSessionResource": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "session_token": { "type": "string" },
+          "started_at": { "type": ["string", "null"], "format": "date-time" },
+          "ended_at": { "type": ["string", "null"], "format": "date-time" },
+          "is_active": { "type": "boolean" },
+          "chat_session_id": { "type": ["integer", "null"] },
+          "member_id": { "type": "integer" }
+        },
+        "required": ["id", "session_token", "is_active", "member_id"],
+        "title": "ChatSessionResource"
+      },
+      "ChatMessageResource": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "message": { "type": "string" },
+          "is_bot": { "type": "boolean" },
+          "created_at": { "type": ["string", "null"], "format": "date-time" },
+          "sender": {
+            "type": "string",
+            "description": "enum(user, bot) : void"
+          }
+        },
+        "required": ["id", "message", "is_bot", "created_at", "sender"],
+        "title": "ChatMessageResource"
+      },
+      "AdResource": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "title": { "type": "string" },
+          "description": { "type": ["string", "null"] },
+          "image_path": { "type": ["string", "null"] },
+          "target_url": { "type": ["string", "null"] },
+          "start_date": { "type": ["string", "null"], "format": "date" },
+          "end_date": { "type": ["string", "null"], "format": "date" },
+          "status": { "type": "boolean" },
+          "reference_type": { "type": ["string", "null"] },
+          "reference_id": { "type": ["integer", "null"] },
+          "member_id": { "type": ["integer", "null"] }
+        },
+        "required": ["id", "title", "status"],
+        "title": "AdResource"
+      },
+      "AppInfoResource": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "title": { "type": ["string", "null"] },
+          "key": { "type": "string" },
+          "value": { "type": "string" },
+          "language": { "type": ["string", "null"] },
+          "updated_at": { "type": ["string", "null"], "format": "date-time" }
+        },
+        "required": ["id", "key", "value"],
+        "title": "AppInfoResource"
+      }
+      
+    },
+    "responses": {
+      "AuthenticationException": {
+        "description": "Unauthenticated",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string", "description": "Error overview." }
+              },
+              "required": ["message"]
             }
+          }
         }
+      },
+      "ValidationException": {
+        "description": "Validation error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string", "description": "Errors overview." },
+                "errors": {
+                  "type": "object",
+                  "description": "A detailed description of each field that failed validation.",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              },
+              "required": ["message", "errors"]
+            }
+          }
+        }
+      },
+      "ModelNotFoundException": {
+        "description": "Not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string", "description": "Error overview." }
+              },
+              "required": ["message"]
+            }
+          }
+        }
+      }
     }
+  }
 }
