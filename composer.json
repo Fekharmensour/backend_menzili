@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.2",
         "bavix/laravel-wallet": "^11.4",
+        "chargily/chargily-pay": "^2.0",
         "dedoc/scramble": "^0.13.14",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",

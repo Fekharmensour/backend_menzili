@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\Profile\MemberProfileResource;
 use App\Http\Resources\Api\Profile\UserResource;
 use App\Http\Responses\ApiResponseTrait;
 use App\Models\User;
 use App\Services\TwilioWhatsAppService;
+use App\Traits\HandlesDeviceTokens;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -14,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     use ApiResponseTrait;
+    use HandlesDeviceTokens;
 
 
 
@@ -54,7 +57,6 @@ class AuthController extends Controller
         $request->validate([
             'phone'    => 'required|string',
             'otp_code' => 'required|digits:6',
-            'type'     => 'required|in:web,mobile'
         ]);
 
         $user = User::where('phone', $request->phone)->first();
@@ -84,7 +86,7 @@ class AuthController extends Controller
             'last_login_at'     => now(),
         ]);
 
-        $token = $user->createToken($request->type .'-app')->plainTextToken;
+        $token = $this->createDeviceToken($user, $request);
 
 
 
@@ -130,7 +132,7 @@ class AuthController extends Controller
             'success' => true,
             'message' => __('auth.profile_completed'),
             'status'  => 200,
-            'data'    => ['user' => new UserResource($user)],
+            'data'    => ['user' => new MemberProfileResource($user)],
         ]);
     }
 
@@ -149,7 +151,6 @@ class AuthController extends Controller
         $request->validate([
             'login'    => 'required|string', // Can be email or phone
             'password' => 'required|string',
-            'type'     => 'required|in:web,mobile'
         ]);
 
         // Determine if input is email or phone
@@ -175,7 +176,7 @@ class AuthController extends Controller
         }
 
         $user->update(['last_login_at' => now()]);
-        $token = $user->createToken($request->type . '-app')->plainTextToken;
+        $token = $this->createDeviceToken($user, $request);
 
         return response()->json([
             'success' => true,
@@ -183,7 +184,7 @@ class AuthController extends Controller
             'status'  => 200,
             'data'    => [
                 'token'     => $token,
-                'user'      => new UserResource($user),
+                'user'      => new MemberProfileResource($user),
                 'fill_name' => !blank($user->name),
             ],
         ]);

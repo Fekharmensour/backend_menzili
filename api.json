@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost/api"
+            "url": "https://gusty-marylynn-snaillike.ngrok-free.dev/api"
         }
     ],
     "tags": [
@@ -614,19 +614,11 @@
                                     },
                                     "otp_code": {
                                         "type": "string"
-                                    },
-                                    "type": {
-                                        "type": "string",
-                                        "enum": [
-                                            "web",
-                                            "mobile"
-                                        ]
                                     }
                                 },
                                 "required": [
                                     "phone",
-                                    "otp_code",
-                                    "type"
+                                    "otp_code"
                                 ]
                             }
                         }
@@ -665,7 +657,8 @@
                                             "type": "object",
                                             "properties": {
                                                 "token": {
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "description": "Create new token"
                                                 },
                                                 "fill_name": {
                                                     "type": "boolean"
@@ -790,7 +783,7 @@
                                             "type": "object",
                                             "properties": {
                                                 "user": {
-                                                    "$ref": "#/components/schemas/UserResource"
+                                                    "$ref": "#/components/schemas/MemberProfileResource"
                                                 }
                                             },
                                             "required": [
@@ -887,19 +880,11 @@
                                     "password": {
                                         "type": "string",
                                         "description": "Can be email or phone"
-                                    },
-                                    "type": {
-                                        "type": "string",
-                                        "enum": [
-                                            "web",
-                                            "mobile"
-                                        ]
                                     }
                                 },
                                 "required": [
                                     "login",
-                                    "password",
-                                    "type"
+                                    "password"
                                 ]
                             }
                         }
@@ -938,10 +923,11 @@
                                             "type": "object",
                                             "properties": {
                                                 "token": {
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "description": "Create new token"
                                                 },
                                                 "user": {
-                                                    "$ref": "#/components/schemas/UserResource"
+                                                    "$ref": "#/components/schemas/MemberProfileResource"
                                                 },
                                                 "fill_name": {
                                                     "type": "boolean"
@@ -1042,6 +1028,186 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/pay": {
+            "get": {
+                "operationId": "chargilyPay.redirect",
+                "tags": [
+                    "ChargilyPay"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "checkout_url": {
+                                            "type": "string"
+                                        },
+                                        "payment_id": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "checkout_url",
+                                        "payment_id"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/webhook": {
+            "post": {
+                "operationId": "chargilyPay.webhook",
+                "tags": [
+                    "ChargilyPay"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "status"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "already processed"
+                                                }
+                                            },
+                                            "required": [
+                                                "message"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "const": "not found"
+                                        }
+                                    },
+                                    "required": [
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "const": "invalid"
+                                        }
+                                    },
+                                    "required": [
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/success": {
+            "get": {
+                "operationId": "chargilyPay.success",
+                "tags": [
+                    "ChargilyPay"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "success"
+                                        },
+                                        "checkout_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "checkout_id"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/failed": {
+            "get": {
+                "operationId": "chargilyPay.failed",
+                "tags": [
+                    "ChargilyPay"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "false"
+                                        },
+                                        "checkout_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "checkout_id"
+                                    ]
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -3674,43 +3840,6 @@
                     "updated_at"
                 ],
                 "title": "User"
-            },
-            "UserResource": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "phone": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "profile_image": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    }
-                },
-                "required": [
-                    "id",
-                    "name",
-                    "phone",
-                    "email",
-                    "profile_image"
-                ],
-                "title": "UserResource"
             },
             "VerifyAgentRequest": {
                 "type": "object",

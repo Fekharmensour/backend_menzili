@@ -15,6 +15,11 @@ Route::get('/get_data', function (Request $request) {
     return response()->json(TypeResource::collection($types));
 });
 
+Route::get('/pay', [\App\Http\Controllers\ChargilyPayController::class, 'redirect']);
+Route::post('/webhook', [\App\Http\Controllers\ChargilyPayController::class, 'webhook']);
+Route::get('/success', [\App\Http\Controllers\ChargilyPayController::class, 'success']);
+Route::get('/failed', [\App\Http\Controllers\ChargilyPayController::class, 'failed']);
+
 
 
 Require __DIR__.'/ApiRouters/Auth.php';
