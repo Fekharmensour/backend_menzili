@@ -25,6 +25,8 @@ class ListingResource extends JsonResource
 
             'title' => $this->title,
             'description' => $this->description,
+            'rating'=>$this->rating_avg ?? 4.2 ,
+            'views'=>$this->views ?? 0 ,
 
             'price' => $this->price,
             'floor' => $this->floor,
@@ -66,9 +68,7 @@ class ListingResource extends JsonResource
                 $this->whenLoaded('nearPlaces')
             ),
 
-            'members' => MemberResource::collection(
-                $this->whenLoaded('members')
-            ),
+            'member' => new MemberResource($this->whenLoaded('member')),
             'images' => ImagesResource::collection(
                 $this->whenLoaded('images')
             ),

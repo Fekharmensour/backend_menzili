@@ -27,6 +27,8 @@ class MemberProfileResource extends JsonResource
                 'is_agent_verified' => (bool)$this->member?->agent_verified_at,
             ],
             'wallet_balance' => $this->member?->wallet?->balance ?? 0,
+            'views' => $this->member?->views ?? 0,
+            'rating' => $this->member?->rating ?? 4.5,
         ];
     }
 }

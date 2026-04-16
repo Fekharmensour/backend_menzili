@@ -23,6 +23,9 @@ class MemberResource extends JsonResource
             'profile_image' => $user->profile_image,
             'member_verified' => $this->member_verified_at?true:false,
             'agent_verified' => $this->agent_verified_at?true:false,
+            'views' => $this->views ?? 0 ,
+            'rating' => $this->rating ?? 4.9 ,
+
 
         ];
     }

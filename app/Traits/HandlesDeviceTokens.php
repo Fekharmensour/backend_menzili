@@ -17,10 +17,6 @@ trait HandlesDeviceTokens
         // Create a stable short hash from User-Agent
         return 'device-' . substr(md5($userAgent), 0, 16);
     }
-
-    /**
-     * Revoke old token for this device and create a new one
-     */
     protected function createDeviceToken($user, Request $request)
     {
         $tokenName = $this->getDeviceTokenName($request);

@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "https://gusty-marylynn-snaillike.ngrok-free.dev/api"
+            "url": "https://menzili-utx2r.sevalla.app/api"
         }
     ],
     "tags": [
@@ -429,44 +429,6 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            }
-        },
-        "/user": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "description": "`User`",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/User"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            }
-        },
-        "/get_data": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "description": "Array of `TypeResource`",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/TypeResource"
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -2678,6 +2640,30 @@
                             "null"
                         ]
                     },
+                    "rating": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "number",
+                                "const": 4.2
+                            }
+                        ]
+                    },
+                    "views": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "integer",
+                                "enum": [
+                                    0
+                                ]
+                            }
+                        ]
+                    },
                     "price": {
                         "type": "number"
                     },
@@ -2753,11 +2739,8 @@
                             "$ref": "#/components/schemas/NearPlaceResource"
                         }
                     },
-                    "members": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/MemberResource"
-                        }
+                    "member": {
+                        "$ref": "#/components/schemas/MemberResource"
                     },
                     "images": {
                         "type": "array",
@@ -2777,6 +2760,8 @@
                     "id",
                     "title",
                     "description",
+                    "rating",
+                    "views",
                     "price",
                     "floor",
                     "surface",
@@ -2885,6 +2870,30 @@
                                 ]
                             }
                         ]
+                    },
+                    "views": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "integer",
+                                "enum": [
+                                    0
+                                ]
+                            }
+                        ]
+                    },
+                    "rating": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "number",
+                                "const": 4.5
+                            }
+                        ]
                     }
                 },
                 "required": [
@@ -2895,7 +2904,9 @@
                     "has_password",
                     "profile_image",
                     "verification",
-                    "wallet_balance"
+                    "wallet_balance",
+                    "views",
+                    "rating"
                 ],
                 "title": "MemberProfileResource"
             },
@@ -2931,6 +2942,30 @@
                     },
                     "agent_verified": {
                         "type": "boolean"
+                    },
+                    "views": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "integer",
+                                "enum": [
+                                    0
+                                ]
+                            }
+                        ]
+                    },
+                    "rating": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "number",
+                                "const": 4.9
+                            }
+                        ]
                     }
                 },
                 "required": [
@@ -2940,7 +2975,9 @@
                     "phone",
                     "profile_image",
                     "member_verified",
-                    "agent_verified"
+                    "agent_verified",
+                    "views",
+                    "rating"
                 ],
                 "title": "MemberResource"
             },
@@ -3735,112 +3772,6 @@
                 },
                 "title": "UpdateRequest"
             },
-            "User": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "phone": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "email_verified_at": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    },
-                    "profile_image": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "otp_code": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "otp_expires_at": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    },
-                    "is_active": {
-                        "type": "integer"
-                    },
-                    "phone_verified_at": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    },
-                    "is_admin": {
-                        "type": "integer"
-                    },
-                    "device_token": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "last_login_at": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "created_at": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    },
-                    "updated_at": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "id",
-                    "name",
-                    "phone",
-                    "email",
-                    "email_verified_at",
-                    "profile_image",
-                    "otp_code",
-                    "otp_expires_at",
-                    "is_active",
-                    "phone_verified_at",
-                    "is_admin",
-                    "device_token",
-                    "last_login_at",
-                    "created_at",
-                    "updated_at"
-                ],
-                "title": "User"
-            },
             "VerifyAgentRequest": {
                 "type": "object",
                 "properties": {
@@ -3907,25 +3838,6 @@
             }
         },
         "responses": {
-            "AuthenticationException": {
-                "description": "Unauthenticated",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "description": "Error overview."
-                                }
-                            },
-                            "required": [
-                                "message"
-                            ]
-                        }
-                    }
-                }
-            },
             "ValidationException": {
                 "description": "Validation error",
                 "content": {
@@ -3951,6 +3863,25 @@
                             "required": [
                                 "message",
                                 "errors"
+                            ]
+                        }
+                    }
+                }
+            },
+            "AuthenticationException": {
+                "description": "Unauthenticated",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
                             ]
                         }
                     }
