@@ -1054,8 +1054,7 @@
                                             "type": "object",
                                             "properties": {
                                                 "message": {
-                                                    "type": "string",
-                                                    "const": "already processed"
+                                                    "type": "string"
                                                 }
                                             },
                                             "required": [
@@ -1075,8 +1074,7 @@
                                     "type": "object",
                                     "properties": {
                                         "error": {
-                                            "type": "string",
-                                            "const": "not found"
+                                            "type": "string"
                                         }
                                     },
                                     "required": [
@@ -1094,8 +1092,7 @@
                                     "type": "object",
                                     "properties": {
                                         "error": {
-                                            "type": "string",
-                                            "const": "invalid"
+                                            "type": "string"
                                         }
                                     },
                                     "required": [
@@ -1170,6 +1167,108 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/chatbot": {
+            "get": {
+                "operationId": "chat.index",
+                "tags": [
+                    "Chat"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ConversationResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "chat.handle",
+                "tags": [
+                    "Chat"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "6. Final response using ChatMessageResource with Envelope",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ChatMessageResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }
@@ -1664,18 +1763,7 @@
                                             "type": "boolean"
                                         },
                                         "message": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "null"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "items": {}
-                                                },
-                                                {
-                                                    "type": "string"
-                                                }
-                                            ]
+                                            "type": "string"
                                         },
                                         "data": {
                                             "type": "object",
@@ -1709,18 +1797,7 @@
                                             "type": "boolean"
                                         },
                                         "message": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "null"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "items": {}
-                                                },
-                                                {
-                                                    "type": "string"
-                                                }
-                                            ]
+                                            "type": "string"
                                         }
                                     },
                                     "required": [
@@ -1778,18 +1855,7 @@
                                             "type": "boolean"
                                         },
                                         "message": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "null"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "items": {}
-                                                },
-                                                {
-                                                    "type": "string"
-                                                }
-                                            ]
+                                            "type": "string"
                                         },
                                         "data": {
                                             "type": "object",
@@ -1861,18 +1927,7 @@
                                             "type": "boolean"
                                         },
                                         "message": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "null"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "items": {}
-                                                },
-                                                {
-                                                    "type": "string"
-                                                }
-                                            ]
+                                            "type": "string"
                                         }
                                     },
                                     "required": [
@@ -1894,8 +1949,7 @@
                                             "type": "boolean"
                                         },
                                         "message": {
-                                            "type": "string",
-                                            "const": "Unauthorized"
+                                            "type": "string"
                                         }
                                     },
                                     "required": [
@@ -2536,6 +2590,55 @@
                 ],
                 "title": "CategoryResource"
             },
+            "ChatMessageResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "conversation_id": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "is_bot": {
+                        "type": "boolean"
+                    },
+                    "role": {
+                        "type": "string"
+                    },
+                    "recommendations": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "minItems": 0,
+                                "maxItems": 0,
+                                "additionalItems": false
+                            }
+                        ]
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "conversation_id",
+                    "message",
+                    "is_bot",
+                    "role",
+                    "recommendations",
+                    "created_at"
+                ],
+                "title": "ChatMessageResource"
+            },
             "CityResource": {
                 "type": "object",
                 "properties": {
@@ -2557,6 +2660,36 @@
                     "name"
                 ],
                 "title": "CityResource"
+            },
+            "ConversationResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ChatMessageResource"
+                        }
+                    },
+                    "last_message_at": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "last_message_at",
+                    "created_at"
+                ],
+                "title": "ConversationResource"
             },
             "CountryResource": {
                 "type": "object",

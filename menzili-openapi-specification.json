@@ -3282,154 +3282,83 @@
                 }
             }
         },
-        "/chat/sessions": {
+        "/chatbot": {
             "get": {
-                "operationId": "chat.sessions.index",
-                "tags": ["ChatBot"],
-                "summary": "Get user's chat sessions",
-                "security": [{ "bearerAuth": [] }],
+                "operationId": "chat.index",
+                "tags": [
+                    "Chat"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "List of chat sessions",
+                        "description": "User's single conversation with history",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "success": { "type": "boolean" },
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
                                         "data": {
-                                            "type": "array",
-                                            "items": { "$ref": "#/components/schemas/ChatSessionResource" }
+                                            "$ref": "#/components/schemas/ConversationResource"
                                         }
                                     },
-                                    "required": ["success", "data"]
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
                                 }
                             }
                         }
                     },
-                    "401": { "$ref": "#/components/responses/AuthenticationException" }
+                    "404": {
+                        "description": "No conversation found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "null"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
                 }
             },
             "post": {
-                "operationId": "chat.sessions.store",
-                "tags": ["ChatBot"],
-                "summary": "Create new chat session",
-                "security": [{ "bearerAuth": [] }],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "listing_id": {
-                                        "type": ["integer", "null"],
-                                        "description": "Optional - Start chat about a specific listing"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": { "type": "boolean" },
-                                        "data": { "$ref": "#/components/schemas/ChatSessionResource" }
-                                    },
-                                    "required": ["success", "data"]
-                                }
-                            }
-                        }
-                    },
-                    "401": { "$ref": "#/components/responses/AuthenticationException" }
-                }
-            }
-        },
-
-        "/chat/sessions/{session}": {
-            "get": {
-                "operationId": "chat.sessions.show",
-                "tags": ["ChatBot"],
-                "summary": "Get single chat session",
-                "security": [{ "bearerAuth": [] }],
-                "parameters": [
-                    {
-                        "name": "session",
-                        "in": "path",
-                        "required": true,
-                        "schema": { "type": "integer" }
-                    }
+                "operationId": "chat.handle",
+                "tags": [
+                    "Chat"
                 ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": { "type": "boolean" },
-                                        "data": { "$ref": "#/components/schemas/ChatSessionResource" }
-                                    },
-                                    "required": ["success", "data"]
-                                }
-                            }
-                        }
-                    },
-                    "401": { "$ref": "#/components/responses/AuthenticationException" },
-                    "404": { "$ref": "#/components/responses/ModelNotFoundException" }
-                }
-            },
-            "delete": {
-                "operationId": "chat.sessions.destroy",
-                "tags": ["ChatBot"],
-                "summary": "Delete a chat session",
-                "security": [{ "bearerAuth": [] }],
-                "parameters": [
+                "security": [
                     {
-                        "name": "session",
-                        "in": "path",
-                        "required": true,
-                        "schema": { "type": "integer" }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": { "type": "boolean" },
-                                        "message": { "type": "string" }
-                                    },
-                                    "required": ["success", "message"]
-                                }
-                            }
-                        }
-                    },
-                    "401": { "$ref": "#/components/responses/AuthenticationException" },
-                    "404": { "$ref": "#/components/responses/ModelNotFoundException" }
-                }
-            }
-        },
-
-        "/chat/sessions/{session}/messages": {
-            "post": {
-                "operationId": "chat.messages.store",
-                "tags": ["ChatBot"],
-                "summary": "Send message to AI Chatbot",
-                "description": "AI can suggest properties. The response includes recommended listings with IDs for navigation.",
-                "security": [{ "bearerAuth": [] }],
-                "parameters": [
-                    {
-                        "name": "session",
-                        "in": "path",
-                        "required": true,
-                        "schema": { "type": "integer" }
+                        "bearerAuth": []
                     }
                 ],
                 "requestBody": {
@@ -3439,7 +3368,10 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "message": { "type": "string" }
+                                    "message": {
+                                        "type": "string",
+                                        "description": "User's message to the chatbot"
+                                    }
                                 },
                                 "required": ["message"]
                             }
@@ -3447,47 +3379,37 @@
                     }
                 },
                 "responses": {
-                    "201": {
+                    "200": {
+                        "description": "Bot's response message",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "success": { "type": "boolean" },
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
                                         "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "user_message": { "$ref": "#/components/schemas/ChatMessageResource" },
-                                                "bot_message": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": { "type": "integer" },
-                                                        "message": { "type": "string" },
-                                                        "is_bot": { "type": "boolean" },
-                                                        "created_at": { "type": "string", "format": "date-time" },
-                                                        "recommended": {
-                                                            "type": ["array", "null"],
-                                                            "items": {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "id": { "type": "integer" },
-                                                                    "title": { "type": "string" },
-                                                                    "price": { "type": "number" },
-                                                                    "image": { "type": "string" },
-                                                                    "location": { "type": "string" },
-                                                                    "rating": { "type": "number" }
-                                                                }
-                                                            },
-                                                            "description": "List of recommended apartments by AI with clickable IDs"
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            "$ref": "#/components/schemas/ChatMessageResource"
                                         }
-                                    }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             }
@@ -4811,76 +4733,7 @@
                         }
                     },
                     "pagination": {
-                        "type": "object",
-                        "properties": {
-                            "total": {
-                                "type": "string",
-                                "description": "basic info"
-                            },
-                            "count": {
-                                "type": "string"
-                            },
-                            "per_page": {
-                                "type": "string"
-                            },
-                            "current_page": {
-                                "type": "string"
-                            },
-                            "total_pages": {
-                                "type": "string"
-                            },
-                            "has_pages": {
-                                "type": "string",
-                                "description": "navigation"
-                            },
-                            "has_more_pages": {
-                                "type": "string"
-                            },
-                            "first_page_url": {
-                                "type": "string",
-                                "description": "page URLs (very useful for frontend)"
-                            },
-                            "last_page_url": {
-                                "type": "string"
-                            },
-                            "next_page_url": {
-                                "type": "string"
-                            },
-                            "prev_page_url": {
-                                "type": "string"
-                            },
-                            "from": {
-                                "type": "string",
-                                "description": "index positions"
-                            },
-                            "to": {
-                                "type": "string"
-                            },
-                            "path": {
-                                "type": "string",
-                                "description": "query meta"
-                            },
-                            "current_page_url": {
-                                "type": "string"
-                            }
-                        },
-                        "required": [
-                            "total",
-                            "count",
-                            "per_page",
-                            "current_page",
-                            "total_pages",
-                            "has_pages",
-                            "has_more_pages",
-                            "first_page_url",
-                            "last_page_url",
-                            "next_page_url",
-                            "prev_page_url",
-                            "from",
-                            "to",
-                            "path",
-                            "current_page_url"
-                        ]
+                        "$ref": "#/components/schemas/PaginationMeta"
                     }
                 },
                 "required": [
@@ -4899,76 +4752,7 @@
                         }
                     },
                     "pagination": {
-                        "type": "object",
-                        "properties": {
-                            "total": {
-                                "type": "string",
-                                "description": "basic info"
-                            },
-                            "count": {
-                                "type": "string"
-                            },
-                            "per_page": {
-                                "type": "string"
-                            },
-                            "current_page": {
-                                "type": "string"
-                            },
-                            "total_pages": {
-                                "type": "string"
-                            },
-                            "has_pages": {
-                                "type": "string",
-                                "description": "navigation"
-                            },
-                            "has_more_pages": {
-                                "type": "string"
-                            },
-                            "first_page_url": {
-                                "type": "string",
-                                "description": "page URLs (very useful for frontend)"
-                            },
-                            "last_page_url": {
-                                "type": "string"
-                            },
-                            "next_page_url": {
-                                "type": "string"
-                            },
-                            "prev_page_url": {
-                                "type": "string"
-                            },
-                            "from": {
-                                "type": "string",
-                                "description": "index positions"
-                            },
-                            "to": {
-                                "type": "string"
-                            },
-                            "path": {
-                                "type": "string",
-                                "description": "query meta"
-                            },
-                            "current_page_url": {
-                                "type": "string"
-                            }
-                        },
-                        "required": [
-                            "total",
-                            "count",
-                            "per_page",
-                            "current_page",
-                            "total_pages",
-                            "has_pages",
-                            "has_more_pages",
-                            "first_page_url",
-                            "last_page_url",
-                            "next_page_url",
-                            "prev_page_url",
-                            "from",
-                            "to",
-                            "path",
-                            "current_page_url"
-                        ]
+                        "$ref": "#/components/schemas/PaginationMeta"
                     }
                 },
                 "required": [
@@ -5770,7 +5554,12 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "integer"
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "conversation_id": {
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "message": {
                         "type": "string"
@@ -5778,26 +5567,114 @@
                     "is_bot": {
                         "type": "boolean"
                     },
+                    "role": {
+                        "type": "string",
+                        "enum": ["user", "assistant"]
+                    },
+                    "recommendations": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": { "type": "integer" },
+                                "title": { "type": "string" },
+                                "price": { "type": "number" },
+                                "phone": { "type": ["string", "null"] },
+                                "nbr_room": { "type": ["integer", "null"] },
+                                "main_image": { "type": ["string", "null"], "format": "uri" },
+                                "type": { "type": ["string", "null"] },
+                                "rent_duration": { "type": ["string", "null"] }
+                            }
+                        }
+                    },
                     "created_at": {
                         "type": [
                             "string",
                             "null"
                         ],
                         "format": "date-time"
-                    },
-                    "sender": {
-                        "type": "string",
-                        "description": "enum(user, bot) : void"
                     }
                 },
                 "required": [
                     "id",
+                    "conversation_id",
                     "message",
                     "is_bot",
-                    "created_at",
-                    "sender"
+                    "role",
+                    "created_at"
                 ],
                 "title": "ChatMessageResource"
+            },
+            "PaginationMeta": {
+                "type": "object",
+                "properties": {
+                    "total": { "type": "integer" },
+                    "count": { "type": "integer" },
+                    "per_page": { "type": "integer" },
+                    "current_page": { "type": "integer" },
+                    "total_pages": { "type": "integer" },
+                    "has_pages": { "type": "boolean" },
+                    "has_more_pages": { "type": "boolean" },
+                    "first_page_url": { "type": "string", "format": "uri" },
+                    "last_page_url": { "type": "string", "format": "uri" },
+                    "next_page_url": { "type": ["string", "null"], "format": "uri" },
+                    "prev_page_url": { "type": ["string", "null"], "format": "uri" },
+                    "from": { "type": ["integer", "null"] },
+                    "to": { "type": ["integer", "null"] },
+                    "path": { "type": "string" },
+                    "current_page_url": { "type": "string", "format": "uri" }
+                },
+                "required": [
+                    "total",
+                    "count",
+                    "per_page",
+                    "current_page",
+                    "total_pages",
+                    "has_pages",
+                    "has_more_pages",
+                    "first_page_url",
+                    "last_page_url",
+                    "path",
+                    "current_page_url"
+                ],
+                "title": "PaginationMeta"
+            },
+            "FeaturedListingResource": {
+                "$ref": "#/components/schemas/ListingResource"
+            },
+            "RequestResource": {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "integer" },
+                    "title": { "type": "string" },
+                    "description": { "type": ["string", "null"] },
+                    "budget_min": { "type": ["number", "null"] },
+                    "budget_max": { "type": ["number", "null"] },
+                    "rooms": { "type": ["integer", "null"] },
+                    "wilaya": { "$ref": "#/components/schemas/WilayaResource" },
+                    "city": { "$ref": "#/components/schemas/CityResource" },
+                    "type": { "$ref": "#/components/schemas/TypeResource" },
+                    "created_at": { "type": "string", "format": "date-time" }
+                },
+                "required": ["id", "title"],
+                "title": "RequestResource"
+            },
+            "StoreRequestRequest": {
+                "type": "object",
+                "properties": {
+                    "title": { "type": "string" },
+                    "description": { "type": "string" },
+                    "budget_min": { "type": "number" },
+                    "budget_max": { "type": "number" },
+                    "rooms": { "type": "integer" },
+                    "wilaya_id": { "type": "integer" },
+                    "city_id": { "type": "integer" },
+                    "type_id": { "type": "integer" }
+                },
+                "required": ["title", "wilaya_id", "type_id"]
+            },
+            "UpdateRequestRequest": {
+                "$ref": "#/components/schemas/StoreRequestRequest"
             },
             "AdResource": {
                 "type": "object",
@@ -5868,6 +5745,37 @@
                     "status"
                 ],
                 "title": "AdResource"
+            },
+            "ConversationResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ChatMessageResource"
+                        }
+                    },
+                    "last_message_at": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "messages",
+                    "last_message_at",
+                    "created_at"
+                ],
+                "title": "ConversationResource"
             },
             "AppInfoResource": {
                 "type": "object",
