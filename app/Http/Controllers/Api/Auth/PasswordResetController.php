@@ -25,7 +25,7 @@ class PasswordResetController extends Controller
         if (!$result['status']) {
             return response()->json([
                 'success' => false,
-                'message' => __($result['message'])
+                'message' => trans($result['message'])
             ], 403); // 403 Forbidden because they don't have a password to reset
         }
 
@@ -34,7 +34,7 @@ class PasswordResetController extends Controller
 //        $whatsapp->sendOtp($user->phone, $otp);
         return response()->json([
             'success' => true,
-            'message' => __('auth.otp_sent'),
+            'message' => trans('auth.otp_sent'),
             'data'    => ['otp_code' => $otp] // For development only
         ]);
     }
@@ -54,7 +54,7 @@ class PasswordResetController extends Controller
         if (!$user || !$user->isValidOtp($request->otp_code)) {
             return response()->json([
                 'success' => false,
-                'message' => __('auth.otp_invalid_or_expired')
+                'message' => trans('auth.otp_invalid_or_expired')
             ], 422);
         }
 
@@ -63,7 +63,7 @@ class PasswordResetController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => __('auth.otp_verified'),
+            'message' => trans('auth.otp_verified'),
             'data'    => ['reset_token' => $token]
         ]);
     }
@@ -78,7 +78,10 @@ class PasswordResetController extends Controller
         $user = $request->user();
 
         if (!$user->tokenCan('reset-password')) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+            return response()->json([
+                'success' => false,
+                'message' => trans('api.common.unauthorized')
+            ], 403);
         }
 
         $user->password = $request->password;
@@ -88,7 +91,7 @@ class PasswordResetController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' =>  __('profile.password_success')
+            'message' =>  trans('profile.password_success')
         ]);
     }
 }

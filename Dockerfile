@@ -51,7 +51,7 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 # Laravel build tasks
 RUN php artisan storage:link --force && \
     php artisan scramble:export && \
-    php artisan wallets:generate
+    php artisan listings:embed
 
 
 # Copy fixed Nginx config

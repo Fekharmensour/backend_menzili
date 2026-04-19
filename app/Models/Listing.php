@@ -127,5 +127,45 @@ class Listing extends Model
         return $this->hasMany(ListingImage::class);
     }
 
+    public function toSearchableText(): string
+    {
+        $this->loadMissing([
+            'location.city.wilaya',
+            'type',
+            'rentDuration',
+            'features',
+            'nearPlaces'
+        ]);
+
+        return "
+                Property Listing:
+
+                Title: {$this->title}
+
+                Description:
+                {$this->description}
+
+                Price: {$this->price} DZD
+                Type: " . optional($this->type)->name . "
+                Purpose: " . (optional($this->type)->name_en ?? 'N/A') . "
+
+                Details:
+                        - Rooms: {$this->number_rooms}
+                        - Persons: {$this->number_persons}
+                        - Surface: {$this->surface} m²
+                        - Floor: {$this->floor}
+
+                Location:
+                        - City: " . optional($this->location->city)->name . "
+                        - Wilaya: " . optional($this->location->city->wilaya)->name . "
+
+                Features:
+                        " . $this->features->pluck('name')->join(', ') . "
+
+                Near Places:
+                        " . $this->nearPlaces->pluck('name')->join(', ') . "
+                        ";
+    }
+
 
 }

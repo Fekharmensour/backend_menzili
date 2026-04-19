@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ChargilyPayment;
 use App\Services\ChargilyService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ChargilyPayController extends Controller
 {
@@ -41,8 +42,8 @@ class ChargilyPayController extends Controller
         $webhook = $this->chargily->handleWebhook();
 
         if (!$webhook) {
-            \Log::error("❌ Invalid webhook");
-            return response()->json(["error" => "invalid"], 403);
+            Log::error("❌ Invalid webhook");
+            return response()->json(["error" => trans('api.payment.invalid')], 403);
         }
 
         $checkout = $webhook->getData();
@@ -55,13 +56,13 @@ class ChargilyPayController extends Controller
 
         if (!$payment) {
             \Log::error("❌ Payment not found");
-            return response()->json(["error" => "not found"], 404);
+            return response()->json(["error" => trans('api.payment.not_found')], 404);
         }
 
         // prevent duplicate
         if ($payment->status === "paid") {
             \Log::info("already processed");
-            return response()->json(["message" => "already processed"]);
+            return response()->json(["message" => trans('api.payment.already_processed')]);
         }
 
         if ($checkout->getStatus() === "paid") {

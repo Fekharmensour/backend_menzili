@@ -62,7 +62,7 @@ class ListingController extends Controller
 
         $query = (new ListingFilter($request, $query))->apply();
 
-        $listings = $query->paginate($request->get('per_page', 4));
+        $listings = $query->paginate($request->get('per_page', 8));
 
         return response()->json([
             'success' => true,
