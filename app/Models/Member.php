@@ -40,4 +40,14 @@ class Member extends Model implements Wallet
     {
         return $this->hasMany(Listing::class);
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function reportsReceived()
+    {
+        return $this->morphMany(Report::class, 'reference');
+    }
 }

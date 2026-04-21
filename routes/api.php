@@ -27,3 +27,8 @@ Require __DIR__.'/ApiRouters/Listing.php';
 Require __DIR__.'/ApiRouters/Member.php';
 Require __DIR__.'/ApiRouters/Profile.php';
 Require __DIR__.'/ApiRouters/ai.php';
+Require __DIR__.'/ApiRouters/Report.php';
+
+
+
+Require __DIR__.'/Admin/Report.php';

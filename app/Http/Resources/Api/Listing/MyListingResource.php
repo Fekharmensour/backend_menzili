@@ -72,9 +72,13 @@ class MyListingResource extends JsonResource
             'images' => ImagesResource::collection(
                 $this->whenLoaded('images')
             ),
+            'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
 
 
             'time_post'=>$this->updated_at,
+            'rating_avg'=>$this->rating_avg ?? 4.2 ,
+            'reviews_count'=>$this->reviews_count ?? 0 ,
+            'views'=>$this->views ?? 0 ,
         ];
     }
 }
