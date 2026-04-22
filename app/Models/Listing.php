@@ -32,7 +32,10 @@ class Listing extends Model
         'verified_at',
         'boost_level',
         'moderation_status',
-        'main_image'
+        'main_image',
+        'rating_avg',
+        'reviews_count',
+        'views'
     ];
 
 //    protected $with = [
@@ -165,6 +168,23 @@ class Listing extends Model
                 Near Places:
                         " . $this->nearPlaces->pluck('name')->join(', ') . "
                         ";
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function updateRating()
+    {
+        $this->rating_avg = $this->reviews()->avg('rating') ?? 4;
+        $this->reviews_count = $this->reviews()->count();
+        $this->save();
+    }
+
+    public function reports()
+    {
+        return $this->morphMany(Report::class, 'reference');
     }
 
 

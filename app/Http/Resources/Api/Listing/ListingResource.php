@@ -25,7 +25,8 @@ class ListingResource extends JsonResource
 
             'title' => $this->title,
             'description' => $this->description,
-            'rating'=>$this->rating_avg ?? 4.2 ,
+            'rating_avg'=>$this->rating_avg ?? 4.2 ,
+            'reviews_count'=>$this->reviews_count ?? 0 ,
             'views'=>$this->views ?? 0 ,
 
             'price' => $this->price,
@@ -72,6 +73,7 @@ class ListingResource extends JsonResource
             'images' => ImagesResource::collection(
                 $this->whenLoaded('images')
             ),
+            'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
 
 
             'time_post'=>$this->updated_at,

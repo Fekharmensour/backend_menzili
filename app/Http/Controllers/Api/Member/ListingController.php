@@ -59,7 +59,8 @@ class ListingController extends Controller
             'categories',
             'features',
             'nearPlaces',
-            'images'
+            'images',
+            'reviews'
         ]);
 
         return response()->json([
