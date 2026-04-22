@@ -14,7 +14,7 @@ Route::prefix('listings')->group(function () {
 
     Route::group(['middleware' => ['auth:sanctum', 'fill_name']], function () {
         Route::post('{listing}/reviews', [\App\Http\Controllers\Api\Listing\ReviewController::class, 'store']);
-        Route::delete('{listing}/reviews', [\App\Http\Controllers\Api\Listing\ReviewController::class, 'destroy']);
+        Route::delete('{review}/reviews', [\App\Http\Controllers\Api\Listing\ReviewController::class, 'destroy']);
     });
 
 

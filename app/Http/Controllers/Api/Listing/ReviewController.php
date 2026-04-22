@@ -6,9 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Listing\ReviewResource;
 use App\Models\Listing;
 use App\Models\Review;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\HeaderParameter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+#[Group('Review Listings')]
+#[HeaderParameter('Auth')]
 class ReviewController extends Controller
 {
     public function store(Request $request, Listing $listing)
@@ -56,7 +60,7 @@ class ReviewController extends Controller
     }
 
 
-    public function destroy(Listing $listing)
+    public function destroy(Review $review)
     {
         $member = Auth::user()->member;
 
@@ -67,9 +71,12 @@ class ReviewController extends Controller
             ], 403);
         }
 
-        $review = Review::where('member_id', $member->id)
-            ->where('listing_id', $listing->id)
-            ->first();
+        if($review->member_id != $member->id){
+            return response()->json([
+                'success' => false,
+                'message' => trans('api.reviews.unauthorized'),
+            ]);
+        }
 
         if (!$review) {
             return response()->json([

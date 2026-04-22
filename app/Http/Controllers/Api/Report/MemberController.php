@@ -5,9 +5,13 @@ namespace App\Http\Controllers\Api\Report;
 use App\Http\Controllers\Controller;
 use App\Models\Member;
 use App\Models\Report;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\HeaderParameter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+#[Group('Report Member')]
+#[HeaderParameter('Auth')]
 class MemberController extends Controller
 {
     public function reportMember(Request $request, Member $target)

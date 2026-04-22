@@ -1233,6 +1233,318 @@
                 }
             }
         },
+        "/listings/{listing}/reviews": {
+            "post": {
+                "operationId": "review.store",
+                "tags": [
+                    "Review Listings"
+                ],
+                "parameters": [
+                    {
+                        "name": "listing",
+                        "in": "path",
+                        "required": true,
+                        "description": "The listing ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "rating": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "maximum": 5
+                                    },
+                                    "review": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "rating"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ReviewResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Member not found"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/listings/{review}/reviews": {
+            "delete": {
+                "operationId": "review.destroy",
+                "tags": [
+                    "Review Listings"
+                ],
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "required": true,
+                        "description": "The review ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/listings/{listing}/report": {
+            "post": {
+                "operationId": "listing.reportListing",
+                "tags": [
+                    "Report Listings"
+                ],
+                "parameters": [
+                    {
+                        "name": "listing",
+                        "in": "path",
+                        "required": true,
+                        "description": "The listing ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "report": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "report"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/members/{target}/report": {
+            "post": {
+                "operationId": "member.reportMember",
+                "tags": [
+                    "Report Member"
+                ],
+                "parameters": [
+                    {
+                        "name": "target",
+                        "in": "path",
+                        "required": true,
+                        "description": "The target ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "report": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "report"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/members/profile": {
             "get": {
                 "operationId": "profile.show",
@@ -2032,210 +2344,6 @@
                 }
             }
         },
-        "/listings/{listing}/reviews": {
-            "get": {
-                "operationId": "listings.reviews.index",
-                "tags": ["Reviews"],
-                "summary": "Get all reviews for a listing",
-                "description": "Returns array of reviews without pagination",
-                "parameters": [
-                    {
-                        "name": "listing",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of reviews",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "user": {
-                                                        "$ref": "#/components/schemas/MemberResource"
-                                                    },
-                                                    "review": {
-                                                        "type": "string",
-                                                        "nullable": true
-                                                    },
-                                                    "rating": {
-                                                        "type": "integer",
-                                                        "minimum": 1,
-                                                        "maximum": 5
-                                                    }
-                                                },
-                                                "required": ["user", "rating"]
-                                            }
-                                        }
-                                    },
-                                    "required": ["success", "data"]
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "operationId": "listings.reviews.store",
-                "tags": ["Reviews"],
-                "summary": "Submit review after calling the host",
-                "description": "Member submits a review after making a call with the listing owner. A dialog should appear after the call ends.",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "listing",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "rating": {
-                                        "type": "integer",
-                                        "minimum": 1,
-                                        "maximum": 5
-                                    },
-                                    "review": {
-                                        "type": ["string", "null"],
-                                        "maxLength": 500
-                                    }
-                                },
-                                "required": ["rating"]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Review created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "user": {
-                                                    "$ref": "#/components/schemas/MemberResource"
-                                                },
-                                                "review": {
-                                                    "type": ["string", "null"]
-                                                },
-                                                "rating": {
-                                                    "type": "integer"
-                                                }
-                                            }
-                                        }
-                                    },
-                                    "required": ["success", "message", "data"]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
-        "/listings/{listing}/reviews/{review}": {
-            "delete": {
-                "operationId": "listings.reviews.destroy",
-                "tags": ["Reviews"],
-                "summary": "Delete a review",
-                "description": "Delete a review. Only the author of the review can delete it.",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "listing",
-                        "in": "path",
-                        "required": true,
-                        "description": "The listing ID",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "review",
-                        "in": "path",
-                        "required": true,
-                        "description": "The review ID",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Review deleted successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": ["success", "message"]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "403": {
-                        "description": "You can only delete your own reviews"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ModelNotFoundException"
-                    }
-                }
-            }
-        },
         "/members/requests": {
             "get": {
                 "operationId": "requests.index",
@@ -2642,251 +2750,6 @@
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
                     }
-                }
-            }
-        },
-        "/reports": {
-            "post": {
-                "operationId": "reports.store",
-                "tags": [
-                    "Reports"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "reportable_type": {
-                                        "type": "string",
-                                        "enum": [
-                                            "User",
-                                            "Listing"
-                                        ],
-                                        "description": "Polymorphic type of the model being reported."
-                                    },
-                                    "reportable_id": {
-                                        "type": "integer",
-                                        "description": "Unique identifier of the user or listing."
-                                    },
-                                    "reason": {
-                                        "type": "string",
-                                        "enum": [
-                                            "fake_listing",
-                                            "scam_detected",
-                                            "offensive_content",
-                                            "wrong_category",
-                                            "unavailable_property",
-                                            "impersonation",
-                                            "harassment"
-                                        ],
-                                        "description": "Standardized reason for the report."
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "maxLength": 1000,
-                                        "description": "Detailed explanation of the violation."
-                                    },
-                                    "evidence_images": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string",
-                                            "format": "binary",
-                                            "description": "Allowed types: image/jpeg, image/png. Max size: 5MB."
-                                        },
-                                        "maxItems": 3,
-                                        "description": "Attach up to 3 visual proofs of the violation."
-                                    }
-                                },
-                                "required": [
-                                    "reportable_type",
-                                    "reportable_id",
-                                    "reason"
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Report submitted successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "status": {
-                                            "type": "integer"
-                                        },
-                                        "data": {
-                                            "type": "null"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
-        "/subscriptions": {
-            "get": {
-                "operationId": "subscriptions.index",
-                "tags": ["Subscriptions"],
-                "summary": "Get all available subscription plans",
-                "description": "Returns list of subscription plans with features like monthly coins, active listings limit, etc.",
-                "responses": {
-                    "200": {
-                        "description": "List of subscription plans",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": { "type": "boolean" },
-                                        "data": {
-                                            "type": "array",
-                                            "items": { "$ref": "#/components/schemas/SubscriptionPlanResource" }
-                                        }
-                                    },
-                                    "required": ["success", "data"]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-
-        "/subscriptions/current": {
-            "get": {
-                "operationId": "subscriptions.current",
-                "tags": ["Subscriptions"],
-                "summary": "Get current user's active subscription",
-                "security": [{ "bearerAuth": [] }],
-                "responses": {
-                    "200": {
-                        "description": "Current subscription details",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": { "type": "boolean" },
-                                        "data": { "$ref": "#/components/schemas/UserSubscriptionResource" }
-                                    },
-                                    "required": ["success", "data"]
-                                }
-                            }
-                        }
-                    },
-                    "401": { "$ref": "#/components/responses/AuthenticationException" }
-                }
-            }
-        },
-
-        "/subscriptions/checkout": {
-            "post": {
-                "operationId": "subscriptions.checkout",
-                "tags": ["Subscriptions"],
-                "summary": "Create checkout session for subscription",
-                "security": [{ "bearerAuth": [] }],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "plan_id": {
-                                        "type": "integer",
-                                        "description": "ID of the subscription plan"
-                                    },
-                                    "payment_method": {
-                                        "type": "string",
-                                        "enum": ["chargily", "bank_transfer"]
-                                    }
-                                },
-                                "required": ["plan_id", "payment_method"]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Checkout session created",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": { "type": "boolean" },
-                                        "message": { "type": "string" },
-                                        "status": { "type": "integer" },
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "checkout_url": { "type": "string", "format": "uri" }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": { "$ref": "#/components/responses/AuthenticationException" },
-                    "422": { "$ref": "#/components/responses/ValidationException" }
-                }
-            }
-        },
-
-        "/subscriptions/webhook/chargily": {
-            "post": {
-                "operationId": "subscriptions.chargilyWebhook",
-                "tags": ["Subscriptions"],
-                "summary": "Handle Chargily Webhook",
-                "description": "Webhook endpoint for Chargily payment notifications",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "type": {
-                                        "type": "string",
-                                        "enum": ["checkout.paid", "checkout.failed", "checkout.expired"]
-                                    },
-                                    "data": {
-                                        "type": "object"
-                                    }
-                                },
-                                "required": ["type", "data"]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": { "description": "Webhook processed successfully" },
-                    "403": { "description": "Invalid signature" }
                 }
             }
         },
@@ -4516,6 +4379,49 @@
                     "wallet_balance"
                 ],
                 "title": "MemberProfileResource"
+            },
+            "ReviewResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "member_id": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "profile_image": {
+                        "type": "string"
+                    },
+                    "is_verified": {
+                        "type": "boolean"
+                    },
+                    "rating": {
+                        "type": "integer"
+                    },
+                    "review": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "date": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "member_id",
+                    "username",
+                    "profile_image",
+                    "is_verified",
+                    "rating",
+                    "review",
+                    "date"
+                ],
+                "title": "ReviewResource"
             },
             "MemberResource": {
                 "type": "object",
