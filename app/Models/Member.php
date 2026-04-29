@@ -21,6 +21,7 @@ class Member extends Model implements Wallet
         'agent_verified_at',
     ];
 
+
     protected function casts(): array
     {
         return [
@@ -49,5 +50,10 @@ class Member extends Model implements Wallet
     public function reportsReceived()
     {
         return $this->morphMany(Report::class, 'reference');
+    }
+
+    public function ads()
+    {
+        return $this->hasMany(Ad::class);
     }
 }

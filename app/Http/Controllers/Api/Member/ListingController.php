@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Member;
 
+use App\Events\ListingCreated;
 use App\Filters\ListingFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Listing\StoreRequest;
@@ -142,6 +143,8 @@ class ListingController extends Controller
 
             return $listing;
         });
+
+        event(new ListingCreated($listing));
 
         return response()->json([
             'success' => true,

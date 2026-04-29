@@ -187,5 +187,10 @@ class Listing extends Model
         return $this->morphMany(Report::class, 'reference');
     }
 
+    public function ads()
+    {
+        return $this->hasMany(Ad::class);
+    }
+
 
 }

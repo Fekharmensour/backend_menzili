@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Profile\MemberProfileResource;
 use App\Http\Resources\Api\Profile\UserResource;
 use App\Http\Responses\ApiResponseTrait;
+use App\Models\FcmToken;
 use App\Models\User;
 use App\Services\TwilioWhatsAppService;
 use App\Traits\HandlesDeviceTokens;
@@ -57,6 +58,8 @@ class AuthController extends Controller
         $request->validate([
             'phone'    => 'required|string',
             'otp_code' => 'required|digits:6',
+            'fcm_token' => 'nullable|string',
+            'device_type' => 'nullable|string|max:50',
         ]);
 
         $user = User::where('phone', $request->phone)->first();
@@ -87,6 +90,7 @@ class AuthController extends Controller
         ]);
 
         $token = $this->createDeviceToken($user, $request);
+        $this->upsertFcmToken($user->id, $request->input('fcm_token'), $request->input('device_type'));
 
 
 
@@ -151,6 +155,8 @@ class AuthController extends Controller
         $request->validate([
             'login'    => 'required|string', // Can be email or phone
             'password' => 'required|string',
+            'fcm_token' => 'nullable|string',
+            'device_type' => 'nullable|string|max:50',
         ]);
 
         // Determine if input is email or phone
@@ -177,6 +183,7 @@ class AuthController extends Controller
 
         $user->update(['last_login_at' => now()]);
         $token = $this->createDeviceToken($user, $request);
+        if ( $request->input('fcm_token')) $this->upsertFcmToken($user->id, $request->input('fcm_token'), $request->input('device_type'));
 
         return response()->json([
             'success' => true,
@@ -188,5 +195,39 @@ class AuthController extends Controller
                 'fill_name' => !blank($user->name),
             ],
         ]);
+    }
+
+    public function storeFcmTokenForCurrentUser(Request $request)
+    {
+        $validated = $request->validate([
+            'fcm_token' => 'required|string',
+        ]);
+
+        $deviceType =  $request->header('X-Device-Name')
+            ?? $request->userAgent()
+            ?? 'unknown';
+
+        $this->upsertFcmToken((int) Auth::id(), $validated['fcm_token'], $deviceType);
+
+        return response()->json([
+            'success' => true,
+            'message' => trans('auth.fcm_token_updated'),
+            'status' => 200,
+        ]);
+    }
+
+    private function upsertFcmToken(int $userId, ?string $fcmToken, ?string $deviceType = null): void
+    {
+        if (!$fcmToken) {
+            return;
+        }
+
+        FcmToken::query()->updateOrCreate(
+            ['token' => $fcmToken],
+            [
+                'user_id' => $userId,
+                'device_type' => $deviceType,
+            ]
+        );
     }
 }

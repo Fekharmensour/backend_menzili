@@ -25,8 +25,6 @@ class MemberResource extends JsonResource
             'agent_verified' => $this->agent_verified_at?true:false,
             'views' => $this->views ?? 0 ,
             'rating' => $this->rating ?? 4.9 ,
-
-
         ];
     }
 }

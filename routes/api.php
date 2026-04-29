@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\ListingCreated;
 use App\Http\Resources\Api\TypeResource;
 use App\Models\Listing;
 use Illuminate\Http\Request;
@@ -21,6 +22,19 @@ Route::get('/success', [\App\Http\Controllers\ChargilyPayController::class, 'suc
 Route::get('/failed', [\App\Http\Controllers\ChargilyPayController::class, 'failed']);
 
 
+Route::post('/test/listing-created/{listing}', function (Listing $listing) {
+    event(new ListingCreated($listing));
+
+    return response()->json([
+        'success' => true,
+        'message' => 'ListingCreated event dispatched.',
+        'data' => [
+            'listing_id' => $listing->id,
+        ],
+    ]);
+});
+
+
 
 Require __DIR__.'/ApiRouters/Auth.php';
 Require __DIR__.'/ApiRouters/Listing.php';
@@ -28,6 +42,7 @@ Require __DIR__.'/ApiRouters/Member.php';
 Require __DIR__.'/ApiRouters/Profile.php';
 Require __DIR__.'/ApiRouters/ai.php';
 Require __DIR__.'/ApiRouters/Report.php';
+Require __DIR__.'/ApiRouters/Notification.php';
 
 
 

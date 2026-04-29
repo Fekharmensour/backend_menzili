@@ -15,3 +15,12 @@ Route::prefix('wallet')->middleware(['auth:sanctum','fill_name'])->group(functio
     Route::post('/coins', [\App\Http\Controllers\Api\Member\WalletController::class, 'addCoins']); // deposit coins
 
 });
+
+Route::apiResource('ads', \App\Http\Controllers\Api\Ad\AdController::class)
+    ->only(['index', 'show']);
+
+Route::middleware(['auth:sanctum', 'fill_name'])
+    ->group(function () {
+        Route::apiResource('ads', \App\Http\Controllers\Api\Ad\AdController::class)
+            ->except(['index', 'show']);
+    });

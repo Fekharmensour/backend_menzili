@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Ai;
 
 use App\Ai\Agents\ListingAgent;
+use App\Events\MessageReceived;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\ChatMessageResource;
 use App\Http\Resources\Api\ConversationResource;
@@ -145,6 +146,8 @@ class ChatController extends Controller
                 'recommendations' => $formattedRecommendations->values()->all(),
             ],
         ]);
+
+        event(new MessageReceived($botMessage));
 
         /**
          * 6. Final response using ChatMessageResource with Envelope
