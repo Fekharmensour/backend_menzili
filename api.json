@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "https://gusty-marylynn-snaillike.ngrok-free.dev/api"
+            "url": "https://menzili-utx2r.sevalla.app/api"
         }
     ],
     "tags": [
@@ -2584,7 +2584,7 @@
                                             "type": "boolean"
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/LengthAwarePaginator"
+                                            "$ref": "#/components/schemas/App.Http.Resources.Api.Notification.PaginateResource"
                                         }
                                     },
                                     "required": [
@@ -3590,7 +3590,7 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "title": {
                         "type": "string"
@@ -3833,6 +3833,89 @@
                 ],
                 "title": "App.Http.Requests.Wallet.StoreRequest"
             },
+            "App.Http.Resources.Api.Notification.PaginateResource": {
+                "type": "object",
+                "properties": {
+                    "notification": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/NotificationResource"
+                        }
+                    },
+                    "pagination": {
+                        "type": "object",
+                        "properties": {
+                            "total": {
+                                "type": "string"
+                            },
+                            "count": {
+                                "type": "string"
+                            },
+                            "per_page": {
+                                "type": "string"
+                            },
+                            "current_page": {
+                                "type": "string"
+                            },
+                            "total_pages": {
+                                "type": "string"
+                            },
+                            "has_pages": {
+                                "type": "string"
+                            },
+                            "has_more_pages": {
+                                "type": "string"
+                            },
+                            "first_page_url": {
+                                "type": "string"
+                            },
+                            "last_page_url": {
+                                "type": "string"
+                            },
+                            "next_page_url": {
+                                "type": "string"
+                            },
+                            "prev_page_url": {
+                                "type": "string"
+                            },
+                            "from": {
+                                "type": "string"
+                            },
+                            "to": {
+                                "type": "string"
+                            },
+                            "path": {
+                                "type": "string"
+                            },
+                            "current_page_url": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "total",
+                            "count",
+                            "per_page",
+                            "current_page",
+                            "total_pages",
+                            "has_pages",
+                            "has_more_pages",
+                            "first_page_url",
+                            "last_page_url",
+                            "next_page_url",
+                            "prev_page_url",
+                            "from",
+                            "to",
+                            "path",
+                            "current_page_url"
+                        ]
+                    }
+                },
+                "required": [
+                    "notification",
+                    "pagination"
+                ],
+                "title": "App.Http.Resources.Api.Notification.PaginateResource"
+            },
             "CategoryResource": {
                 "type": "object",
                 "properties": {
@@ -4024,79 +4107,6 @@
                     "image"
                 ],
                 "title": "ImagesResource"
-            },
-            "LengthAwarePaginator": {
-                "type": "object",
-                "properties": {
-                    "current_page": {
-                        "type": "integer"
-                    },
-                    "data": {
-                        "type": "string"
-                    },
-                    "first_page_url": {
-                        "type": "string"
-                    },
-                    "from": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
-                    "last_page": {
-                        "type": "integer"
-                    },
-                    "last_page_url": {
-                        "type": "string"
-                    },
-                    "links": {
-                        "type": "object",
-                        "additionalProperties": {}
-                    },
-                    "next_page_url": {
-                        "type": "string"
-                    },
-                    "path": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "per_page": {
-                        "type": "integer"
-                    },
-                    "prev_page_url": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "to": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
-                    "total": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "current_page",
-                    "data",
-                    "first_page_url",
-                    "from",
-                    "last_page",
-                    "last_page_url",
-                    "links",
-                    "next_page_url",
-                    "path",
-                    "per_page",
-                    "prev_page_url",
-                    "to",
-                    "total"
-                ],
-                "title": "LengthAwarePaginator"
             },
             "ListingResource": {
                 "type": "object",
@@ -4680,6 +4690,59 @@
                     "icon_path"
                 ],
                 "title": "NearPlaceResource"
+            },
+            "NotificationResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "is_read": {
+                        "type": "boolean"
+                    },
+                    "icon": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "reference_type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "reference_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "body",
+                    "is_read",
+                    "icon",
+                    "reference_type",
+                    "reference_id",
+                    "created_at"
+                ],
+                "title": "NotificationResource"
             },
             "PaginateMyListing": {
                 "type": "object",

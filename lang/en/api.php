@@ -51,5 +51,17 @@ return [
             ],
         ],
     ],
+    'ad' => [
+        'index' => [
+            'success' => 'Ads retrieved successfully',
+        ],
+        'created' => 'Ad created successfully',
+        'show' => 'Ad details retrieved successfully',
+        'updated' => 'Ad updated successfully',
+        'deleted' => 'Ad deleted successfully',
+        'validation' => [
+            'required_target_parameter' => 'The :field field is required when target_type is :type.',
+        ],
+    ],
 
 ];

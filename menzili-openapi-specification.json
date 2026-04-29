@@ -2753,99 +2753,474 @@
                 }
             }
         },
+
         "/notifications": {
             "get": {
-                "operationId": "notifications.index",
-                "tags": ["Notifications"],
-                "summary": "Get all user notifications",
-                "description": "Returns notifications including action details for navigation (e.g., go to listing when clicked)",
-                "security": [
-                    { "bearerAuth": [] }
+                "operationId": "notification.index",
+                "summary": "Return current user notifications (including global notifications)",
+                "tags": [
+                    "Notification"
                 ],
                 "responses": {
                     "200": {
-                        "description": "List of notifications",
+                        "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "success": { "type": "boolean" },
+                                        "success": {
+                                            "type": "boolean"
+                                        },
                                         "data": {
-                                            "type": "array",
-                                            "items": { "$ref": "#/components/schemas/NotificationResource" }
+                                            "$ref": "#/components/schemas/App.Http.Resources.Api.Notification.PaginateResource"
                                         }
                                     },
-                                    "required": ["success", "data"]
+                                    "required": [
+                                        "success",
+                                        "data"
+                                    ]
                                 }
                             }
                         }
                     },
-                    "401": { "$ref": "#/components/responses/AuthenticationException" }
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
                 }
             }
         },
-
-        "/notifications/{notification}/read": {
-            "post": {
-                "operationId": "notifications.markRead",
-                "tags": ["Notifications"],
-                "summary": "Mark a notification as read",
-                "security": [{ "bearerAuth": [] }],
+        "/notifications/{id}/read": {
+            "patch": {
+                "operationId": "notification.markAsRead",
+                "summary": "Mark a notification as read for current user",
+                "tags": [
+                    "Notification"
+                ],
                 "parameters": [
                     {
-                        "name": "notification",
+                        "name": "id",
                         "in": "path",
                         "required": true,
-                        "schema": { "type": "integer" }
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
+                        "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "success": { "type": "boolean" },
-                                        "message": { "type": "string" }
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        }
                                     },
-                                    "required": ["success", "message"]
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
                                 }
                             }
                         }
                     },
-                    "401": { "$ref": "#/components/responses/AuthenticationException" },
-                    "404": { "$ref": "#/components/responses/ModelNotFoundException" }
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/notifications/{id}": {
+            "delete": {
+                "operationId": "notification.destroy",
+                "summary": "Delete a notification for current user",
+                "tags": [
+                    "Notification"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
                 }
             }
         },
 
-        "/notifications/read-all": {
-            "post": {
-                "operationId": "notifications.markAllRead",
-                "tags": ["Notifications"],
-                "summary": "Mark all notifications as read",
-                "security": [{ "bearerAuth": [] }],
+        "/ads": {
+            "get": {
+                "operationId": "ads.index",
+                "tags": [
+                    "Ad"
+                ],
                 "responses": {
                     "200": {
+                        "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "success": { "type": "boolean" },
-                                        "message": { "type": "string" }
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdResource"
+                                            }
+                                        }
                                     },
-                                    "required": ["success", "message"]
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "operationId": "ads.store",
+                "tags": [
+                    "Ad"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/App.Http.Requests.Ad.StoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/AdResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
                                 }
                             }
                         }
                     },
-                    "401": { "$ref": "#/components/responses/AuthenticationException" }
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
                 }
             }
         },
+        "/ads/{ad}": {
+            "get": {
+                "operationId": "ads.show",
+                "tags": [
+                    "Ad"
+                ],
+                "parameters": [
+                    {
+                        "name": "ad",
+                        "in": "path",
+                        "required": true,
+                        "description": "The ad ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/AdResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "ads.update",
+                "tags": [
+                    "Ad"
+                ],
+                "parameters": [
+                    {
+                        "name": "ad",
+                        "in": "path",
+                        "required": true,
+                        "description": "The ad ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/App.Http.Requests.Ad.UpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/AdResource"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "data",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "ads.destroy",
+                "tags": [
+                    "Ad"
+                ],
+                "parameters": [
+                    {
+                        "name": "ad",
+                        "in": "path",
+                        "required": true,
+                        "description": "The ad ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+
         "/wallet": {
             "get": {
                 "operationId": "wallet.show",
@@ -3277,124 +3652,6 @@
                 }
             }
         },
-        "/ads": {
-            "get": {
-                "operationId": "ads.index",
-                "tags": [
-                    "Ads & Promotions"
-                ],
-                "parameters": [
-                    {
-                        "name": "per_page",
-                        "in": "query",
-                        "schema": {
-                            "type": "integer",
-                            "default": 10
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "schema": {
-                            "type": "integer",
-                            "default": 1
-                        }
-                    },
-                    {
-                        "name": "reference_type",
-                        "in": "query",
-                        "description": "Filter by target entity type (listing, promotion)",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "ads": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/components/schemas/AdResource"
-                                                    }
-                                                },
-                                                "pagination": {
-                                                    "$ref": "#/components/schemas/PaginationMeta"
-                                                }
-                                            },
-                                            "required": [
-                                                "ads",
-                                                "pagination"
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/ads/{ad}": {
-            "get": {
-                "operationId": "ads.show",
-                "tags": [
-                    "Ads & Promotions"
-                ],
-                "parameters": [
-                    {
-                        "name": "ad",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/AdResource"
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ModelNotFoundException"
-                    }
-                }
-            }
-        },
         "/app-info": {
             "get": {
                 "operationId": "appInfo.index",
@@ -3725,58 +3982,6 @@
                 }
             }
         },
-        "/notifications/{id}/read": {
-            "post": {
-                "operationId": "notifications.markAsRead",
-                "tags": [
-                    "Notifications"
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Notification marked as read",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "status": {
-                                            "type": "integer"
-                                        },
-                                        "data": {
-                                            "type": "null"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            }
-        },
         "/ai/chat": {
             "post": {
                 "operationId": "ai.chat",
@@ -4054,6 +4259,89 @@
                     "icon_path"
                 ],
                 "title": "CategoryResource"
+            },
+            "App.Http.Resources.Api.Notification.PaginateResource": {
+                "type": "object",
+                "properties": {
+                    "notification": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/NotificationResource"
+                        }
+                    },
+                    "pagination": {
+                        "type": "object",
+                        "properties": {
+                            "total": {
+                                "type": "string"
+                            },
+                            "count": {
+                                "type": "string"
+                            },
+                            "per_page": {
+                                "type": "string"
+                            },
+                            "current_page": {
+                                "type": "string"
+                            },
+                            "total_pages": {
+                                "type": "string"
+                            },
+                            "has_pages": {
+                                "type": "string"
+                            },
+                            "has_more_pages": {
+                                "type": "string"
+                            },
+                            "first_page_url": {
+                                "type": "string"
+                            },
+                            "last_page_url": {
+                                "type": "string"
+                            },
+                            "next_page_url": {
+                                "type": "string"
+                            },
+                            "prev_page_url": {
+                                "type": "string"
+                            },
+                            "from": {
+                                "type": "string"
+                            },
+                            "to": {
+                                "type": "string"
+                            },
+                            "path": {
+                                "type": "string"
+                            },
+                            "current_page_url": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "total",
+                            "count",
+                            "per_page",
+                            "current_page",
+                            "total_pages",
+                            "has_pages",
+                            "has_more_pages",
+                            "first_page_url",
+                            "last_page_url",
+                            "next_page_url",
+                            "prev_page_url",
+                            "from",
+                            "to",
+                            "path",
+                            "current_page_url"
+                        ]
+                    }
+                },
+                "required": [
+                    "notification",
+                    "pagination"
+                ],
+                "title": "App.Http.Resources.Api.Notification.PaginateResource"
             },
             "CityResource": {
                 "type": "object",
@@ -5591,66 +5879,208 @@
                     "title": {
                         "type": "string"
                     },
+                    "image": {
+                        "type": "string"
+                    },
+                    "target_type": {
+                        "type": "string"
+                    },
+                    "redirect_url": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "listing": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/ListingResource"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "target_member_id": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/MemberResource"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "external_url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "member": {
+                        "description": "'start_date',\n'end_date',",
+                        "$ref": "#/components/schemas/MemberResource"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "image",
+                    "target_type",
+                    "redirect_url",
+                    "status",
+                    "listing",
+                    "target_member_id",
+                    "external_url",
+                    "member"
+                ],
+                "title": "AdResource"
+            },
+            "App.Http.Requests.Ad.StoreRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
                     "description": {
                         "type": [
                             "string",
                             "null"
                         ]
                     },
-                    "image_path": {
+                    "image": {
+                        "type": "string",
+                        "format": "binary",
+                        "contentMediaType": "application/octet-stream",
+                        "maxLength": 10240
+                    },
+                    "target_type": {
+                        "type": "string",
+                        "enum": [
+                            "listing",
+                            "member",
+                            "external"
+                        ]
+                    },
+                    "listing_id": {
                         "type": [
-                            "string",
+                            "integer",
                             "null"
                         ]
                     },
-                    "target_url": {
+                    "target_member_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "external_url": {
                         "type": [
                             "string",
                             "null"
-                        ]
+                        ],
+                        "format": "uri"
                     },
                     "start_date": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date"
+                        "type": "string",
+                        "format": "date-time"
                     },
                     "end_date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "coins": {
                         "type": [
-                            "string",
+                            "integer",
                             "null"
                         ],
-                        "format": "date"
-                    },
-                    "status": {
-                        "type": "boolean"
-                    },
-                    "reference_type": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "reference_id": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
-                    "member_id": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
+                        "minimum": 0
                     }
                 },
                 "required": [
-                    "id",
                     "title",
-                    "status"
+                    "image",
+                    "target_type",
+                    "start_date",
+                    "end_date"
                 ],
-                "title": "AdResource"
+                "title": "App.Http.Requests.Ad.StoreRequest"
+            },
+            "App.Http.Requests.Ad.UpdateRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "image": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "binary",
+                        "contentMediaType": "application/octet-stream",
+                        "maxLength": 10240
+                    },
+                    "target_type": {
+                        "type": "string",
+                        "enum": [
+                            "listing",
+                            "member",
+                            "external"
+                        ]
+                    },
+                    "listing_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "target_member_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "external_url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri"
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "active",
+                            "paused",
+                            "expired"
+                        ]
+                    },
+                    "coins": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 0
+                    }
+                },
+                "title": "App.Http.Requests.Ad.UpdateRequest"
             },
             "ConversationResource": {
                 "type": "object",

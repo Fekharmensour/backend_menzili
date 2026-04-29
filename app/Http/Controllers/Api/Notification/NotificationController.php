@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Notification;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\Notification\PaginateResource;
 use App\Models\Notification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,22 +25,9 @@ class NotificationController extends Controller
             ->latest()
             ->paginate($perPage);
 
-        $notifications->getCollection()->transform(function (Notification $notification) {
-            return [
-                'id' => $notification->id,
-                'title' => $notification->title,
-                'body' => $notification->body,
-                'is_read' => $notification->is_read,
-                'icon' => $notification->icon,
-                'reference_type' => $notification->reference_type,
-                'reference_id' => $notification->reference_id,
-                'created_at' => $notification->created_at,
-            ];
-        });
-
         return response()->json([
             'success' => true,
-            'data' => $notifications,
+            'data' => new PaginateResource($notifications),
         ]);
     }
 

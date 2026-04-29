@@ -51,5 +51,17 @@ return [
             ],
         ],
     ],
+    'ad' => [
+        'index' => [
+            'success' => 'Annonces récupérées avec succès',
+        ],
+        'created' => 'Annonce créée avec succès',
+        'show' => 'Détails de l\'annonce récupérés avec succès',
+        'updated' => 'Annonce mise à jour avec succès',
+        'deleted' => 'Annonce supprimée avec succès',
+        'validation' => [
+            'required_target_parameter' => 'Le champ :field est obligatoire lorsque target_type est :type.',
+        ],
+    ],
 
 ];

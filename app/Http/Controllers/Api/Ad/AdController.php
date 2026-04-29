@@ -7,6 +7,7 @@ use App\Http\Requests\Ad\StoreRequest;
 use App\Http\Requests\Ad\UpdateRequest;
 use App\Http\Resources\Api\Ad\AdResource;
 use App\Models\Ad;
+use App\Services\Ad\AdTargetTypeService;
 use Illuminate\Http\Request;
 
 class AdController extends Controller
@@ -17,14 +18,16 @@ class AdController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => trans('api.ad.index.success'),
+            'message' => __('api.ad.index.success'),
             'data' => AdResource::collection($ads)
         ]);
     }
 
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request, AdTargetTypeService $adTargetTypeService)
     {
         $data = $request->validated();
+        $adTargetTypeService->validateTargetPayload($data);
+        $data = $adTargetTypeService->normalizeTargetPayload($data);
 
         $data['image_path'] = $request->file('image')->store('ads', 'public');
 
@@ -51,7 +54,7 @@ class AdController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => trans('api.ad.created'),
+            'message' => __('api.ad.created'),
             'data' => new AdResource($ad)
         ]);
     }
@@ -60,14 +63,16 @@ class AdController extends Controller
     {
         return response()->json([
             'success' => true,
-            'message' => trans('api.ad.show'),
+            'message' => __('api.ad.show'),
             'data' => new AdResource($ad)
         ]);
     }
 
-    public function update(UpdateRequest $request, Ad $ad)
+    public function update(UpdateRequest $request, Ad $ad, AdTargetTypeService $adTargetTypeService)
     {
         $data = $request->validated();
+        $adTargetTypeService->validateTargetPayload($data, $ad);
+        $data = $adTargetTypeService->normalizeTargetPayload($data, $ad);
 
         if ($request->hasFile('image')) {
             \Storage::disk('public')->delete($ad->image_path);
@@ -79,7 +84,7 @@ class AdController extends Controller
         return response()->json([
             'success' => true,
             'data' => new AdResource($ad),
-            'message' => trans('api.ad.updated'),
+            'message' => __('api.ad.updated'),
         ]);
     }
 
@@ -90,7 +95,7 @@ class AdController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => trans('api.ad.deleted'),
+            'message' => __('api.ad.deleted'),
         ]);
     }
 
