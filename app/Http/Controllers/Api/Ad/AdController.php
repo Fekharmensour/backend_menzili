@@ -9,6 +9,7 @@ use App\Http\Resources\Api\Ad\AdResource;
 use App\Models\Ad;
 use App\Services\Ad\AdTargetTypeService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdController extends Controller
 {
@@ -31,17 +32,19 @@ class AdController extends Controller
 
         $data['image_path'] = $request->file('image')->store('ads', 'public');
 
-        $data['member_id'] = \Auth::id();
+        $memberID = Auth::user()->member->id;
 
         $ad = Ad::create([
             'title' => $data['title'],
-            'member_id' => $data['member_id'],
+            'member_id' => $memberID,
             'description' => $data['description'] ?? null,
             'image_path' => $data['image_path'],
             'target_type' => $data['target_type'],
 //            'status' => $data['status'],
             'listing_id' => $data['listing_id'] ?? null,
-            'target_member_id' => $data['target_member_id'] ?? null,
+            'target_member_id' => $data['target_type'] === 'member'
+                ? $memberID
+                : null,
             'external_url' => $data['external_url'] ?? null,
 
             'start_date' => $data['start_date'],

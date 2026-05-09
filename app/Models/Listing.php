@@ -192,5 +192,47 @@ class Listing extends Model
         return $this->hasMany(Ad::class);
     }
 
+    // Boost relationships
+    public function activeBoost(): BelongsTo
+    {
+        return $this->belongsTo(Boost::class, 'active_boost_id');
+    }
 
+    public function boosts(): HasMany
+    {
+        return $this->hasMany(Boost::class);
+    }
+
+    // Score calculation methods
+    public function getBoostScore(): float
+    {
+        return $this->activeBoost?->coins_spent ?? 0;
+    }
+
+    public function getViewsScore(): float
+    {
+        return log(1 + ($this->views ?? 0));
+    }
+
+    public function getRatingScore(): float
+    {
+        $rating = $this->rating_avg ?? 0;
+        $reviews = $this->reviews_count ?? 0;
+
+        return $rating * log(1 + $reviews);
+    }
+
+    public function calculateFinalScore(): float
+    {
+        $boostScore = $this->getBoostScore();
+        $viewsScore = $this->getViewsScore();
+        $ratingScore = $this->getRatingScore();
+
+        return ($boostScore * 0.7) + ($viewsScore * 0.2) + ($ratingScore * 0.1);
+    }
+
+    public function updateFinalScore(): void
+    {
+        $this->update(['final_score' => $this->calculateFinalScore()]);
+    }
 }

@@ -56,4 +56,9 @@ class Member extends Model implements Wallet
     {
         return $this->hasMany(Ad::class);
     }
+
+    public function coinPurchases(): HasMany
+    {
+        return $this->hasMany(CoinPurchase::class);
+    }
 }

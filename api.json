@@ -6,10 +6,13 @@
     },
     "servers": [
         {
-            "url": "https://menzili-utx2r.sevalla.app/api"
+            "url": "https://gusty-marylynn-snaillike.ngrok-free.dev/api"
         }
     ],
     "tags": [
+        {
+            "name": "Listings with score ranked"
+        },
         {
             "name": "Review Listings"
         },
@@ -147,6 +150,39 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/listings/search": {
+            "get": {
+                "operationId": "search.search",
+                "summary": "Get listings ranked by final score\nGET /api/listings?category=&location=",
+                "tags": [
+                    "Listings with score ranked"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "\u2705 Same response format",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/PaginateResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -881,61 +917,6 @@
                 }
             }
         },
-        "/test/listing-created/{listing}": {
-            "post": {
-                "parameters": [
-                    {
-                        "name": "listing",
-                        "in": "path",
-                        "required": true,
-                        "description": "The listing ID",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "const": "ListingCreated event dispatched."
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "listing_id": {
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": [
-                                                "listing_id"
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ModelNotFoundException"
-                    }
-                }
-            }
-        },
         "/ads": {
             "get": {
                 "operationId": "ads.index",
@@ -954,7 +935,18 @@
                                             "type": "boolean"
                                         },
                                         "message": {
-                                            "type": "string"
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
                                         },
                                         "data": {
                                             "type": "array",
@@ -1001,7 +993,18 @@
                                             "type": "boolean"
                                         },
                                         "message": {
-                                            "type": "string"
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
                                         },
                                         "data": {
                                             "$ref": "#/components/schemas/AdResource"
@@ -1054,7 +1057,18 @@
                                             "type": "boolean"
                                         },
                                         "message": {
-                                            "type": "string"
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
                                         },
                                         "data": {
                                             "$ref": "#/components/schemas/AdResource"
@@ -1114,7 +1128,18 @@
                                             "$ref": "#/components/schemas/AdResource"
                                         },
                                         "message": {
-                                            "type": "string"
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
                                         }
                                     },
                                     "required": [
@@ -1165,7 +1190,18 @@
                                             "type": "boolean"
                                         },
                                         "message": {
-                                            "type": "string"
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
                                         }
                                     },
                                     "required": [
@@ -1829,6 +1865,131 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/members/listings/{listing}/boost": {
+            "post": {
+                "operationId": "boost.boost",
+                "summary": "Apply boost to listing\nPOST /api/listings/{id}/boost\nBody: { \"coins\": 200 }",
+                "tags": [
+                    "Boost"
+                ],
+                "parameters": [
+                    {
+                        "name": "listing",
+                        "in": "path",
+                        "required": true,
+                        "description": "The listing ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "coins": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "coins"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean"
+                                                },
+                                                "message": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "null"
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "items": {}
+                                                        },
+                                                        {
+                                                            "type": "string"
+                                                        }
+                                                    ]
+                                                },
+                                                "boost": {
+                                                    "$ref": "#/components/schemas/Boost"
+                                                },
+                                                "listing_final_score": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message",
+                                                "boost",
+                                                "listing_final_score"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean"
+                                                },
+                                                "message": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "null"
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "items": {}
+                                                        },
+                                                        {
+                                                            "type": "string"
+                                                        }
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "integer",
+                                                    "const": 403
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message",
+                                                "status"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }
@@ -3405,6 +3566,42 @@
                 }
             }
         },
+        "/listings/top-boosted": {
+            "get": {
+                "operationId": "search.topBoosted",
+                "summary": "Get top boosted listings\nGET /api/listings/top-boosted",
+                "tags": [
+                    "Search"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ListingResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/wallet": {
             "get": {
                 "operationId": "wallet.show",
@@ -3685,18 +3882,13 @@
                             "null"
                         ]
                     },
-                    "target_member_id": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
                     "external_url": {
                         "type": [
                             "string",
                             "null"
                         ],
-                        "format": "uri"
+                        "format": "uri",
+                        "description": "'target_member_id' => 'nullable|exists:members,id',"
                     },
                     "start_date": {
                         "type": "string",
@@ -3915,6 +4107,68 @@
                     "pagination"
                 ],
                 "title": "App.Http.Resources.Api.Notification.PaginateResource"
+            },
+            "Boost": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "listing_id": {
+                        "type": "integer"
+                    },
+                    "member_id": {
+                        "type": "integer"
+                    },
+                    "coins_spent": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "started_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "expired_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "listing_id",
+                    "member_id",
+                    "coins_spent",
+                    "status",
+                    "started_at",
+                    "expires_at",
+                    "expired_at",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "Boost"
             },
             "CategoryResource": {
                 "type": "object",
@@ -5531,25 +5785,6 @@
             }
         },
         "responses": {
-            "ModelNotFoundException": {
-                "description": "Not found",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "description": "Error overview."
-                                }
-                            },
-                            "required": [
-                                "message"
-                            ]
-                        }
-                    }
-                }
-            },
             "ValidationException": {
                 "description": "Validation error",
                 "content": {
@@ -5582,6 +5817,25 @@
             },
             "AuthenticationException": {
                 "description": "Unauthenticated",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            },
+            "ModelNotFoundException": {
+                "description": "Not found",
                 "content": {
                     "application/json": {
                         "schema": {

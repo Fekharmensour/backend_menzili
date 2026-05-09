@@ -1172,6 +1172,39 @@
                 }
             }
         },
+        "/listings/search": {
+            "get": {
+                "operationId": "search.search",
+                "summary": "Get listings ranked by final score\nGET /api/listings?category=&location=",
+                "tags": [
+                    "Listings with score ranked"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "\u2705 Same response format",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/PaginateResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/listings/{listing}": {
             "get": {
                 "operationId": "show",

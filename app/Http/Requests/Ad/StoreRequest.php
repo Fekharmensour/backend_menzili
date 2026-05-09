@@ -30,7 +30,7 @@ class StoreRequest extends FormRequest
             'target_type' => 'required|in:listing,member,external',
 
             'listing_id' => 'nullable|exists:listings,id',
-            'target_member_id' => 'nullable|exists:members,id',
+//            'target_member_id' => 'nullable|exists:members,id',
             'external_url' => 'nullable|url',
 
             'start_date' => 'required|date',

@@ -27,7 +27,7 @@ class AdTargetTypeService
 
         $requiredField = match ($targetType) {
             'listing' => 'listing_id',
-            'member' => 'target_member_id',
+            'member' => null,
             'external' => 'external_url',
             default => null,
         };
@@ -63,13 +63,11 @@ class AdTargetTypeService
             $data['listing_id'] = null;
         }
 
-        if ($targetType !== 'member') {
-            $data['target_member_id'] = null;
-        }
-
         if ($targetType !== 'external') {
             $data['external_url'] = null;
         }
+
+        // ❌ REMOVE target_member_id logic entirely
 
         return $data;
     }

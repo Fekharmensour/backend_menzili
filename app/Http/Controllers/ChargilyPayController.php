@@ -68,6 +68,7 @@ class ChargilyPayController extends Controller
         if ($checkout->getStatus() === "paid") {
             \Log::info("the status is updated to paid");
             $payment->update(["status" => "paid"]);
+            $this->chargily->creditCoinsFromPayment($payment);
         } else {
             \Log::info("the status is updated to failed");
             $payment->update(["status" => "failed"]);
