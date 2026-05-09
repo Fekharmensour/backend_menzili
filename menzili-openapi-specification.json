@@ -2377,6 +2377,481 @@
                 }
             }
         },
+        "/members/coin-packages": {
+            "get": {
+                "operationId": "coinPackage.index",
+                "tags": [
+                    "CoinPackage"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CoinPackageResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/members/coin-packages/{package}/buy": {
+            "post": {
+                "operationId": "coinPackage.buy",
+                "tags": [
+                    "CoinPackage"
+                ],
+                "parameters": [
+                    {
+                        "name": "package",
+                        "in": "path",
+                        "required": true,
+                        "description": "The package ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "payment_method": {
+                                        "type": "string",
+                                        "enum": [
+                                            "cash",
+                                            "baridimob",
+                                            "chargily"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "payment_method"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "Show this code to agent"
+                                                },
+                                                "data": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "purchase_id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "reference_code": {
+                                                            "type": "string"
+                                                        },
+                                                        "amount": {
+                                                            "type": "string"
+                                                        },
+                                                        "coins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "note": {
+                                                            "type": "string",
+                                                            "const": "Give this code to the agent to confirm payment"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "purchase_id",
+                                                        "reference_code",
+                                                        "amount",
+                                                        "coins",
+                                                        "note"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message",
+                                                "data"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "Please upload your Baridimob receipt"
+                                                },
+                                                "data": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "purchase_id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "amount": {
+                                                            "type": "string"
+                                                        },
+                                                        "coins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "note": {
+                                                            "type": "string",
+                                                            "const": "Upload a PDF receipt to proceed"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "purchase_id",
+                                                        "amount",
+                                                        "coins",
+                                                        "note"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message",
+                                                "data"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean"
+                                                },
+                                                "message": {
+                                                    "type": "string"
+                                                },
+                                                "data": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "purchase_id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "checkout_url": {
+                                                            "type": "string"
+                                                        },
+                                                        "amount": {
+                                                            "type": "string"
+                                                        },
+                                                        "coins": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "purchase_id",
+                                                        "checkout_url",
+                                                        "amount",
+                                                        "coins"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message",
+                                                "data"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/members/coin-packages/upload-receipt": {
+            "post": {
+                "operationId": "coinPackage.uploadReceipt",
+                "summary": "Baridimob Payment: Upload receipt\nPOST /api/coin-packages/upload-receipt\nForm: { \"purchase_id\": 1, \"receipt\": file }",
+                "tags": [
+                    "CoinPackage"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "purchase_id": {
+                                        "type": "integer"
+                                    },
+                                    "receipt": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "contentMediaType": "application/octet-stream",
+                                        "maxLength": 5120
+                                    }
+                                },
+                                "required": [
+                                    "purchase_id",
+                                    "receipt"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Receipt uploaded. Awaiting admin approval"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "purchase_id": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "purchase_id",
+                                                "status"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Unauthorized"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/members/coin-purchases/{purchase}/status": {
+            "get": {
+                "operationId": "coinPackage.status",
+                "summary": "Check purchase status\nGET /api/coin-purchases/{id}/status",
+                "tags": [
+                    "CoinPackage"
+                ],
+                "parameters": [
+                    {
+                        "name": "purchase",
+                        "in": "path",
+                        "required": true,
+                        "description": "The purchase ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "coins": {
+                                                    "type": "integer"
+                                                },
+                                                "payment_method": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "status",
+                                                "coins",
+                                                "payment_method"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/members/requests": {
             "get": {
                 "operationId": "requests.index",
@@ -5885,6 +6360,30 @@
                 },
                 "required": ["id", "title"],
                 "title": "RequestResource"
+            },
+            "CoinPackageResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "coins": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "string"
+                    },
+                    "date_end_offer": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "coins",
+                    "price",
+                    "date_end_offer"
+                ],
+                "title": "CoinPackageResource"
             },
             "StoreRequestRequest": {
                 "type": "object",
