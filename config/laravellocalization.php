@@ -11,6 +11,9 @@ return [
         '/secure-documents',
         '/secure-documents/*',
         '/skipped',
+        '/livewire',
+        '/livewire/*',
+        '/admin/logout',
     ],
 
     // Uncomment the languages that your site supports - or add new ones.

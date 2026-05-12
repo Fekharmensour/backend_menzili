@@ -11,6 +11,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Navigation\MenuItem;
+use Filament\Actions\Action;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
@@ -35,9 +36,11 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->profile()
             ->userMenuItems([
-                'logout' => MenuItem::make()
+                'logout' => Action::make('logout')
                     ->label(fn() => __('admin.logout'))
-                    ->icon('heroicon-m-arrow-left-on-rectangle'),
+                    ->icon('heroicon-m-arrow-left-on-rectangle')
+                    ->url(fn (): string => filament()->getLogoutUrl())
+                    ->postToUrl(),
             ])
             ->renderHook(
                 PanelsRenderHook::USER_MENU_BEFORE,
