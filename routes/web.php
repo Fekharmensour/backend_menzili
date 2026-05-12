@@ -10,5 +10,8 @@ Route::group(['prefix' => '{locale}', 'where' => ['locale' => 'en|ar|fr']], func
 
     Route::get('/success', [\App\Http\Controllers\ChargilyPayController::class, 'success']);
     Route::get('/failed', [\App\Http\Controllers\ChargilyPayController::class, 'failed']);
-
 });
+
+Route::get('/secure-documents/{path}', [\App\Http\Controllers\PrivateStorageController::class, 'show'])
+    ->where('path', '.*')
+    ->name('private.storage');

@@ -22,17 +22,17 @@ Route::get('/success', [\App\Http\Controllers\ChargilyPayController::class, 'suc
 Route::get('/failed', [\App\Http\Controllers\ChargilyPayController::class, 'failed']);
 
 
-//Route::post('/test/listing-created/{listing}', function (Listing $listing) {
-//    event(new ListingCreated($listing));
-//
-//    return response()->json([
-//        'success' => true,
-//        'message' => 'ListingCreated event dispatched.',
-//        'data' => [
-//            'listing_id' => $listing->id,
-//        ],
-//    ]);
-//});
+Route::post('/test/listing-created/{listing}', function (Listing $listing) {
+    event(new ListingCreated($listing));
+
+    return response()->json([
+        'success' => true,
+        'message' => 'ListingCreated event dispatched.',
+        'data' => [
+            'listing_id' => $listing->id,
+        ],
+    ]);
+});
 
 
 

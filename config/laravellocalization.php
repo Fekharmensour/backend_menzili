@@ -4,12 +4,13 @@ return [
 
     'urlsIgnored' => [
         '/docs',
-        '/docs/',
+        '/docs/*',
         '/docs/api',
         '/docs/api.json',
-        '/docs/.*',           // catch-all regex for anything under /docs
-        '^/docs/.*',          // alternative with anchor if needed
         '/up',
+        '/secure-documents',
+        '/secure-documents/*',
+        '/skipped',
     ],
 
     // Uncomment the languages that your site supports - or add new ones.
@@ -352,9 +353,6 @@ return [
     // Defaults to most common ".UTF-8". Set to blank on Windows systems, change to ".utf8" on CentOS and similar.
     'utf8suffix' => env('LARAVELLOCALIZATION_UTF8SUFFIX', '.UTF-8'),
 
-    // URLs which should not be processed, e.g. '/nova', '/nova/*', '/nova-api/*' or specific application URLs
-    // Defaults to []
-    'urlsIgnored' => ['/skipped'],
 
     'httpMethodsIgnored' => ['POST', 'PUT', 'PATCH', 'DELETE'],
 ];

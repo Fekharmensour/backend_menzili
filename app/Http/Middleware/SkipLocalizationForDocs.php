@@ -16,8 +16,8 @@ class SkipLocalizationForDocs
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Check if the current path starts with docs/api
-        if ($request->is('docs/api*')) {
+        // Check if the current path starts with docs/api or secure-documents
+        if ($request->is('docs/api*') || $request->is('secure-documents*')) {
             // This is a "hack" to tell Mcamara's package to ignore this request
             // if the config setting isn't catching it.
             $request->route()?->forgetParameter('locale');

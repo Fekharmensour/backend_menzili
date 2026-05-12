@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable , HasApiTokens;
 
@@ -23,10 +25,17 @@ class User extends Authenticatable
         'otp_code',
         'otp_expires_at',
         'is_active',
+        'is_admin',
         'phone_verified_at',
         'device_token',
-        'last_login_at'
+        'last_login_at',
+        'password'
     ];
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return (bool) $this->is_admin;
+    }
 
     public function getImageUrlAttribute()
     {
@@ -34,7 +43,9 @@ class User extends Authenticatable
             return null;
         }
 
-        return '/storage/' . $this->profile_image;
+        $path = str_replace('/storage/', '', $this->profile_image);
+
+        return asset('storage/' . $path);
     }
 
     protected $hidden = [
@@ -53,6 +64,9 @@ class User extends Authenticatable
             'otp_expires_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'is_active' => 'boolean',
+            'is_admin' => 'boolean',
+            'last_login_at' => 'datetime',
         ];
     }
 

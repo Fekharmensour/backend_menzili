@@ -68,7 +68,9 @@ class Listing extends Model
             return null;
         }
 
-        return '/storage/' . $this->main_image;
+        $path = str_replace('/storage/', '', $this->main_image);
+
+        return asset('storage/' . $path);
     }
     public function updateMainImage($file): string
     {
