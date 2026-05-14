@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/members/coin-packages', [\App\Http\Controllers\Api\Member\CoinPackageController::class, 'index']);
 Route::prefix('members')->middleware(['auth:sanctum','fill_name'])->group(function () {
+    Route::get('ads', [\App\Http\Controllers\Api\Ad\AdController::class, 'memberAds']);
 
 
     // Get packages & buy

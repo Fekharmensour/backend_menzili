@@ -7,6 +7,7 @@ Route::prefix('notifications')
     ->middleware(['auth:sanctum', 'fill_name'])
     ->group(function () {
         Route::get('/', [NotificationController::class, 'index']);
+        Route::patch('mark', [NotificationController::class, 'markAllAsRead']);
         Route::patch('{id}/read', [NotificationController::class, 'markAsRead']);
         Route::delete('{id}', [NotificationController::class, 'destroy']);
     });

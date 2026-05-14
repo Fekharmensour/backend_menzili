@@ -7,6 +7,7 @@ use App\Http\Resources\Api\Notification\PaginateResource;
 use App\Models\Notification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
@@ -28,6 +29,26 @@ class NotificationController extends Controller
         return response()->json([
             'success' => true,
             'data' => new PaginateResource($notifications),
+        ]);
+    }
+
+    /**
+     * Mark all unread notifications as read for current user.
+     */
+    public function markAllAsRead(): JsonResponse
+    {
+        $user = Auth::user();
+
+        Notification::query()
+            ->where(function ($query) use ($user) {
+                $query->where('user_id', $user->id)->orWhereNull('user_id');
+            })
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        return response()->json([
+            'success' => true,
+            'message' => __('notification.all_marked_as_read'),
         ]);
     }
 

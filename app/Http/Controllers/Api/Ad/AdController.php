@@ -13,6 +13,18 @@ use Illuminate\Support\Facades\Auth;
 
 class AdController extends Controller
 {
+    public function memberAds()
+    {
+        $memberID = Auth::user()->member->id;
+        $ads = Ad::where('member_id', $memberID)->latest()->paginate(10);
+
+        return response()->json([
+            'success' => true,
+            'message' => __('api.ad.index.success'),
+            'data' => AdResource::collection($ads)
+        ]);
+    }
+
     public function index()
     {
         $ads = Ad::active()->latest()->paginate(10);

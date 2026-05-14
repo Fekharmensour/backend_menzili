@@ -2,6 +2,7 @@
 
 return [
     'marked_as_read' => 'تم تعليم الإشعار كمقروء.',
+    'all_marked_as_read' => 'تم تعليم جميع الإشعارات كمقروءة.',
     'deleted' => 'تم حذف الإشعار بنجاح.',
     'not_found' => 'الإشعار غير موجود.',
     'appointment_created' => [

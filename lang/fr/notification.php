@@ -2,6 +2,7 @@
 
 return [
     'marked_as_read' => 'Notification marquee comme lue.',
+    'all_marked_as_read' => 'Toutes les notifications ont ete marquees comme lues.',
     'deleted' => 'Notification supprimee avec succes.',
     'not_found' => 'Notification introuvable.',
     'appointment_created' => [
