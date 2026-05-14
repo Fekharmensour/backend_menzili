@@ -917,6 +917,157 @@
                 }
             }
         },
+        "/test/listing-created/{listing}": {
+            "post": {
+                "parameters": [
+                    {
+                        "name": "listing",
+                        "in": "path",
+                        "required": true,
+                        "description": "The listing ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "ListingCreated event dispatched."
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "listing_id": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "listing_id"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    }
+                }
+            }
+        },
+        "/members/ads/plans": {
+            "get": {
+                "operationId": "ad.plans",
+                "tags": [
+                    "Ad"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Available Ad Plans retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdsPlanResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/members/ads": {
+            "get": {
+                "operationId": "ad.memberAds",
+                "tags": [
+                    "Ad"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/ads": {
             "get": {
                 "operationId": "ads.index",
@@ -982,6 +1133,28 @@
                     }
                 },
                 "responses": {
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
                     "200": {
                         "description": "",
                         "content": {
@@ -1019,11 +1192,11 @@
                             }
                         }
                     },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }
@@ -3377,6 +3550,53 @@
                 }
             }
         },
+        "/notifications/mark": {
+            "patch": {
+                "operationId": "notification.markAllAsRead",
+                "summary": "Mark all unread notifications as read for current user",
+                "tags": [
+                    "Notification"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/notifications/{id}/read": {
             "patch": {
                 "operationId": "notification.markAsRead",
@@ -4445,8 +4665,19 @@
                             "null"
                         ]
                     },
+                    "plan_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "start_date": {
+                        "type": "string"
+                    },
+                    "end_date": {
+                        "type": "string"
+                    },
                     "member": {
-                        "description": "'start_date',\n'end_date',",
                         "$ref": "#/components/schemas/MemberResource"
                     }
                 },
@@ -4460,9 +4691,40 @@
                     "listing",
                     "target_member_id",
                     "external_url",
+                    "plan_name",
+                    "start_date",
+                    "end_date",
                     "member"
                 ],
                 "title": "AdResource"
+            },
+            "AdsPlanResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "coins": {
+                        "type": "integer"
+                    },
+                    "duration_days": {
+                        "type": "integer"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "coins",
+                    "duration_days",
+                    "is_active"
+                ],
+                "title": "AdsPlanResource"
             },
             "App.Http.Requests.Ad.StoreRequest": {
                 "type": "object",
@@ -4505,28 +4767,15 @@
                         "format": "uri",
                         "description": "'target_member_id' => 'nullable|exists:members,id',"
                     },
-                    "start_date": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "end_date": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "coins": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ],
-                        "minimum": 0
+                    "ads_plan_id": {
+                        "type": "integer"
                     }
                 },
                 "required": [
                     "title",
                     "image",
                     "target_type",
-                    "start_date",
-                    "end_date"
+                    "ads_plan_id"
                 ],
                 "title": "App.Http.Requests.Ad.StoreRequest"
             },
@@ -4579,14 +4828,6 @@
                         ],
                         "format": "uri"
                     },
-                    "start_date": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "end_date": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
                     "status": {
                         "type": "string",
                         "enum": [
@@ -4595,12 +4836,8 @@
                             "expired"
                         ]
                     },
-                    "coins": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ],
-                        "minimum": 0
+                    "ads_plan_id": {
+                        "type": "integer"
                     }
                 },
                 "title": "App.Http.Requests.Ad.UpdateRequest"
@@ -6168,16 +6405,44 @@
                         "type": "string"
                     },
                     "type": {
-                        "type": "string"
+                        "anyOf": [
+                            {
+                                "type": "null"
+                            },
+                            {
+                                "type": "array",
+                                "items": {}
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "type_slug": {
+                        "type": "string",
+                        "description": "translated deposit or withdraw"
                     },
                     "amount": {
-                        "type": "integer",
-                        "description": "deposit or withdraw"
+                        "type": "integer"
                     },
                     "confirmed": {
                         "type": "string"
                     },
                     "reason": {
+                        "anyOf": [
+                            {
+                                "type": "null"
+                            },
+                            {
+                                "type": "array",
+                                "items": {}
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "reason_slug": {
                         "type": [
                             "string",
                             "null"
@@ -6208,9 +6473,11 @@
                 "required": [
                     "id",
                     "type",
+                    "type_slug",
                     "amount",
                     "confirmed",
                     "reason",
+                    "reason_slug",
                     "payment_method",
                     "payment_id",
                     "listing_id",
@@ -6497,6 +6764,25 @@
             }
         },
         "responses": {
+            "ModelNotFoundException": {
+                "description": "Not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            },
             "ValidationException": {
                 "description": "Validation error",
                 "content": {
@@ -6529,25 +6815,6 @@
             },
             "AuthenticationException": {
                 "description": "Unauthenticated",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "description": "Error overview."
-                                }
-                            },
-                            "required": [
-                                "message"
-                            ]
-                        }
-                    }
-                }
-            },
-            "ModelNotFoundException": {
-                "description": "Not found",
                 "content": {
                     "application/json": {
                         "schema": {

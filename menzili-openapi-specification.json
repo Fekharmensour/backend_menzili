@@ -3479,6 +3479,102 @@
             }
         },
 
+        "/members/ads/plans": {
+            "get": {
+                "operationId": "ad.plans",
+                "tags": [
+                    "Ad"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Available Ad Plans retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdsPlanResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/members/ads": {
+            "get": {
+                "operationId": "ad.memberAds",
+                "tags": [
+                    "Ad"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/ads": {
             "get": {
                 "operationId": "ads.index",
@@ -3497,7 +3593,18 @@
                                             "type": "boolean"
                                         },
                                         "message": {
-                                            "type": "string"
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
                                         },
                                         "data": {
                                             "type": "array",
@@ -3533,7 +3640,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "400": {
                         "description": "",
                         "content": {
                             "application/json": {
@@ -3545,6 +3652,39 @@
                                         },
                                         "message": {
                                             "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
                                         },
                                         "data": {
                                             "$ref": "#/components/schemas/AdResource"
@@ -3559,11 +3699,11 @@
                             }
                         }
                     },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }
@@ -3597,7 +3737,18 @@
                                             "type": "boolean"
                                         },
                                         "message": {
-                                            "type": "string"
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
                                         },
                                         "data": {
                                             "$ref": "#/components/schemas/AdResource"
@@ -3657,7 +3808,18 @@
                                             "$ref": "#/components/schemas/AdResource"
                                         },
                                         "message": {
-                                            "type": "string"
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
                                         }
                                     },
                                     "required": [
@@ -3708,7 +3870,18 @@
                                             "type": "boolean"
                                         },
                                         "message": {
-                                            "type": "string"
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
                                         }
                                     },
                                     "required": [
@@ -6683,6 +6856,34 @@
                     "value"
                 ],
                 "title": "AppInfoResource"
+            },
+            "AdsPlanResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "coins": {
+                        "type": "integer"
+                    },
+                    "duration_days": {
+                        "type": "integer"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "coins",
+                    "duration_days",
+                    "is_active"
+                ],
+                "title": "AdsPlanResource"
             },
             "SubscriptionPlanResource": {
                 "type": "object",
