@@ -27,8 +27,9 @@ class AdResource extends JsonResource
             'listing' => $this->listing ? new ListingResource($this->listing):null ,
             'target_member_id' => $this->targetMember ? new MemberResource($this->targetMember) : null ,
             'external_url' => $this->external_url ?? null,
-//            'start_date',
-//            'end_date',
+            'plan_name' => $this->adsPlan->name ?? null,
+            'start_date' => $this->start_date?->toDateTimeString(),
+            'end_date' => $this->end_date?->toDateTimeString(),
             'member' => new MemberResource($this->member),
         ];
     }

@@ -33,11 +33,8 @@ class UpdateRequest extends FormRequest
             'target_member_id' => 'nullable|exists:members,id',
             'external_url' => 'nullable|url',
 
-            'start_date' => 'sometimes|date',
-            'end_date' => 'sometimes|date|after_or_equal:start_date',
-
             'status' => 'sometimes|in:active,paused,expired',
-            'coins' => 'nullable|integer|min:0',
+            'ads_plan_id' => 'sometimes|exists:ads_plans,id',
         ];
     }
 }

@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Ad\StoreRequest;
 use App\Http\Requests\Ad\UpdateRequest;
 use App\Http\Resources\Api\Ad\AdResource;
+use App\Http\Resources\Api\Ad\AdsPlanResource;
 use App\Models\Ad;
+use App\Models\AdsPlan;
+use App\Services\Ad\AdPublishingService;
 use App\Services\Ad\AdTargetTypeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +28,17 @@ class AdController extends Controller
         ]);
     }
 
+    public function plans()
+    {
+        $plans = AdsPlan::where('is_active', true)->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Available Ad Plans retrieved successfully',
+            'data' => AdsPlanResource::collection($plans)
+        ]);
+    }
+
     public function index()
     {
         $ads = Ad::active()->latest()->paginate(10);
@@ -36,42 +50,39 @@ class AdController extends Controller
         ]);
     }
 
-    public function store(StoreRequest $request, AdTargetTypeService $adTargetTypeService)
+    public function store(StoreRequest $request, AdTargetTypeService $adTargetTypeService, AdPublishingService $adPublishingService)
     {
         $data = $request->validated();
         $adTargetTypeService->validateTargetPayload($data);
         $data = $adTargetTypeService->normalizeTargetPayload($data);
 
-        $data['image_path'] = $request->file('image')->store('ads', 'public');
+        $member = Auth::user()->member;
+        $plan = AdsPlan::findOrFail($data['ads_plan_id']);
 
-        $memberID = Auth::user()->member->id;
-
-        $ad = Ad::create([
+        // Preparation for service
+        $adData = [
             'title' => $data['title'],
-            'member_id' => $memberID,
             'description' => $data['description'] ?? null,
-            'image_path' => $data['image_path'],
+            'image_path' => $request->file('image')->store('ads', 'public'),
             'target_type' => $data['target_type'],
-//            'status' => $data['status'],
             'listing_id' => $data['listing_id'] ?? null,
-            'target_member_id' => $data['target_type'] === 'member'
-                ? $memberID
-                : null,
             'external_url' => $data['external_url'] ?? null,
+        ];
 
-            'start_date' => $data['start_date'],
-            'end_date' => $data['end_date'],
-            'coins' => $data['coins'],
+        try {
+            $ad = $adPublishingService->publish($member, $plan, $adData);
 
-
-
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => __('api.ad.created'),
-            'data' => new AdResource($ad)
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => __('api.ad.created'),
+                'data' => new AdResource($ad)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 400);
+        }
     }
 
     public function show(Ad $ad)

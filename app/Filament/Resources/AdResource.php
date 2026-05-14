@@ -46,7 +46,10 @@ class AdResource extends Resource
                 FormComponents\Select::make('status')
                     ->options(['pending' => 'Pending', 'active' => 'Active', 'inactive' => 'Inactive', 'rejected' => 'Rejected'])
                     ->required(),
-                FormComponents\TextInput::make('coins')->numeric()->label('Coins Paid'),
+                FormComponents\Select::make('ads_plan_id')
+                    ->label(__('admin.ad_plan'))
+                    ->relationship('adsPlan', 'name')
+                    ->required(),
                 FormComponents\DatePicker::make('start_date'),
                 FormComponents\DatePicker::make('end_date'),
             ])->columns(2),
@@ -89,6 +92,9 @@ class AdResource extends Resource
                         'gray'    => 'inactive',
                         'danger'  => 'rejected',
                     ]),
+                Tables\Columns\TextColumn::make('adsPlan.name')
+                    ->label(__('admin.ad_plan'))
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('start_date')->date()->sortable()->toggleable(),
                 Tables\Columns\TextColumn::make('end_date')->date()->sortable()->toggleable(),
             ])

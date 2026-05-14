@@ -22,7 +22,7 @@ class Ad extends Model
         'end_date',
         'status',
         'member_id',
-        'coins',
+        'ads_plan_id',
     ];
 
     public $timestamps = false;
@@ -55,6 +55,14 @@ class Ad extends Model
     public function targetMember()
     {
         return $this->belongsTo(Member::class, 'target_member_id');
+    }
+
+    /**
+     * Relationship with the selected plan.
+     */
+    public function adsPlan()
+    {
+        return $this->belongsTo(AdsPlan::class);
     }
 
     /*
