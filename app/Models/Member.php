@@ -12,6 +12,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Member extends Model implements Wallet
 {
     use HasWallet;
+    public const STATUS_UNSUBMITTED = 'unsubmitted';
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_REJECTED = 'rejected';
+
     protected $fillable = [
         'user_id',
         'card_id_front_path',
@@ -19,6 +24,10 @@ class Member extends Model implements Wallet
         'document_path',
         'member_verified_at',
         'agent_verified_at',
+        'identity_status',
+        'identity_rejection_reason',
+        'agent_status',
+        'agent_rejection_reason',
     ];
 
 

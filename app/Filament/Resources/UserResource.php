@@ -107,7 +107,8 @@ class UserResource extends Resource
                 Tables\Columns\ImageColumn::make('profile_image')
                     ->label(__('admin.photo'))
                     ->disk('public')
-                    ->getStateUsing(fn (User $record) => str_replace('/storage/', '', $record->profile_image))
+                    ->getStateUsing(fn (User $record) => $record->profile_image ? str_replace('/storage/', '', $record->profile_image) : null)
+                    ->defaultImageUrl(fn (User $record) => "https://ui-avatars.com/api/?name=" . urlencode($record->name) . "&background=0078fd&color=fff&bold=true")
                     ->circular(),
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('admin.name'))

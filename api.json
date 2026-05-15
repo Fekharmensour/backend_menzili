@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "https://menzili-3blet.sevalla.app/api"
+            "url": "https://gusty-marylynn-snaillike.ngrok-free.dev/api"
         }
     ],
     "tags": [
@@ -5555,13 +5555,49 @@
                             "is_member_verified": {
                                 "type": "boolean"
                             },
+                            "identity_status": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "enum": [
+                                            "unsubmitted"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "identity_rejection_reason": {
+                                "type": "string"
+                            },
                             "is_agent_verified": {
                                 "type": "boolean"
+                            },
+                            "agent_status": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "enum": [
+                                            "unsubmitted"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "agent_rejection_reason": {
+                                "type": "string"
                             }
                         },
                         "required": [
                             "is_member_verified",
-                            "is_agent_verified"
+                            "identity_status",
+                            "identity_rejection_reason",
+                            "is_agent_verified",
+                            "agent_status",
+                            "agent_rejection_reason"
                         ]
                     },
                     "wallet_balance": {

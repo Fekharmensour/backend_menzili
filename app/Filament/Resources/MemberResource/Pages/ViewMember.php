@@ -15,34 +15,61 @@ class ViewMember extends ViewRecord
     {
         return [
             Actions\Action::make('verifyMember')
-                ->label('Verify Identity')
+                ->label(__('admin.approve_identity'))
                 ->icon('heroicon-o-check-badge')
                 ->color('success')
                 ->requiresConfirmation()
-                ->visible(fn (Member $record) => is_null($record->member_verified_at))
+                ->visible(fn (Member $record) => $record->identity_status === Member::STATUS_PENDING)
                 ->action(function (Member $record) {
-                    $record->update(['member_verified_at' => now()]);
-                    \Filament\Notifications\Notification::make()->title('Member verified')->success()->send();
+                    $record->update([
+                        'member_verified_at' => now(),
+                        'identity_status' => Member::STATUS_APPROVED,
+                        'identity_rejection_reason' => null,
+                    ]);
+                    \Filament\Notifications\Notification::make()->title(__('admin.identity_approved'))->success()->send();
                 }),
             Actions\Action::make('verifyAgent')
-                ->label('Verify Agent')
+                ->label(__('admin.approve_agent'))
                 ->icon('heroicon-o-shield-check')
                 ->color('primary')
                 ->requiresConfirmation()
-                ->visible(fn (Member $record) => is_null($record->agent_verified_at))
+                ->visible(fn (Member $record) => $record->identity_status === Member::STATUS_APPROVED && $record->agent_status === Member::STATUS_PENDING)
                 ->action(function (Member $record) {
-                    $record->update(['agent_verified_at' => now()]);
-                    \Filament\Notifications\Notification::make()->title('Agent verified')->success()->send();
+                    $record->update([
+                        'agent_verified_at' => now(),
+                        'agent_status' => Member::STATUS_APPROVED,
+                        'agent_rejection_reason' => null,
+                    ]);
+                    \Filament\Notifications\Notification::make()->title(__('admin.agent_approved'))->success()->send();
                 }),
-            Actions\Action::make('revoke')
-                ->label('Revoke Verifications')
+            Actions\Action::make('reject')
+                ->label(__('admin.reject'))
                 ->icon('heroicon-o-x-circle')
                 ->color('danger')
-                ->requiresConfirmation()
-                ->visible(fn (Member $record) => !is_null($record->member_verified_at) || !is_null($record->agent_verified_at))
-                ->action(function (Member $record) {
-                    $record->update(['member_verified_at' => null, 'agent_verified_at' => null]);
-                    \Filament\Notifications\Notification::make()->title('Verifications revoked')->warning()->send();
+                ->visible(fn (Member $record) => 
+                    ($record->identity_status === Member::STATUS_PENDING) ||
+                    ($record->identity_status === Member::STATUS_APPROVED && $record->agent_status === Member::STATUS_PENDING)
+                )
+                ->form([
+                    \Filament\Forms\Components\Textarea::make('reason')
+                        ->label(__('admin.description'))
+                        ->required(),
+                ])
+                ->action(function (Member $record, array $data) {
+                    if ($record->identity_status !== Member::STATUS_APPROVED) {
+                        $record->update([
+                            'member_verified_at' => null,
+                            'identity_status' => Member::STATUS_REJECTED,
+                            'identity_rejection_reason' => $data['reason'],
+                        ]);
+                    } else {
+                        $record->update([
+                            'agent_verified_at' => null,
+                            'agent_status' => Member::STATUS_REJECTED,
+                            'agent_rejection_reason' => $data['reason'],
+                        ]);
+                    }
+                    \Filament\Notifications\Notification::make()->title(__('admin.rejected'))->danger()->send();
                 }),
         ];
     }

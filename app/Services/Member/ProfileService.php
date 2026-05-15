@@ -43,6 +43,8 @@ class ProfileService
             'card_id_front_path' => $data['card_id_front']->store('verifications/ids', 'private'),
             'card_id_back_path' => $data['card_id_back']->store('verifications/ids', 'private'),
             'member_verified_at' => null,
+            'identity_status' => \App\Models\Member::STATUS_PENDING,
+            'identity_rejection_reason' => null,
         ]);
     }
 
@@ -57,6 +59,8 @@ class ProfileService
         return $member->update([
             'document_path' => $document->store('verifications/docs', 'private'),
             'agent_verified_at' => null,
+            'agent_status' => \App\Models\Member::STATUS_PENDING,
+            'agent_rejection_reason' => null,
         ]);
     }
 }

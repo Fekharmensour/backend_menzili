@@ -24,7 +24,11 @@ class MemberProfileResource extends JsonResource
             'profile_image' => $this->image_url,
             'verification' => [
                 'is_member_verified' => (bool)$this->member?->member_verified_at,
+                'identity_status' => $this->member?->identity_status ?? \App\Models\Member::STATUS_UNSUBMITTED,
+                'identity_rejection_reason' => $this->member?->identity_rejection_reason,
                 'is_agent_verified' => (bool)$this->member?->agent_verified_at,
+                'agent_status' => $this->member?->agent_status ?? \App\Models\Member::STATUS_UNSUBMITTED,
+                'agent_rejection_reason' => $this->member?->agent_rejection_reason,
             ],
             'wallet_balance' => $this->member?->wallet?->balance ?? 0,
             'views' => $this->member?->views ?? 0,

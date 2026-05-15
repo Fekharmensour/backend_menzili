@@ -55,27 +55,31 @@ class MemberResource extends Resource
     public static function infolist(Schema $schema): Schema
     {
         return $schema->components([
-            Components\Section::make(__('admin.member_info'))->schema([
-                InfolistComponents\TextEntry::make('first_name')->label(__('admin.first_name')),
-                InfolistComponents\TextEntry::make('last_name')->label(__('admin.last_name')),
-                InfolistComponents\TextEntry::make('type')
-                    ->label(__('admin.type'))
-                    ->badge()
-                    ->color(fn ($state) => $state === 'agent' ? 'primary' : 'success'),
-            ])->columns(3)->columnSpanFull(),
+            Components\Section::make(__('admin.user_info'))->schema([
+                InfolistComponents\TextEntry::make('user.name')->label(__('admin.name')),
+                InfolistComponents\TextEntry::make('user.phone')->label(__('admin.phone')),
+            ])->columns(2)->columnSpanFull(),
             Components\Section::make(__('admin.verification_status'))->schema([
-                InfolistComponents\TextEntry::make('member_verified_at')
+                InfolistComponents\TextEntry::make('identity_status')
                     ->label(__('admin.identity_status'))
-                    ->placeholder(__('admin.unverified'))
-                    ->dateTime()
                     ->badge()
-                    ->color(fn ($state) => $state ? 'success' : 'gray'),
-                InfolistComponents\TextEntry::make('agent_verified_at')
+                    ->color(fn ($state) => match ($state) {
+                        'pending' => 'warning',
+                        'approved' => 'success',
+                        'rejected' => 'danger',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn ($state) => __("admin.{$state}")),
+                InfolistComponents\TextEntry::make('agent_status')
                     ->label(__('admin.agent_status'))
-                    ->placeholder(__('admin.regular_member'))
-                    ->dateTime()
                     ->badge()
-                    ->color(fn ($state) => $state ? 'primary' : 'gray'),
+                    ->color(fn ($state) => match ($state) {
+                        'pending' => 'warning',
+                        'approved' => 'primary',
+                        'rejected' => 'danger',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn ($state) => __("admin.{$state}")),
             ])->columns(2)->columnSpanFull(),
             Components\Section::make(__('admin.identification_documents'))->schema([
                 InfolistComponents\ImageEntry::make('card_id_front_path')
@@ -134,33 +138,28 @@ class MemberResource extends Resource
                 Tables\Columns\ImageColumn::make('user.profile_image')
                     ->label(__('admin.photo'))
                     ->disk('public')
-                    ->getStateUsing(fn (Member $record) => str_replace('/storage/', '', $record->user->profile_image))
+                    ->getStateUsing(fn (Member $record) => $record->user->profile_image ? str_replace('/storage/', '', $record->user->profile_image) : null)
+                    ->defaultImageUrl(fn (Member $record) => "https://ui-avatars.com/api/?name=" . urlencode($record->user->name) . "&background=0078fd&color=fff&bold=true")
                     ->circular(),
                 Tables\Columns\TextColumn::make('user.name')->label(__('admin.name'))->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('user.phone')->label(__('admin.phone'))->searchable(),
                 Tables\Columns\BadgeColumn::make('identity_status')
                     ->label(__('admin.identity'))
-                    ->getStateUsing(function (Member $record) {
-                        if ($record->member_verified_at) return __('admin.verified');
-                        if ($record->card_id_front_path) return __('admin.pending');
-                        return __('admin.missing_docs');
-                    })
+                    ->formatStateUsing(fn (string $state): string => __("admin.{$state}"))
                     ->colors([
-                        'success' => __('admin.verified'),
-                        'warning' => __('admin.pending'),
-                        'gray'    => __('admin.missing_docs'),
+                        'warning' => 'pending',
+                        'success' => 'approved',
+                        'danger' => 'rejected',
+                        'gray' => 'unsubmitted',
                     ]),
                 Tables\Columns\BadgeColumn::make('agent_status')
                     ->label(__('admin.agent'))
-                    ->getStateUsing(function (Member $record) {
-                        if ($record->agent_verified_at) return __('admin.verified_agent');
-                        if ($record->document_path) return __('admin.pending_review');
-                        return __('admin.regular');
-                    })
+                    ->formatStateUsing(fn (string $state): string => __("admin.{$state}"))
                     ->colors([
-                        'primary' => __('admin.verified_agent'),
-                        'warning' => __('admin.pending_review'),
-                        'gray'    => __('admin.regular'),
+                        'warning' => 'pending',
+                        'primary' => 'approved',
+                        'danger' => 'rejected',
+                        'gray' => 'unsubmitted',
                     ]),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('admin.created_at'))

@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     use HasFactory, Notifiable , HasApiTokens;
 
@@ -37,10 +38,15 @@ class User extends Authenticatable implements FilamentUser
         return (bool) $this->is_admin;
     }
 
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->image_url;
+    }
+
     public function getImageUrlAttribute()
     {
         if (!$this->profile_image) {
-            return null;
+            return "https://ui-avatars.com/api/?name=" . urlencode($this->name) . "&background=0078fd&color=fff&bold=true";
         }
 
         $path = str_replace('/storage/', '', $this->profile_image);
