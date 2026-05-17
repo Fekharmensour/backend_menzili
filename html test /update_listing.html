@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Update / Delete Listing #6</title>
+    <title>Manage My Listings</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -80,19 +80,28 @@
 <body>
 
 <div class="container">
-    <h1>Update or Delete Listing #6</h1>
+    <h1>Manage My Listings</h1>
 
     <div class="section">
         <label for="token">Bearer Token (required)</label>
-        <input type="text" id="token" placeholder="paste your token here...">
+        <input type="text" id="token" placeholder="paste your token here..." value="7|DQksIv4rRyCo9XmSZ3mOPOmxftkdurhhepwBZkNzd3ce44f0">
     </div>
 
-    <div class="note">
-        Listing ID is fixed to <strong>6</strong>.<br>
-        Fill only the fields you want to change (all are optional for update).
+    <div class="section" id="listingsSection">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0;">My Listings</h3>
+            <button type="button" id="btnLoadListings" style="background:#2563eb; color:white; margin:0; padding: 8px 16px;">Load Listings</button>
+        </div>
+        <div id="listingsList" style="margin-top: 1rem;">
+            <p class="note" style="text-align: left;">Click "Load Listings" to fetch your listings.</p>
+        </div>
     </div>
 
-    <form id="listingForm">
+    <form id="listingForm" style="display: none;">
+        <h2 id="formTitle" style="text-align: center; color: #0f172a; margin-top: 1rem;">Update Listing</h2>
+        <div class="note">
+            Fill only the fields you want to change (all are optional for update).
+        </div>
 
         <div class="section">
             <h3>Basic Information</h3>
@@ -175,8 +184,8 @@
         </div>
 
         <div class="actions">
-            <button type="button" id="btnUpdate">Update Listing #6</button>
-            <button type="button" id="btnDelete">Delete Listing #6</button>
+            <button type="button" id="btnUpdate">Update Listing</button>
+            <button type="button" id="btnDelete">Delete Listing</button>
         </div>
 
     </form>
@@ -190,8 +199,133 @@
     const btnDelete   = document.getElementById('btnDelete');
     const statusEl    = document.getElementById('status');
 
-    const LISTING_ID = 6;
-    const BASE_URL   = `http://localhost:8000/api/members/listings/${LISTING_ID}`;
+    let CURRENT_LISTING_ID = null;
+
+    document.getElementById('btnLoadListings').onclick = async () => {
+        const token = tokenEl.value.trim();
+        if (!token) return showStatus('Bearer token is required', true);
+        
+        try {
+            showStatus('Loading listings...');
+            // Fetch the listings based on user endpoint
+            const res = await fetch('http://localhost:8000/api/members/listings', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            let json;
+            try { json = await res.json(); } catch {}
+            if (!res.ok) throw new Error(json?.message || `Error ${res.status}`);
+            
+            const listingsList = document.getElementById('listingsList');
+            listingsList.innerHTML = '';
+            
+            let listings = [];
+            if (json?.data?.listing && Array.isArray(json.data.listing)) {
+                listings = json.data.listing;
+            } else if (json?.data?.data && Array.isArray(json.data.data)) {
+                listings = json.data.data;
+            } else if (json?.data && Array.isArray(json.data)) {
+                listings = json.data;
+            } else if (Array.isArray(json)) {
+                listings = json;
+            }
+            
+            if (listings.length === 0) {
+                listingsList.innerHTML = '<p class="note" style="text-align: left;">No listings found.</p>';
+                statusEl.style.display = 'none';
+                return;
+            }
+            
+            listings.forEach(listing => {
+                const div = document.createElement('div');
+                div.style.border = '1px solid var(--border)';
+                div.style.padding = '12px';
+                div.style.margin = '10px 0';
+                div.style.borderRadius = '6px';
+                div.style.display = 'flex';
+                div.style.justifyContent = 'space-between';
+                div.style.alignItems = 'center';
+                
+                div.innerHTML = `
+                    <div>
+                        <strong>#${listing.id} - ${listing.title || 'Untitled'}</strong><br>
+                        <small>Price: ${listing.price || 'N/A'}</small>
+                    </div>
+                `;
+                
+                const btnEdit = document.createElement('button');
+                btnEdit.textContent = 'Edit Form';
+                btnEdit.style.background = '#2563eb';
+                btnEdit.style.color = 'white';
+                btnEdit.style.padding = '6px 12px';
+                btnEdit.style.fontSize = '0.9rem';
+                btnEdit.onclick = () => selectListing(listing);
+                
+                div.appendChild(btnEdit);
+                listingsList.appendChild(div);
+            });
+            
+            statusEl.style.display = 'none';
+        } catch (err) {
+            console.error(err);
+            showStatus(err.message || "Failed to load listings", true);
+        }
+    };
+
+    function selectListing(listing) {
+        CURRENT_LISTING_ID = listing.id;
+        document.getElementById('formTitle').textContent = `Update or Delete Listing #${CURRENT_LISTING_ID}`;
+        btnUpdate.textContent = `Update Listing #${CURRENT_LISTING_ID}`;
+        btnDelete.textContent = `Delete Listing #${CURRENT_LISTING_ID}`;
+        
+        // Basic properties
+        ['title', 'price', 'surface', 'description', 'floor', 'number_rooms', 'number_persons',
+         'min_duration', 'boost_level'].forEach(id => {
+            if (document.getElementById(id) && listing[id] !== undefined && listing[id] !== null) {
+                document.getElementById(id).value = listing[id];
+            } else if (document.getElementById(id)) {
+                document.getElementById(id).value = '';
+            }
+        });
+
+        // Nested properties
+        if (document.getElementById('rent_duration_id')) document.getElementById('rent_duration_id').value = listing.rent_duration?.id || '';
+        if (document.getElementById('type_id')) document.getElementById('type_id').value = listing.type?.id || '';
+        
+        // Location properties
+        if (document.getElementById('latitude')) document.getElementById('latitude').value = listing.location?.latitude || '';
+        if (document.getElementById('longitude')) document.getElementById('longitude').value = listing.location?.longitude || '';
+        if (document.getElementById('zip_code')) document.getElementById('zip_code').value = listing.location?.zip_code || '';
+        if (document.getElementById('altitude')) document.getElementById('altitude').value = listing.location?.altitude || '';
+        if (document.getElementById('city_id')) document.getElementById('city_id').value = listing.location?.city_id || listing.location?.id || ''; // fallback to location.id just in case
+        
+        // Relational properties (assuming they come back as arrays of objects with 'id')
+        const getIds = (arr) => Array.isArray(arr) ? arr.map(e => e.id).join(',') : '';
+        if (document.getElementById('categories')) document.getElementById('categories').value = getIds(listing.categories);
+        if (document.getElementById('features')) document.getElementById('features').value = getIds(listing.features);
+        if (document.getElementById('near_places')) document.getElementById('near_places').value = getIds(listing.near_places);
+        
+        if (listing.is_ready !== undefined) document.getElementById('is_ready').checked = !!listing.is_ready;
+        if (listing.is_negotiable !== undefined) document.getElementById('is_negotiable').checked = !!listing.is_negotiable;
+        
+        const preview = document.getElementById('mainPreview');
+        if (listing.image) {
+            let imageUrl = listing.image;
+            // Fix local dev HTTPS issues
+            if (imageUrl.includes('https://127.0.0.1')) imageUrl = imageUrl.replace('https://127.0.0.1', 'http://127.0.0.1');
+            if (imageUrl.includes('https://localhost')) imageUrl = imageUrl.replace('https://localhost', 'http://localhost');
+            
+            preview.src = imageUrl;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+            preview.src = '';
+        }
+        document.getElementById('main_image_url').value = ''; // Reset url input
+        document.getElementById('main_image').value = ''; // Reset file input
+        
+        document.getElementById('listingForm').style.display = 'block';
+        window.scrollTo({ top: document.getElementById('listingForm').offsetTop, behavior: 'smooth' });
+    }
 
     function showStatus(text, isError = false) {
         statusEl.textContent = text;
@@ -268,7 +402,8 @@
             btnUpdate.disabled = btnDelete.disabled = true;
             showStatus(`Processing... (${method})`);
 
-            const res = await fetch(BASE_URL, {
+            const url = `http://localhost:8000/api/members/listings/${CURRENT_LISTING_ID}`;
+            const res = await fetch(url, {
                 method,
                 headers: { 'Authorization': `Bearer ${token}` },
                 body
@@ -289,8 +424,8 @@
             }
 
             showStatus(
-                method === 'PATCH' ? `Listing #${LISTING_ID} updated successfully` :
-                    `Listing #${LISTING_ID} deleted successfully`
+                (method === 'PATCH' || method === 'POST') ? `Listing #${CURRENT_LISTING_ID} updated successfully` :
+                    `Listing #${CURRENT_LISTING_ID} deleted successfully`
             );
 
         } catch (err) {
@@ -304,11 +439,11 @@
     btnUpdate.onclick = () => {
         clearFieldErrors();
         const formData = getFormData();
-        sendRequest('PATCH', formData);
+        sendRequest('POST', formData, true);
     };
 
     btnDelete.onclick = () => {
-        if (!confirm(`Really delete listing #${LISTING_ID}? This cannot be undone.`)) return;
+        if (!confirm(`Really delete listing #${CURRENT_LISTING_ID}? This cannot be undone.`)) return;
         sendRequest('DELETE');
     };
 

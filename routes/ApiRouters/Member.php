@@ -18,7 +18,9 @@ Route::prefix('members')->middleware(['auth:sanctum','fill_name'])->group(functi
 
 
 
-    Route::resource('listings', \App\Http\Controllers\Api\Member\ListingController::class);
+    // Support direct POST request for multipart form updates (Flutter/Next.js workaround)
+    Route::post('listings/{listing}', [\App\Http\Controllers\Api\Member\ListingController::class, 'update']);
+    Route::resource('listings', \App\Http\Controllers\Api\Member\ListingController::class)->except('update');
     Route::post('listings/{listing}/boost', [\App\Http\Controllers\Api\BoostController::class, 'boost']);
 
 });
@@ -36,8 +38,9 @@ Route::apiResource('ads', \App\Http\Controllers\Api\Ad\AdController::class)
 
 Route::middleware(['auth:sanctum', 'fill_name'])
     ->group(function () {
+        Route::post('ads/{ad}',[\App\Http\Controllers\Api\Ad\AdController::class ,'update']);
         Route::apiResource('ads', \App\Http\Controllers\Api\Ad\AdController::class)
-            ->except(['index', 'show']);
+            ->except(['index', 'show','update']);
     });
 
 

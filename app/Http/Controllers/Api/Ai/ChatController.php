@@ -6,7 +6,7 @@ use App\Ai\Agents\ListingAgent;
 use App\Events\MessageReceived;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\ChatMessageResource;
-use App\Http\Resources\Api\ConversationResource;
+use App\Http\Resources\Api\PaginateChatMessage;
 use App\Models\AgentConversation;
 use App\Models\AgentConversationMessage;
 use App\Models\Listing;
@@ -17,26 +17,36 @@ use Illuminate\Support\Str;
 
 class ChatController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $conversation = AgentConversation::with(['messages' => function($query) {
-                $query->orderBy('created_at', 'asc');
-            }])
-            ->where('user_id', Auth::id())
-            ->first();
+        $conversation = AgentConversation::where('user_id', Auth::id())->first();
 
         if (!$conversation) {
             return response()->json([
                 'success' => false,
                 'message' => trans('api.ai.conversations.index.not_found'),
-                'data' => null
+                'data'    => null,
             ], 404);
         }
+
+        $perPage = $request->get('per_page', 10);
+
+        $messages = AgentConversationMessage::where('conversation_id', $conversation->id)
+            ->orderBy('created_at', 'asc')
+            ->paginate($perPage);
 
         return response()->json([
             'success' => true,
             'message' => trans('api.ai.conversations.index.success'),
-            'data' => new ConversationResource($conversation)
+            'data' => [
+                'conversation' => [
+                    'id'              => $conversation->id,
+                    'title'           => $conversation->title,
+                    'last_message_at' => $conversation->updated_at,
+                    'created_at'      => $conversation->created_at,
+                ],
+                'messages' => new PaginateChatMessage($messages),
+            ],
         ]);
     }
 

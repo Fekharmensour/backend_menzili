@@ -34,7 +34,6 @@ class UpdateRequest extends FormRequest
             'external_url' => 'nullable|url',
 
             'status' => 'sometimes|in:active,paused,expired',
-            'ads_plan_id' => 'sometimes|exists:ads_plans,id',
         ];
     }
 }
