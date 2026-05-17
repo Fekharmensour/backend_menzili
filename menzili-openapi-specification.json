@@ -2042,6 +2042,57 @@
                 }
             }
         },
+        "/members/listings/top-boosters": {
+            "get": {
+                "operationId": "boost.topBoosters",
+                "summary": "Get top 3 members by highest active boost coins\nGET /api/listings/top-boosters",
+                "tags": [
+                    "Boost"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "rank": {
+                                                        "type": "string"
+                                                    },
+                                                    "active_coins": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "rank",
+                                                    "active_coins"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/members/listings/{listing}/boost": {
             "post": {
                 "operationId": "boost.boost",

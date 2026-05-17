@@ -19,9 +19,11 @@ Route::prefix('members')->middleware(['auth:sanctum','fill_name'])->group(functi
 
 
     // Support direct POST request for multipart form updates (Flutter/Next.js workaround)
+    Route::get('listings/top-boosters', [\App\Http\Controllers\Api\BoostController::class, 'topBoosters']);
     Route::post('listings/{listing}', [\App\Http\Controllers\Api\Member\ListingController::class, 'update']);
     Route::resource('listings', \App\Http\Controllers\Api\Member\ListingController::class)->except('update');
     Route::post('listings/{listing}/boost', [\App\Http\Controllers\Api\BoostController::class, 'boost']);
+
 
 });
 

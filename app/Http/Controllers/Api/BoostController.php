@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Boost;
 use App\Models\Listing;
 use App\Services\RankingService;
 use Illuminate\Http\Request;
@@ -68,5 +69,29 @@ class BoostController extends Controller
             'message' => __('api.boost.score_breakdown'),
             "data" => $this->rankingService->getScoreBreakdown($listing)]
         );
+    }
+
+    /**
+     * Get top 3 members by highest active boost coins
+     * GET /api/listings/top-boosters
+     */
+    public function topBoosters()
+    {
+        $top = Boost::selectRaw('member_id, MAX(coins_spent) as active_coins')
+            ->active()
+            ->groupBy('member_id')
+            ->orderByDesc('active_coins')
+            ->limit(3)
+            ->get()
+            ->values()
+            ->map(fn ($row, $index) => [
+                'rank'        => $index + 1,
+                'active_coins' => (int) $row->active_coins,
+            ]);
+
+        return response()->json([
+            'success' => true,
+            'data'    => $top,
+        ]);
     }
 }
