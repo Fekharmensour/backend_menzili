@@ -31,7 +31,7 @@ Route::prefix('wallet')->middleware(['auth:sanctum','fill_name'])->group(functio
 
     Route::get('/', [\App\Http\Controllers\Api\Member\WalletController::class, 'show']); // member wallet info
     Route::get('/transactions', [\App\Http\Controllers\Api\Member\WalletController::class, 'transactions']); // wallet transactions
-    Route::post('/coins', [\App\Http\Controllers\Api\Member\WalletController::class, 'addCoins']); // deposit coins
+//    Route::post('/coins', [\App\Http\Controllers\Api\Member\WalletController::class, 'addCoins']); // deposit coins
 
 });
 

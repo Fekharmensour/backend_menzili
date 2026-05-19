@@ -33,6 +33,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->brandName(fn() => "Menzili")
+            ->brandLogo(asset('logo.svg'))
+            ->brandLogoHeight('2rem')
             ->login()
             ->profile()
             ->userMenuItems([
