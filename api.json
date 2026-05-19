@@ -4632,81 +4632,6 @@
                     }
                 }
             }
-        },
-        "/wallet/coins": {
-            "post": {
-                "operationId": "wallet.addCoins",
-                "tags": [
-                    "Wallet"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/App.Http.Requests.Wallet.StoreRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "anyOf": [
-                                                {
-                                                    "type": "null"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "items": {}
-                                                },
-                                                {
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "": {
-                                                    "$ref": "#/components/schemas/MyWalletResource"
-                                                },
-                                                "transaction": {
-                                                    "$ref": "#/components/schemas/TransactionResource"
-                                                }
-                                            },
-                                            "required": [
-                                                null,
-                                                "transaction"
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "success",
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
         }
     },
     "components": {
@@ -4939,41 +4864,6 @@
                 },
                 "title": "App.Http.Requests.Ad.UpdateRequest"
             },
-            "App.Http.Requests.Wallet.StoreRequest": {
-                "type": "object",
-                "properties": {
-                    "amount": {
-                        "type": "integer",
-                        "minimum": 1
-                    },
-                    "reason": {
-                        "type": "string"
-                    },
-                    "payment_method": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "payment_id": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "listing_id": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    }
-                },
-                "required": [
-                    "amount",
-                    "reason"
-                ],
-                "title": "App.Http.Requests.Wallet.StoreRequest"
-            },
             "App.Http.Resources.Api.Notification.PaginateResource": {
                 "type": "object",
                 "properties": {
@@ -5133,7 +5023,7 @@
                             "string",
                             "null"
                         ],
-                        "description": "dynamic from accessor\n'icon' => $this->icon,"
+                        "description": "dynamic from accessor"
                     }
                 },
                 "required": [
@@ -5283,7 +5173,7 @@
                             "string",
                             "null"
                         ],
-                        "description": "dynamic from accessor\n'icon' => $this->icon,"
+                        "description": "dynamic from accessor"
                     }
                 },
                 "required": [
@@ -5474,7 +5364,10 @@
                         "description": "'boost_level' => $this->boost_level,"
                     },
                     "image": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "rent_duration": {
                         "description": "BelongsTo",
@@ -5616,6 +5509,9 @@
                     "profile_image": {
                         "type": "string"
                     },
+                    "default_avatar_url": {
+                        "type": "string"
+                    },
                     "verification": {
                         "type": "object",
                         "properties": {
@@ -5712,6 +5608,7 @@
                     "phone",
                     "has_password",
                     "profile_image",
+                    "default_avatar_url",
                     "verification",
                     "wallet_balance",
                     "views",
@@ -5745,6 +5642,9 @@
                             "string",
                             "null"
                         ]
+                    },
+                    "default_avatar_url": {
+                        "type": "string"
                     },
                     "member_verified": {
                         "type": "boolean"
@@ -5783,6 +5683,7 @@
                     "email",
                     "phone",
                     "profile_image",
+                    "default_avatar_url",
                     "member_verified",
                     "agent_verified",
                     "views",
@@ -5987,7 +5888,7 @@
                             "string",
                             "null"
                         ],
-                        "description": "dynamic from accessor\n'icon' => $this->icon,"
+                        "description": "dynamic from accessor"
                     }
                 },
                 "required": [
@@ -6393,6 +6294,9 @@
                     "profile_image": {
                         "type": "string"
                     },
+                    "default_avatar_url": {
+                        "type": "string"
+                    },
                     "is_verified": {
                         "type": "boolean"
                     },
@@ -6414,6 +6318,7 @@
                     "member_id",
                     "username",
                     "profile_image",
+                    "default_avatar_url",
                     "is_verified",
                     "rating",
                     "review",
@@ -6690,7 +6595,7 @@
                             "string",
                             "null"
                         ],
-                        "description": "dynamic from accessor\n'icon' => $this->icon,"
+                        "description": "dynamic from accessor"
                     }
                 },
                 "required": [
