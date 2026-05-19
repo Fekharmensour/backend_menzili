@@ -24,6 +24,17 @@ class Notification extends Model
         'reference_id',
     ];
 
+    protected $appends = ['title', 'body', 'icon'];
+
+    public function getIconAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+
+        return str_replace(['/storage/', 'storage/'], '', $value);
+    }
+
     public function getTitleAttribute()
     {
         return $this->{"title_" . app()->getLocale()};

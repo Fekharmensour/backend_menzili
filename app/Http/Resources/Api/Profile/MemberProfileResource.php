@@ -22,6 +22,7 @@ class MemberProfileResource extends JsonResource
             'phone' => $this->phone,
             'has_password' =>  $this->password ? true : false,
             'profile_image' => $this->image_url,
+            'default_avatar_url' => $this->default_avatar_url,
             'verification' => [
                 'is_member_verified' => (bool)$this->member?->member_verified_at,
                 'identity_status' => $this->member?->identity_status ?? \App\Models\Member::STATUS_UNSUBMITTED,

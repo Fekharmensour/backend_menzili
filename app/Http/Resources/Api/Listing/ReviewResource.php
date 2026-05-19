@@ -19,6 +19,7 @@ class ReviewResource extends JsonResource
             'member_id'=>$this->member?->id,
             'username' => $this->member?->user?->name,
             'profile_image' => $this->member?->user?->image_url,
+            'default_avatar_url' => $this->member?->user?->default_avatar_url,
             'is_verified' => !is_null($this->member?->member_verified_at),
             'rating' => $this->rating,
             'review' => $this->review,

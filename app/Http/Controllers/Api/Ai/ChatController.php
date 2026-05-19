@@ -132,7 +132,7 @@ class ChatController extends Controller
                 'price' => $listing->price,
                 'phone' => optional($listing->member->user)->phone,
                 'nbr_room' => $listing->number_rooms,
-                'main_image' => $listing->main_image_url,
+                'main_image' => $listing->main_image,
                 'type' => optional($listing->type)->name,
                 'rent_duration' => optional($listing->rentDuration)->name,
             ];

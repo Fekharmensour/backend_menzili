@@ -41,7 +41,7 @@ class ListingResource extends JsonResource
 //            'boost_level' => $this->boost_level,
             'moderation_status' => $this->moderation_status,
 
-            'image' => $this->main_image_url,
+            'image' => $this->main_image,
 
             // BelongsTo
             'rent_duration' => new RentDurationResource(

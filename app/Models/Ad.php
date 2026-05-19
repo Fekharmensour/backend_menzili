@@ -26,6 +26,16 @@ class Ad extends Model
     ];
 
     public $timestamps = false;
+    protected $appends = ['image_path', 'redirect_url'];
+
+    public function getImagePathAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+
+        return str_replace(['/storage/', 'storage/'], '', $value);
+    }
 
     protected $casts = [
         'start_date' => 'date',

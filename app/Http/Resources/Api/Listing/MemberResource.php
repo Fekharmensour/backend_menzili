@@ -21,6 +21,7 @@ class MemberResource extends JsonResource
             'email' => $user->email,
             'phone' => $user->phone,
             'profile_image' => $user->profile_image,
+            'default_avatar_url' => $user->default_avatar_url,
             'member_verified' => $this->member_verified_at?true:false,
             'agent_verified' => $this->agent_verified_at?true:false,
             'views' => $this->views ?? 0 ,

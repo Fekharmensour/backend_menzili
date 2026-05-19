@@ -18,6 +18,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     use HasFactory, Notifiable , HasApiTokens;
 
 
+    protected $appends = ['image_url', 'profile_image', 'default_avatar_url'];
     protected $fillable = [
         'name',
         'email',
@@ -40,18 +41,28 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->image_url;
+        return $this->profile_image 
+            ? asset('storage/' . $this->profile_image) 
+            : $this->default_avatar_url;
+    }
+
+    public function getProfileImageAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+
+        return str_replace(['/storage/', 'storage/'], '', $value);
     }
 
     public function getImageUrlAttribute()
     {
-        if (!$this->profile_image) {
-            return "https://ui-avatars.com/api/?name=" . urlencode($this->name) . "&background=0078fd&color=fff&bold=true";
-        }
+        return $this->profile_image;
+    }
 
-        $path = str_replace('/storage/', '', $this->profile_image);
-
-        return asset('storage/' . $path);
+    public function getDefaultAvatarUrlAttribute()
+    {
+        return "https://ui-avatars.com/api/?name=" . urlencode($this->name) . "&background=0078fd&color=fff&bold=true";
     }
 
     protected $hidden = [

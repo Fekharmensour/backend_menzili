@@ -21,6 +21,17 @@ class Type extends Model
         return $this->{"name_" . app()->getLocale()};
     }
 
+    protected $appends = ['name', 'icon_path'];
+
+    public function getIconPathAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+
+        return str_replace(['/storage/', 'storage/'], '', $value);
+    }
+
     protected function casts(): array
     {
         return [

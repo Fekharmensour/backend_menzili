@@ -126,6 +126,17 @@ class CoinPurchaseResource extends Resource
             ])
             ->actions([
                 Actions\ViewAction::make(),
+                Actions\Action::make('approve')
+                    ->label(__('admin.approve'))
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn (CoinPurchase $r) => $r->status === 'pending')
+                    ->action(function (CoinPurchase $record) {
+                        $record->update(['status' => 'completed']);
+                        $record->member->deposit($record->packageCoin->coins, ['reason' => 'coin_purchase', 'payment_method' => $record->payment_method]);
+                        Notification::make()->title(__('admin.purchase_approved'))->success()->send();
+                    }),
                 Actions\Action::make('reject')
                     ->label(__('admin.reject'))
                     ->icon('heroicon-o-x-circle')

@@ -17,7 +17,6 @@ class NearPlaceResource extends JsonResource
         return [
             'id'   => $this->id,
             'name' => $this->name, // dynamic from accessor
-//            'icon' => $this->icon,
             'icon_path' => $this->icon_path,
         ];
     }

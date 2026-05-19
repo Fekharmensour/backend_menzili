@@ -17,7 +17,7 @@ class ListingImage extends Model
 
     public function getUrlAttribute()
     {
-        return '/storage/' . $this->path;
+        return str_replace(['/storage/', 'storage/'], '', $this->path);
     }
 
 

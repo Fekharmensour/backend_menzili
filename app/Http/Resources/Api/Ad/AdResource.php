@@ -21,7 +21,7 @@ class AdResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description'=>$this->description ,
-            'image' => \Storage::url($this->image_path),
+            'image' => $this->image_path,
             'target_type' => $this->target_type,
             'redirect_url' => $this->redirect_url,
             'status' => $this->status,

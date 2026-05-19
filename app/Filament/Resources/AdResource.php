@@ -63,7 +63,6 @@ class AdResource extends Resource
                 InfolistComponents\ImageEntry::make('image_path')
                     ->label('Banner')
                     ->disk('public')
-                    ->getStateUsing(fn (Ad $record) => str_replace('/storage/', '', $record->image_path))
                     ->height(300)
                     ->columnSpanFull(),
             ]),
@@ -82,8 +81,7 @@ class AdResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('image_path')
                     ->label('Banner')
-                    ->disk('public')
-                    ->getStateUsing(fn (Ad $record) => str_replace('/storage/', '', $record->image_path)),
+                    ->disk('public'),
                 Tables\Columns\TextColumn::make('title')->searchable()->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([

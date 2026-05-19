@@ -60,17 +60,15 @@ class Listing extends Model
 
         ];
     }
-    protected $appends = ['main_image_url'];
+    protected $appends = ['main_image'];
 
-    public function getMainImageUrlAttribute()
+    public function getMainImageAttribute($value)
     {
-        if (!$this->main_image) {
+        if (!$value) {
             return null;
         }
 
-        $path = str_replace('/storage/', '', $this->main_image);
-
-        return asset('storage/' . $path);
+        return str_replace(['/storage/', 'storage/'], '', $value);
     }
     public function updateMainImage($file): string
     {
