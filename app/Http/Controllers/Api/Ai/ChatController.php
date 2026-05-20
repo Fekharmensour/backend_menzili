@@ -32,7 +32,7 @@ class ChatController extends Controller
         $perPage = $request->get('per_page', 10);
 
         $messages = AgentConversationMessage::where('conversation_id', $conversation->id)
-            ->orderBy('created_at', 'asc')
+            ->orderBy('created_at', 'desc')
             ->paginate($perPage);
 
         return response()->json([
