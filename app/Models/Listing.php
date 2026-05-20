@@ -35,7 +35,9 @@ class Listing extends Model
         'main_image',
         'rating_avg',
         'reviews_count',
-        'views'
+        'views',
+        'active_boost_id',
+        'final_score'
     ];
 
 //    protected $with = [
@@ -60,7 +62,15 @@ class Listing extends Model
 
         ];
     }
-    protected $appends = ['main_image'];
+
+    protected function isBoosted(): \Illuminate\Database\Eloquent\Casts\Attribute
+    {
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(
+            get: fn () => (bool) $this->active_boost_id,
+        );
+    }
+
+    protected $appends = ['main_image', 'is_boosted'];
 
     public function getMainImageAttribute($value)
     {

@@ -32,7 +32,7 @@ class ChatController extends Controller
         $perPage = $request->get('per_page', 10);
 
         $messages = AgentConversationMessage::where('conversation_id', $conversation->id)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->paginate($perPage);
 
         return response()->json([
@@ -135,6 +135,7 @@ class ChatController extends Controller
                 'main_image' => $listing->main_image,
                 'type' => optional($listing->type)->name,
                 'rent_duration' => optional($listing->rentDuration)->name,
+                'is_boosted' => (bool)$listing->active_boost_id,
             ];
         });
 

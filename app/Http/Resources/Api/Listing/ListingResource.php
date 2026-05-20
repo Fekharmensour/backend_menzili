@@ -38,6 +38,7 @@ class ListingResource extends JsonResource
 
             'is_ready' => $this->is_ready,
             'is_negotiable' => $this->is_negotiable,
+            'is_boosted' => $this->is_boosted,
 //            'boost_level' => $this->boost_level,
             'moderation_status' => $this->moderation_status,
 

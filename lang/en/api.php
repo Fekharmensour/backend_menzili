@@ -18,6 +18,12 @@ return [
         'destroy' => [
             'success' => 'Listing deleted successfully',
         ],
+        'active' => [
+            'success' => 'Listing activated successfully',
+        ],
+        'deactive' => [
+            'success' => 'Listing deactivated successfully',
+        ],
     ],
     'wallet' => [
         'show' => [

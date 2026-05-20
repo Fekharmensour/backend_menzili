@@ -278,4 +278,24 @@ class ListingController extends Controller
         ]);
     }
 
+    public function toggleStatus(Listing $listing)
+    {
+        $member = Auth::user()->member;
+        if(!$member || $listing->member_id != $member->id){
+            return response()->json([
+                'success' => false,
+                'message' => __('api.listings.update.unauthorized'),
+            ], 403);
+        }
+
+        $listing->is_active = !$listing->is_active;
+        $listing->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => $listing->is_active ? __('api.listings.active.success') : __('api.listings.deactive.success'),
+            'data' => new MyListingResource($listing),
+        ]);
+    }
+
 }
