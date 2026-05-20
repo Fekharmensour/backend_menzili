@@ -783,6 +783,103 @@
                 }
             }
         },
+        "/members/listings/{listing}/toggle-status": {
+            "post": {
+                "operationId": "listing.toggleStatus",
+                "tags": [
+                    "Member Listings"
+                ],
+                "parameters": [
+                    {
+                        "name": "listing",
+                        "in": "path",
+                        "required": true,
+                        "description": "The listing ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/MyListingResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/listings/{listing}/report": {
             "post": {
                 "operationId": "listing.reportListing",
@@ -5537,6 +5634,9 @@
                     "is_negotiable": {
                         "type": "boolean"
                     },
+                    "is_boosted": {
+                        "type": "string"
+                    },
                     "moderation_status": {
                         "type": "string",
                         "description": "'boost_level' => $this->boost_level,"
@@ -5614,6 +5714,7 @@
                     "number_persons",
                     "is_ready",
                     "is_negotiable",
+                    "is_boosted",
                     "moderation_status",
                     "image",
                     "time_post"
@@ -5908,6 +6009,9 @@
                     "is_negotiable": {
                         "type": "string"
                     },
+                    "is_boosted": {
+                        "type": "string"
+                    },
                     "boost_level": {
                         "type": "string"
                     },
@@ -6018,6 +6122,7 @@
                     "is_ready",
                     "is_active",
                     "is_negotiable",
+                    "is_boosted",
                     "boost_level",
                     "moderation_status",
                     "image",
