@@ -71,6 +71,16 @@ class ViewMember extends ViewRecord
                     }
                     \Filament\Notifications\Notification::make()->title(__('admin.rejected'))->danger()->send();
                 }),
+            Actions\Action::make('deactivate')
+                ->label(__('admin.deactivate'))
+                ->icon('heroicon-o-user-minus')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->visible(fn (Member $record) => $record->user && $record->user->is_active)
+                ->action(function (Member $record) {
+                    $record->user->update(['is_active' => false]);
+                    \Filament\Notifications\Notification::make()->title('Member Deactivated')->danger()->send();
+                }),
         ];
     }
 }

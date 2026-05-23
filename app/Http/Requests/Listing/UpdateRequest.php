@@ -30,7 +30,7 @@ class UpdateRequest extends FormRequest
             'floor' => ['nullable','integer','min:0'],
             'surface' => ['sometimes','numeric','min:0'],
 
-            'boost_level'=> ['nullable','integer','min:1','max:10'],
+//            'boost_level'=> ['nullable','integer','min:1','max:10'],
 
             'min_duration' => ['nullable','integer','min:1'],
             'number_rooms' => ['nullable','integer','min:1'],

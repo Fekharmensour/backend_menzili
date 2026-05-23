@@ -24,6 +24,11 @@ class ListingResource extends Resource
     protected static string | \UnitEnum | null $navigationGroup = null;
     protected static ?int $navigationSort = 1;
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->withoutGlobalScopes();
+    }
+
     public static function getNavigationGroup(): ?string
     {
         return __('admin.listings');
@@ -112,6 +117,7 @@ class ListingResource extends Resource
                         'rejected' => __('admin.rejected'),
                     ]),
                 FormComponents\Toggle::make('is_active')->label(__('admin.active')),
+                FormComponents\Toggle::make('is_banned')->label('Banned'),
                 FormComponents\Toggle::make('is_ready')->label(__('admin.ready')),
                 FormComponents\Toggle::make('is_negotiable')->label(__('admin.negotiable')),
                 FormComponents\DateTimePicker::make('verified_at')->label(__('admin.verified_at')),
@@ -296,13 +302,20 @@ class ListingResource extends Resource
                 Tables\Columns\TextColumn::make('rating_avg')
                     ->label(__('admin.rating'))
                     ->numeric(2)->sortable()->toggleable(),
+                Tables\Columns\BadgeColumn::make('is_banned')
+                    ->label('Ban Status')
+                    ->getStateUsing(fn (Listing $r) => $r->is_banned ? 'Banned' : 'Safe')
+                    ->colors([
+                        'danger' => 'Banned',
+                        'success' => 'Safe',
+                    ]),
                 Tables\Columns\BadgeColumn::make('moderation_status')
                     ->label(__('admin.status'))
                     ->colors([
                         'warning' => 'pending',
                         'success' => 'approved',
                         'danger' => 'rejected',
-                    ]),
+                    ])->toggleable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label(__('admin.active'))
                     ->boolean(),
@@ -315,6 +328,7 @@ class ListingResource extends Resource
                     ->dateTime()->sortable()->toggleable(),
             ])
             ->filters([
+                Tables\Filters\TernaryFilter::make('is_banned')->label('Banned'),
                 Tables\Filters\SelectFilter::make('moderation_status')
                     ->options(['pending' => 'Pending', 'approved' => 'Approved', 'rejected' => 'Rejected']),
                 Tables\Filters\TernaryFilter::make('is_active')->label('Active'),
@@ -325,25 +339,25 @@ class ListingResource extends Resource
             ->actions([
                 Actions\ViewAction::make(),
                 Actions\EditAction::make(),
-                Actions\Action::make('approve')
-                    ->label('Approve')
+                Actions\Action::make('ban')
+                    ->label('Ban')
+                    ->icon('heroicon-o-no-symbol')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->visible(fn (Listing $r) => !$r->is_banned)
+                    ->action(function (Listing $record) {
+                        $record->update(['is_banned' => true, 'is_active' => false]);
+                        Notification::make()->title('Listing Banned')->danger()->send();
+                    }),
+                Actions\Action::make('unban')
+                    ->label('Unban')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->visible(fn (Listing $r) => $r->moderation_status !== 'approved')
+                    ->visible(fn (Listing $r) => $r->is_banned)
                     ->action(function (Listing $record) {
-                        $record->update(['moderation_status' => 'approved', 'is_active' => true]);
-                        Notification::make()->title('Listing approved')->success()->send();
-                    }),
-                Actions\Action::make('reject')
-                    ->label('Reject')
-                    ->icon('heroicon-o-x-circle')
-                    ->color('danger')
-                    ->requiresConfirmation()
-                    ->visible(fn (Listing $r) => $r->moderation_status !== 'rejected')
-                    ->action(function (Listing $record) {
-                        $record->update(['moderation_status' => 'rejected', 'is_active' => false]);
-                        Notification::make()->title('Listing rejected')->danger()->send();
+                        $record->update(['is_banned' => false]);
+                        Notification::make()->title('Listing Unbanned')->success()->send();
                     }),
                 Actions\Action::make('verify')
                     ->label('Verify')

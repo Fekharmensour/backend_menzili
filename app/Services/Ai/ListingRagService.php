@@ -222,7 +222,7 @@ class ListingRagService
         $boost += min($listing->views / 100, 5);
 
         // premium boost level
-        $boost += $listing->boost_level ?? 0;
+//        $boost += $listing->boost_level ?? 0;
 
         // fresh listings
         $boost += max(0, 5 - now()->diffInDays($listing->created_at));

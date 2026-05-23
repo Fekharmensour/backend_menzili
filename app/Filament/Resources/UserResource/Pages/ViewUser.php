@@ -13,6 +13,16 @@ class ViewUser extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('deactivate')
+                ->label(__('admin.deactivate'))
+                ->icon('heroicon-o-user-minus')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->visible(fn ($record) => $record->is_active ?? false)
+                ->action(function ($record) {
+                    $record->update(['is_active' => false]);
+                    \Filament\Notifications\Notification::make()->title('User Deactivated')->danger()->send();
+                }),
             Actions\EditAction::make(),
         ];
     }

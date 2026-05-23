@@ -27,10 +27,11 @@ class Listing extends Model
         'number_rooms',
         'number_persons',
         'is_active',
+        'is_banned',
         'is_ready',
         'is_negotiable',
         'verified_at',
-        'boost_level',
+//        'boost_level',
         'moderation_status',
         'main_image',
         'rating_avg',
@@ -49,10 +50,11 @@ class Listing extends Model
     {
         return [
             'is_active' => 'boolean',
+            'is_banned' => 'boolean',
             'is_ready' => 'boolean',
             'is_negotiable' => 'boolean',
             'verified_at' => 'datetime',
-            'boost_level' => 'integer',
+//            'boost_level' => 'integer',
             'price' => 'float',
             'floor' => 'integer',
             'surface' => 'float',
@@ -61,6 +63,13 @@ class Listing extends Model
             'number_persons' => 'integer',
 
         ];
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('not_banned', function (\Illuminate\Database\Eloquent\Builder $builder) {
+            $builder->where('is_banned', false);
+        });
     }
 
     protected function isBoosted(): \Illuminate\Database\Eloquent\Casts\Attribute

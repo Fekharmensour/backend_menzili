@@ -31,7 +31,7 @@ class StoreRequest extends FormRequest
             'price' => ['required', 'numeric', 'min:0'],
             'floor' => ['nullable', 'integer', 'min:0'],
             'surface' => ['required', 'numeric', 'min:0'],
-            'boost_level'=> ['nullable', 'integer', 'min:1', 'max:10'],
+//            'boost_level'=> ['nullable', 'integer', 'min:1', 'max:10'],
             'min_duration' => ['nullable', 'integer', 'min:1'],
             'number_rooms' => ['nullable', 'integer', 'min:1'],
             'number_persons' => ['nullable', 'integer', 'min:1'],

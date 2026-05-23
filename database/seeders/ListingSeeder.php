@@ -91,7 +91,7 @@ class ListingSeeder extends Seeder
                 'is_ready' => true,
                 'is_negotiable' => false,
                 'verified_at' => now(),
-                'boost_level' => 1,
+//                'boost_level' => 1,
                 'moderation_status' => 'approved',
 
                 'main_image' => 'listings/img-' . ($index + 1) . '.jpg',
