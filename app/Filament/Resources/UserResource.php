@@ -93,7 +93,7 @@ class UserResource extends Resource
                     InfolistComponents\TextEntry::make('member.balance')
                         ->label(__('admin.wallet_balance'))
                         ->numeric()
-                        ->suffix(' Coins'),
+                        ->suffix(' ' . __('admin.coins')),
                 ])
                 ->columns(3)
                 ->visible(fn (User $record) => !is_null($record->member)),
@@ -104,6 +104,7 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')->label(__('admin.id'))->sortable(),
                 Tables\Columns\ImageColumn::make('profile_image')
                     ->label(__('admin.photo'))
                     ->disk('public')
@@ -129,14 +130,14 @@ class UserResource extends Resource
                     ->dateTime()->sortable()->toggleable(),
             ])
             ->filters([
-                Tables\Filters\TernaryFilter::make('is_active')->label('Active'),
-                Tables\Filters\TernaryFilter::make('is_admin')->label('Admin'),
+                Tables\Filters\TernaryFilter::make('is_active')->label(__('admin.active')),
+                Tables\Filters\TernaryFilter::make('is_admin')->label(__('admin.admin')),
             ])
             ->actions([
                 Actions\ViewAction::make(),
                 Actions\EditAction::make(),
                 Actions\Action::make('toggleActive')
-                    ->label(fn (User $record) => $record->is_active ? 'Deactivate' : 'Activate')
+                    ->label(fn (User $record) => $record->is_active ? __('admin.deactivate') : __('admin.activate'))
                     ->icon(fn (User $record) => $record->is_active ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
                     ->color(fn (User $record) => $record->is_active ? 'danger' : 'success')
                     ->requiresConfirmation()

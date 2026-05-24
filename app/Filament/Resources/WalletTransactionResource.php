@@ -38,9 +38,9 @@ class WalletTransactionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
+                Tables\Columns\TextColumn::make('id')->label(__('admin.id'))->sortable(),
                 Tables\Columns\TextColumn::make('payable_type')
-                    ->label('Type')
+                    ->label(__('admin.type'))
                     ->badge()
                     ->formatStateUsing(fn ($state) => str_replace('App\\Models\\', '', $state)),
                 Tables\Columns\TextColumn::make('payable.user.name')
@@ -59,7 +59,7 @@ class WalletTransactionResource extends Resource
                     ->label(__('admin.price'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('meta.reason')
-                    ->label('Reason')
+                    ->label(__('admin.reason'))
                     ->formatStateUsing(fn ($state, $record) => 
                         (__("transactions.{$state}") !== "transactions.{$state}" ? __("transactions.{$state}") : ucfirst(str_replace('_', ' ', $state))) . 
                         (($record->meta['plan_name'] ?? $record->meta['payment_method'] ?? null) ? " (" . ($record->meta['plan_name'] ?? $record->meta['payment_method'] ?? "") . ")" : "")
@@ -77,11 +77,11 @@ class WalletTransactionResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
                     ->options([
-                        'deposit' => 'Deposit',
-                        'withdraw' => 'Withdraw',
+                        'deposit' => __('admin.deposit'),
+                        'withdraw' => __('admin.withdraw'),
                     ]),
                 Tables\Filters\TernaryFilter::make('confirmed')
-                    ->label('Confirmed'),
+                    ->label(__('admin.confirmed')),
             ])
             ->actions([
                 // Read only

@@ -29,26 +29,35 @@ class AdResource extends Resource
     {
         return __('admin.ads');
     }
+    public static function getModelLabel(): string
+    {
+        return __('admin.ad');
+    }
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.ads');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Components\Section::make('Ad Info')->schema([
+            Components\Section::make(__('admin.ad_info'))->schema([
                 FormComponents\TextInput::make('title')->required()->maxLength(255)->columnSpanFull(),
                 FormComponents\Textarea::make('description')->rows(3)->columnSpanFull(),
-                FormComponents\TextInput::make('external_url')->url()->label('External URL')->columnSpanFull(),
+                FormComponents\TextInput::make('external_url')->url()->label(__('admin.external_url'))->columnSpanFull(),
                 FormComponents\FileUpload::make('image_path')->image()->disk('public')->directory('ads')->columnSpanFull(),
             ]),
-            Components\Section::make('Settings')->schema([
+            Components\Section::make(__('admin.settings'))->schema([
                 FormComponents\Select::make('target_type')
-                    ->options(['listing' => 'Listing', 'member' => 'Member', 'external' => 'External'])
+                    ->options(['listing' => __('admin.listing'), 'member' => __('admin.member'), 'external' => 'External'])
                     ->required(),
                 FormComponents\Select::make('status')
-                    ->options(['pending' => 'Pending', 'active' => 'Active', 'inactive' => 'Inactive', 'rejected' => 'Rejected'])
+                    ->options(['pending' => __('admin.pending'), 'active' => __('admin.active'), 'inactive' => 'Inactive', 'rejected' => __('admin.rejected')])
                     ->required(),
                 FormComponents\Select::make('ads_plan_id')
                     ->label(__('admin.ad_plan'))
-                    ->relationship('adsPlan', 'name')
+                    ->relationship('adsPlan', 'id')
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name_en)
                     ->required(),
                 FormComponents\DatePicker::make('start_date'),
                 FormComponents\DatePicker::make('end_date'),
@@ -59,9 +68,9 @@ class AdResource extends Resource
     public static function infolist(Schema $schema): Schema
     {
         return $schema->components([
-            Components\Section::make('Ad Creative')->schema([
+            Components\Section::make(__('admin.ad_creative'))->schema([
                 InfolistComponents\ImageEntry::make('image_path')
-                    ->label('Banner')
+                    ->label(__('admin.banner'))
                     ->disk('public')
                     ->height(300)
                     ->columnSpanFull(),
@@ -79,53 +88,55 @@ class AdResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')->label(__('admin.id'))->sortable(),
                 Tables\Columns\ImageColumn::make('image_path')
-                    ->label('Banner')
+                    ->label(__('admin.banner'))
                     ->disk('public'),
-                Tables\Columns\TextColumn::make('title')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('title')->label(__('admin.title'))->searchable()->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
+                    ->label(__('admin.status'))
                     ->colors([
                         'warning' => 'pending',
                         'success' => 'active',
                         'gray'    => 'inactive',
                         'danger'  => 'rejected',
                     ]),
-                Tables\Columns\TextColumn::make('adsPlan.name')
+                Tables\Columns\TextColumn::make('adsPlan.name_en')
                     ->label(__('admin.ad_plan'))
                     ->sortable(),
-                Tables\Columns\TextColumn::make('start_date')->date()->sortable()->toggleable(),
-                Tables\Columns\TextColumn::make('end_date')->date()->sortable()->toggleable(),
+                Tables\Columns\TextColumn::make('start_date')->label(__('admin.start_date'))->date()->sortable()->toggleable(),
+                Tables\Columns\TextColumn::make('end_date')->label(__('admin.end_date'))->date()->sortable()->toggleable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->options(['pending' => 'Pending', 'active' => 'Active', 'inactive' => 'Inactive', 'rejected' => 'Rejected']),
+                    ->options(['pending' => __('admin.pending'), 'active' => __('admin.active'), 'inactive' => 'Inactive', 'rejected' => __('admin.rejected')]),
                 Tables\Filters\SelectFilter::make('target_type')
-                    ->options(['listing' => 'Listing', 'member' => 'Member', 'external' => 'External']),
+                    ->options(['listing' => __('admin.listing'), 'member' => __('admin.member'), 'external' => 'External']),
             ])
             ->actions([
                 Actions\EditAction::make(),
                 Actions\Action::make('approve')
-                    ->label('Approve')
+                    ->label(__('admin.approve'))
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
                     ->visible(fn (Ad $r) => $r->status === 'pending')
                     ->action(function (Ad $record) {
                         $record->update(['status' => 'active']);
-                        Notification::make()->title('Ad approved')->success()->send();
+                        Notification::make()->title(__('admin.ad_approved'))->success()->send();
                     }),
                 Actions\Action::make('reject')
-                    ->label('Reject')
+                    ->label(__('admin.reject'))
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->requiresConfirmation()
                     ->visible(fn (Ad $r) => $r->status === 'pending')
                     ->action(function (Ad $record) {
                         $record->update(['status' => 'rejected']);
-                        Notification::make()->title('Ad rejected')->danger()->send();
+                        Notification::make()->title(__('admin.ad_rejected'))->danger()->send();
                     }),
                 Actions\Action::make('toggleActive')
-                    ->label(fn (Ad $r) => $r->status === 'active' ? 'Deactivate' : 'Activate')
+                    ->label(fn (Ad $r) => $r->status === 'active' ? __('admin.deactivate') : __('admin.activate'))
                     ->color(fn (Ad $r) => $r->status === 'active' ? 'warning' : 'success')
                     ->icon('heroicon-o-power')
                     ->visible(fn (Ad $r) => in_array($r->status, ['active', 'inactive']))

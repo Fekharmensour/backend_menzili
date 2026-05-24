@@ -27,21 +27,29 @@ class CategoryResource extends Resource
     {
         return __('admin.categories');
     }
+    public static function getModelLabel(): string
+    {
+        return __('admin.category');
+    }
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.categories');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
             Components\Section::make()->schema([
-                FormComponents\TextInput::make('name_ar')->label('Name (Arabic)')->required(),
-                FormComponents\TextInput::make('name_en')->label('Name (English)')->required(),
-                FormComponents\TextInput::make('name_fr')->label('Name (French)'),
+                FormComponents\TextInput::make('name_ar')->label(__('admin.name') . ' (' . __('admin.arabic') . ')')->required(),
+                FormComponents\TextInput::make('name_en')->label(__('admin.name') . ' (' . __('admin.english') . ')')->required(),
+                FormComponents\TextInput::make('name_fr')->label(__('admin.name') . ' (' . __('admin.french') . ')'),
                 FormComponents\FileUpload::make('icon_path')
-                    ->label('Icon Image')
+                    ->label(__('admin.icon_image'))
                     ->image()
                     ->disk('public')
                     ->directory('categories')
                     ->columnSpanFull(),
-                FormComponents\TextInput::make('icon')->label('Icon Class'),
+                FormComponents\TextInput::make('icon')->label(__('admin.icon_class')),
                 FormComponents\Textarea::make('description')->rows(2)->columnSpanFull(),
                 FormComponents\Toggle::make('active')->default(true),
             ])->columns(2),
@@ -52,20 +60,21 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')->label(__('admin.id'))->sortable(),
                 Tables\Columns\ImageColumn::make('icon_path')
-                    ->label('Icon')
+                    ->label(__('admin.icon'))
                     ->disk('public')
                     ->getStateUsing(fn ($record) => str_replace('/storage/', '', $record->icon_path))
                     ->circular(),
-                Tables\Columns\TextColumn::make('name_ar')->label('Arabic'),
-                Tables\Columns\TextColumn::make('name_en')->label('English')->searchable(),
-                Tables\Columns\IconColumn::make('active')->boolean(),
+                Tables\Columns\TextColumn::make('name_ar')->label(__('admin.arabic')),
+                Tables\Columns\TextColumn::make('name_en')->label(__('admin.english'))->searchable(),
+                Tables\Columns\IconColumn::make('active')->label(__('admin.active'))->boolean(),
             ])
             ->filters([Tables\Filters\TernaryFilter::make('active')])
             ->actions([
                 Actions\EditAction::make(),
                 Actions\Action::make('toggle')
-                    ->label(fn (Category $r) => $r->is_active ? 'Deactivate' : 'Activate')
+                    ->label(fn (Category $r) => $r->is_active ? __('admin.deactivate') : __('admin.activate'))
                     ->color(fn (Category $r) => $r->is_active ? 'danger' : 'success')
                     ->icon('heroicon-o-power')
                     ->action(fn (Category $r) => $r->update(['is_active' => !$r->is_active])),

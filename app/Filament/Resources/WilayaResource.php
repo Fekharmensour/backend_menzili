@@ -27,16 +27,25 @@ class WilayaResource extends Resource
     {
         return __('admin.wilayas');
     }
+    public static function getModelLabel(): string
+    {
+        return __('admin.wilaya');
+    }
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.wilayas');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
             Components\Section::make()->schema([
-                FormComponents\TextInput::make('name_ar')->label('Name (Arabic)')->required(),
-                FormComponents\TextInput::make('name_en')->label('Name (English)')->required(),
+                FormComponents\TextInput::make('name_ar')->label(__('admin.name') . ' (' . __('admin.arabic') . ')')->required(),
+                FormComponents\TextInput::make('name_en')->label(__('admin.name') . ' (' . __('admin.english') . ')')->required(),
                 FormComponents\TextInput::make('code')->required()->numeric(),
                 FormComponents\Select::make('country_id')
-                    ->relationship('country', 'name_en')
+                    ->relationship('country', 'id')
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                     ->required(),
             ])->columns(2),
         ]);
@@ -47,9 +56,9 @@ class WilayaResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('code')->sortable(),
-                Tables\Columns\TextColumn::make('name_ar')->label('Arabic'),
-                Tables\Columns\TextColumn::make('name_en')->label('English')->searchable(),
-                Tables\Columns\TextColumn::make('country.name_en')->label('Country'),
+                Tables\Columns\TextColumn::make('name_ar')->label(__('admin.arabic')),
+                Tables\Columns\TextColumn::make('name_en')->label(__('admin.english'))->searchable(),
+                Tables\Columns\TextColumn::make('country.name')->label(__('admin.country')),
             ])
             ->actions([
                 Actions\EditAction::make(),

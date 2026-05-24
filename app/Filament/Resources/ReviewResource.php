@@ -47,7 +47,7 @@ class ReviewResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
+                Tables\Columns\TextColumn::make('id')->label(__('admin.id'))->sortable(),
                 Tables\Columns\TextColumn::make('member.user.name')->label(__('admin.reviewer'))->searchable(),
                 Tables\Columns\TextColumn::make('listing.title')->label(__('admin.listing'))->limit(30)->searchable(),
                 Tables\Columns\TextColumn::make('rating')
@@ -70,7 +70,7 @@ class ReviewResource extends Resource
                 Actions\DeleteAction::make()
                     ->after(function (Review $record) {
                         $record->listing?->updateRating();
-                        Notification::make()->title('Review deleted & rating recalculated')->success()->send();
+                        Notification::make()->title(__('admin.review_deleted'))->success()->send();
                     }),
             ])
             ->bulkActions([

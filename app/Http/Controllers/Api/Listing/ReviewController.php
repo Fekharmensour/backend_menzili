@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Listing;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Listing\ReviewResource;
+use App\Http\Resources\Api\Listing\Reviewpagination;
 use App\Models\Listing;
 use App\Models\Review;
 use Dedoc\Scramble\Attributes\Group;
@@ -15,6 +16,19 @@ use Illuminate\Support\Facades\Auth;
 #[HeaderParameter('Auth')]
 class ReviewController extends Controller
 {
+    public function index(Request $request, Listing $listing)
+    {
+        $reviews = $listing->reviews()
+            ->with(['member.user'])
+            ->latest()
+            ->paginate($request->get('per_page', 10));
+
+        return response()->json([
+            'success' => true,
+            'data' => new Reviewpagination($reviews)
+        ]);
+    }
+
     public function store(Request $request, Listing $listing)
     {
         $request->validate([
@@ -85,9 +99,10 @@ class ReviewController extends Controller
             ], 404);
         }
 
+        $listing = $review->listing;
         $review->delete();
 
-        $listing->updateRating();
+        $listing?->updateRating();
 
         return response()->json([
             'success' => true,

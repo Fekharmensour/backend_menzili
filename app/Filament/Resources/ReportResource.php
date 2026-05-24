@@ -86,7 +86,7 @@ class ReportResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
+                Tables\Columns\TextColumn::make('id')->label(__('admin.id'))->sortable(),
                 Tables\Columns\TextColumn::make('member.user.name')->label(__('admin.reporter'))->searchable(),
                 Tables\Columns\BadgeColumn::make('reference_type')
                     ->label(__('admin.type'))
@@ -130,7 +130,7 @@ class ReportResource extends Resource
                         }
 
                         $target->update(['is_banned' => true, 'is_active' => false]);
-                        Notification::make()->title('Listing Banned')->danger()->send();
+                        Notification::make()->title(__('admin.listing_banned'))->danger()->send();
 
                         $record->update(['status' => 'accepted']);
                     }),
@@ -150,7 +150,7 @@ class ReportResource extends Resource
 
                         if ($target->user) {
                             $target->user->update(['is_active' => false]);
-                            Notification::make()->title('Member Deactivated')->danger()->send();
+                            Notification::make()->title(__('admin.member_deactivated'))->danger()->send();
                         }
 
                         $record->update(['status' => 'accepted']);

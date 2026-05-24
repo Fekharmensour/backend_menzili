@@ -47,7 +47,7 @@ class BoostResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
+                Tables\Columns\TextColumn::make('id')->label(__('admin.id'))->sortable(),
                 Tables\Columns\TextColumn::make('listing.title')->label(__('admin.listing'))->limit(30)->searchable(),
                 Tables\Columns\TextColumn::make('member.user.name')->label(__('admin.member'))->searchable(),
                 Tables\Columns\TextColumn::make('coins_spent')->label(__('admin.coins_spent'))->sortable(),
@@ -84,7 +84,7 @@ class BoostResource extends Resource
                         if ($record->listing && $record->listing->active_boost_id === $record->id) {
                             $record->listing->update(['active_boost_id' => null, 'boost_level' => 0]);
                         }
-                        Notification::make()->title('Boost force-expired')->warning()->send();
+                        Notification::make()->title(__('admin.boost_force_expired'))->warning()->send();
                     }),
             ])
             ->defaultSort('created_at', 'desc');

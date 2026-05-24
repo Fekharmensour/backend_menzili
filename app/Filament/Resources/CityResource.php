@@ -28,14 +28,24 @@ class CityResource extends Resource
     {
         return __('admin.cities');
     }
+    public static function getModelLabel(): string
+    {
+        return __('admin.city');
+    }
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.cities');
+    }
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
             Components\Section::make()->schema([
-                FormComponents\TextInput::make('name_ar')->label('Name (Arabic)')->required(),
-                FormComponents\TextInput::make('name_en')->label('Name (English)')->required(),
+                FormComponents\TextInput::make('name_ar')->label(__('admin.name') . ' (' . __('admin.arabic') . ')')->required(),
+                FormComponents\TextInput::make('name_en')->label(__('admin.name') . ' (' . __('admin.english') . ')')->required(),
                 FormComponents\Select::make('wilaya_id')
-                    ->relationship('wilaya', 'name_en')
+                    ->relationship('wilaya', 'id')
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
+                    ->label(__('admin.wilaya'))
                     ->searchable()
                     ->required(),
             ])->columns(2),
@@ -46,13 +56,14 @@ class CityResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name_ar')->label('Arabic'),
-                Tables\Columns\TextColumn::make('name_en')->label('English')->searchable(),
-                Tables\Columns\TextColumn::make('wilaya.name_en')->label('Wilaya')->sortable(),
+                Tables\Columns\TextColumn::make('name_ar')->label(__('admin.arabic')),
+                Tables\Columns\TextColumn::make('name_en')->label(__('admin.english'))->searchable(),
+                Tables\Columns\TextColumn::make('wilaya.name')->label(__('admin.wilaya'))->sortable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('wilaya')
-                    ->relationship('wilaya', 'name_en')
+                    ->relationship('wilaya', 'id')
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                     ->searchable(),
             ])
             ->actions([

@@ -27,14 +27,22 @@ class RentDurationResource extends Resource
     {
         return __('admin.rent_durations');
     }
+    public static function getModelLabel(): string
+    {
+        return __('admin.rent_duration');
+    }
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.rent_durations');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
             Components\Section::make()->schema([
-                FormComponents\TextInput::make('name_ar')->label('Name (Arabic)')->required(),
-                FormComponents\TextInput::make('name_en')->label('Name (English)')->required(),
-                FormComponents\TextInput::make('name_fr')->label('Name (French)'),
+                FormComponents\TextInput::make('name_ar')->label(__('admin.name') . ' (' . __('admin.arabic') . ')')->required(),
+                FormComponents\TextInput::make('name_en')->label(__('admin.name') . ' (' . __('admin.english') . ')')->required(),
+                FormComponents\TextInput::make('name_fr')->label(__('admin.name') . ' (' . __('admin.french') . ')'),
             ])->columns(2),
         ]);
     }
@@ -43,16 +51,16 @@ class RentDurationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\TextColumn::make('name_ar')->label('Arabic'),
-                Tables\Columns\TextColumn::make('name_en')->label('English')->searchable(),
-                Tables\Columns\IconColumn::make('active')->boolean(),
+                Tables\Columns\TextColumn::make('id')->label(__('admin.id'))->sortable(),
+                Tables\Columns\TextColumn::make('name_ar')->label(__('admin.arabic')),
+                Tables\Columns\TextColumn::make('name_en')->label(__('admin.english'))->searchable(),
+                Tables\Columns\IconColumn::make('active')->label(__('admin.active'))->boolean(),
             ])
             ->filters([Tables\Filters\TernaryFilter::make('active')])
             ->actions([
                 Actions\EditAction::make(),
                 Actions\Action::make('toggle')
-                    ->label(fn (RentDuration $r) => $r->is_active ? 'Deactivate' : 'Activate')
+                    ->label(fn (RentDuration $r) => $r->is_active ? __('admin.deactivate') : __('admin.activate'))
                     ->color(fn (RentDuration $r) => $r->is_active ? 'danger' : 'success')
                     ->icon('heroicon-o-power')
                     ->action(fn (RentDuration $r) => $r->update(['is_active' => !$r->is_active])),

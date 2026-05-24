@@ -135,6 +135,7 @@ class MemberResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')->label(__('admin.id'))->sortable(),
                 Tables\Columns\ImageColumn::make('user.profile_image')
                     ->label(__('admin.photo'))
                     ->disk('public')

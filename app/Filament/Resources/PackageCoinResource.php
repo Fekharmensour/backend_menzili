@@ -27,18 +27,26 @@ class PackageCoinResource extends Resource
     {
         return __('admin.coin_packages');
     }
+    public static function getModelLabel(): string
+    {
+        return __('admin.coin_package');
+    }
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.coin_packages');
+    }
 
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
             Components\Section::make()->schema([
                 FormComponents\TextInput::make('coins')
-                    ->required()->numeric()->minValue(1)->label('Coins Amount'),
+                    ->required()->numeric()->minValue(1)->label(__('admin.coins_amount')),
                 FormComponents\TextInput::make('price')
-                    ->required()->numeric()->minValue(0)->suffix('DZD'),
+                    ->required()->numeric()->minValue(0)->suffix(' ' . __('admin.dzd')),
                 FormComponents\DatePicker::make('date_end_offer')
-                    ->label('Offer End Date')->nullable(),
-                FormComponents\Toggle::make('is_active')->label('Active')->default(true),
+                    ->label(__('admin.offer_end_date'))->nullable(),
+                FormComponents\Toggle::make('is_active')->label(__('admin.active'))->default(true),
             ])->columns(2),
         ]);
     }
@@ -47,23 +55,23 @@ class PackageCoinResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\TextColumn::make('coins')->sortable(),
-                Tables\Columns\TextColumn::make('price')->numeric()->suffix(' DZD')->sortable(),
-                Tables\Columns\TextColumn::make('date_end_offer')->date()->label('Offer Ends')->toggleable(),
-                Tables\Columns\IconColumn::make('is_active')->boolean()->label('Active'),
+                Tables\Columns\TextColumn::make('id')->label(__('admin.id'))->sortable(),
+                Tables\Columns\TextColumn::make('coins')->label(__('admin.coins'))->sortable(),
+                Tables\Columns\TextColumn::make('price')->label(__('admin.price'))->numeric()->suffix(' ' . __('admin.dzd'))->sortable(),
+                Tables\Columns\TextColumn::make('date_end_offer')->date()->label(__('admin.offer_ends'))->toggleable(),
+                Tables\Columns\IconColumn::make('is_active')->boolean()->label(__('admin.active')),
                 Tables\Columns\TextColumn::make('coinPurchases_count')
                     ->counts('coinPurchases')
-                    ->label('Sold #'),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable()->toggleable(),
+                    ->label(__('admin.sold_count')),
+                Tables\Columns\TextColumn::make('created_at')->label(__('admin.created_at'))->dateTime()->sortable()->toggleable(),
             ])
             ->filters([
-                Tables\Filters\TernaryFilter::make('is_active')->label('Active'),
+                Tables\Filters\TernaryFilter::make('is_active')->label(__('admin.active')),
             ])
             ->actions([
                 Actions\EditAction::make(),
                 Actions\Action::make('toggle')
-                    ->label(fn (PackageCoin $r) => $r->is_active ? 'Deactivate' : 'Activate')
+                    ->label(fn (PackageCoin $r) => $r->is_active ? __('admin.deactivate') : __('admin.activate'))
                     ->color(fn (PackageCoin $r) => $r->is_active ? 'danger' : 'success')
                     ->icon('heroicon-o-power')
                     ->action(fn (PackageCoin $r) => $r->update(['is_active' => !$r->is_active])),

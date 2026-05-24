@@ -1021,6 +1021,58 @@
             }
         },
         "/listings/{listing}/reviews": {
+            "get": {
+                "operationId": "review.index",
+                "tags": [
+                    "Review Listings"
+                ],
+                "parameters": [
+                    {
+                        "name": "listing",
+                        "in": "path",
+                        "required": true,
+                        "description": "The listing ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Reviewpagination"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    }
+                }
+            },
             "post": {
                 "operationId": "review.store",
                 "tags": [
@@ -5637,15 +5689,12 @@
                     "is_boosted": {
                         "type": "string"
                     },
-                    "moderation_status": {
-                        "type": "string",
-                        "description": "'boost_level' => $this->boost_level,"
-                    },
                     "image": {
                         "type": [
                             "string",
                             "null"
-                        ]
+                        ],
+                        "description": "'boost_level' => $this->boost_level,\n'moderation_status' => $this->moderation_status,"
                     },
                     "rent_duration": {
                         "description": "BelongsTo",
@@ -5715,7 +5764,6 @@
                     "is_ready",
                     "is_negotiable",
                     "is_boosted",
-                    "moderation_status",
                     "image",
                     "time_post"
                 ],
@@ -6012,14 +6060,9 @@
                     "is_boosted": {
                         "type": "string"
                     },
-                    "boost_level": {
-                        "type": "string"
-                    },
-                    "moderation_status": {
-                        "type": "string"
-                    },
                     "image": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "'boost_level' => $this->boost_level,\n'moderation_status' => $this->moderation_status,"
                     },
                     "rent_duration": {
                         "description": "BelongsTo",
@@ -6123,8 +6166,6 @@
                     "is_active",
                     "is_negotiable",
                     "is_boosted",
-                    "boost_level",
-                    "moderation_status",
                     "image",
                     "time_post",
                     "rating_avg",
@@ -6609,6 +6650,94 @@
                 ],
                 "title": "ReviewResource"
             },
+            "Reviewpagination": {
+                "type": "object",
+                "properties": {
+                    "reviews": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReviewResource"
+                        }
+                    },
+                    "pagination": {
+                        "type": "object",
+                        "properties": {
+                            "total": {
+                                "type": "string",
+                                "description": "basic info"
+                            },
+                            "count": {
+                                "type": "string"
+                            },
+                            "per_page": {
+                                "type": "string"
+                            },
+                            "current_page": {
+                                "type": "string"
+                            },
+                            "total_pages": {
+                                "type": "string"
+                            },
+                            "has_pages": {
+                                "type": "string",
+                                "description": "navigation"
+                            },
+                            "has_more_pages": {
+                                "type": "string"
+                            },
+                            "first_page_url": {
+                                "type": "string",
+                                "description": "page URLs (very useful for frontend)"
+                            },
+                            "last_page_url": {
+                                "type": "string"
+                            },
+                            "next_page_url": {
+                                "type": "string"
+                            },
+                            "prev_page_url": {
+                                "type": "string"
+                            },
+                            "from": {
+                                "type": "string",
+                                "description": "index positions"
+                            },
+                            "to": {
+                                "type": "string"
+                            },
+                            "path": {
+                                "type": "string",
+                                "description": "query meta"
+                            },
+                            "current_page_url": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "total",
+                            "count",
+                            "per_page",
+                            "current_page",
+                            "total_pages",
+                            "has_pages",
+                            "has_more_pages",
+                            "first_page_url",
+                            "last_page_url",
+                            "next_page_url",
+                            "prev_page_url",
+                            "from",
+                            "to",
+                            "path",
+                            "current_page_url"
+                        ]
+                    }
+                },
+                "required": [
+                    "reviews",
+                    "pagination"
+                ],
+                "title": "Reviewpagination"
+            },
             "StoreRequest": {
                 "type": "object",
                 "properties": {
@@ -6638,19 +6767,12 @@
                         "type": "number",
                         "minimum": 0
                     },
-                    "boost_level": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ],
-                        "minimum": 1,
-                        "maximum": 10
-                    },
                     "min_duration": {
                         "type": [
                             "integer",
                             "null"
                         ],
+                        "description": "'boost_level'=> ['nullable', 'integer', 'min:1', 'max:10'],",
                         "minimum": 1
                     },
                     "number_rooms": {
@@ -6973,19 +7095,12 @@
                         "type": "number",
                         "minimum": 0
                     },
-                    "boost_level": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ],
-                        "minimum": 1,
-                        "maximum": 10
-                    },
                     "min_duration": {
                         "type": [
                             "integer",
                             "null"
                         ],
+                        "description": "'boost_level'=> ['nullable','integer','min:1','max:10'],",
                         "minimum": 1
                     },
                     "number_rooms": {

@@ -100,13 +100,13 @@ class ListingResource extends Resource
                     ->required(),
                 FormComponents\Select::make('type_id')
                     ->label(__('admin.type'))
-                    ->relationship('type', 'name_en')
+                    ->relationship('type', 'id')
                     ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                     ->required()
                     ->live(),
                 FormComponents\Select::make('rent_duration_id')
                     ->label(__('admin.rent_duration'))
-                    ->relationship('rentDuration', 'name_en')
+                    ->relationship('rentDuration', 'id')
                     ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                     ->visible(fn (Get $get) => Str::contains(optional(\App\Models\Type::find($get('type_id')))->name_en, 'Rent', true)),
                 FormComponents\Select::make('moderation_status')
@@ -117,7 +117,7 @@ class ListingResource extends Resource
                         'rejected' => __('admin.rejected'),
                     ]),
                 FormComponents\Toggle::make('is_active')->label(__('admin.active')),
-                FormComponents\Toggle::make('is_banned')->label('Banned'),
+                FormComponents\Toggle::make('is_banned')->label(__('admin.banned')),
                 FormComponents\Toggle::make('is_ready')->label(__('admin.ready')),
                 FormComponents\Toggle::make('is_negotiable')->label(__('admin.negotiable')),
                 FormComponents\DateTimePicker::make('verified_at')->label(__('admin.verified_at')),
@@ -142,12 +142,12 @@ class ListingResource extends Resource
                     ->columnSpanFull(),
                 FormComponents\CheckboxList::make('features')
                     ->label(__('admin.features'))
-                    ->relationship('features', 'name_en')
+                    ->relationship('features', 'id')
                     ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                     ->columns(3),
                 FormComponents\CheckboxList::make('nearPlaces')
                     ->label(__('admin.near_places'))
-                    ->relationship('nearPlaces', 'name_en')
+                    ->relationship('nearPlaces', 'id')
                     ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
                     ->columns(3),
             ]),
@@ -182,9 +182,9 @@ class ListingResource extends Resource
                             ->weight('bold'),
                         InfolistComponents\TextEntry::make('location.city.name')
                             ->label(__('admin.city')),
-                        InfolistComponents\TextEntry::make('type.name_en')
+                        InfolistComponents\TextEntry::make('type.name')
                             ->label(__('admin.type')),
-                        InfolistComponents\TextEntry::make('rentDuration.name_en')
+                        InfolistComponents\TextEntry::make('rentDuration.name')
                             ->label(__('admin.rent_duration'))
                             ->visible(fn ($record) => $record->rent_duration_id),
                         InfolistComponents\TextEntry::make('member.user.name')
@@ -211,18 +211,18 @@ class ListingResource extends Resource
             ]),
             Components\Section::make(__('admin.status'))->schema([
                 Components\Grid::make(2)->schema([
-                    InfolistComponents\TextEntry::make('moderation_status')
-                        ->label(__('admin.status'))
-                        ->badge()
-                        ->colors([
-                            'warning' => 'pending',
-                            'success' => 'approved',
-                            'danger' => 'rejected',
-                        ]),
-                    InfolistComponents\TextEntry::make('verified_at')
-                        ->label(__('admin.verified_at'))
-                        ->dateTime()
-                        ->placeholder(__('admin.not_verified')),
+                    // InfolistComponents\TextEntry::make('moderation_status')
+                    //     ->label(__('admin.status'))
+                    //     ->badge()
+                    //     ->colors([
+                    //         'warning' => 'pending',
+                    //         'success' => 'approved',
+                    //         'danger' => 'rejected',
+                    //     ]),
+                    // InfolistComponents\TextEntry::make('verified_at')
+                    //     ->label(__('admin.verified_at'))
+                    //     ->dateTime()
+                    //     ->placeholder(__('admin.not_verified')),
                 ]),
                 Components\Grid::make(3)->schema([
                     InfolistComponents\IconEntry::make('is_active')
@@ -237,13 +237,13 @@ class ListingResource extends Resource
                 ]),
             ]),
             Components\Section::make(__('admin.features'))->schema([
-                InfolistComponents\TextEntry::make('features.name_en')
+                InfolistComponents\TextEntry::make('features.name')
                     ->label(false)
                     ->badge()
                     ->columnSpanFull(),
             ])->visible(fn ($record) => $record->features->count() > 0),
             Components\Section::make(__('admin.near_places'))->schema([
-                InfolistComponents\TextEntry::make('nearPlaces.name_en')
+                InfolistComponents\TextEntry::make('nearPlaces.name')
                     ->label(false)
                     ->badge()
                     ->columnSpanFull(),
@@ -279,16 +279,16 @@ class ListingResource extends Resource
                 Tables\Columns\TextColumn::make('member.user.name')
                     ->label(__('admin.owner'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('type.name_en')
+                Tables\Columns\TextColumn::make('type.name')
                     ->label(__('admin.type')),
-                Tables\Columns\TextColumn::make('rentDuration.name_en')
+                Tables\Columns\TextColumn::make('rentDuration.name')
                     ->label(__('admin.rent_duration'))
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('features.name_en')
+                Tables\Columns\TextColumn::make('features.name')
                     ->label(__('admin.features'))
                     ->badge()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('nearPlaces.name_en')
+                Tables\Columns\TextColumn::make('nearPlaces.name')
                     ->label(__('admin.near_places'))
                     ->badge()
                     ->toggleable(),
@@ -303,74 +303,74 @@ class ListingResource extends Resource
                     ->label(__('admin.rating'))
                     ->numeric(2)->sortable()->toggleable(),
                 Tables\Columns\BadgeColumn::make('is_banned')
-                    ->label('Ban Status')
-                    ->getStateUsing(fn (Listing $r) => $r->is_banned ? 'Banned' : 'Safe')
+                    ->label(__('admin.ban_status'))
+                    ->getStateUsing(fn (Listing $r) => $r->is_banned ? __('admin.banned') : __('admin.safe'))
                     ->colors([
-                        'danger' => 'Banned',
-                        'success' => 'Safe',
+                        'danger' => __('admin.banned'),
+                        'success' => __('admin.safe'),
                     ]),
-                Tables\Columns\BadgeColumn::make('moderation_status')
-                    ->label(__('admin.status'))
-                    ->colors([
-                        'warning' => 'pending',
-                        'success' => 'approved',
-                        'danger' => 'rejected',
-                    ])->toggleable(),
+                // Tables\Columns\BadgeColumn::make('moderation_status')
+                //     ->label(__('admin.status'))
+                //     ->colors([
+                //         'warning' => 'pending',
+                //         'success' => 'approved',
+                //         'danger' => 'rejected',
+                //     ])->toggleable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label(__('admin.active'))
                     ->boolean(),
-                Tables\Columns\IconColumn::make('verified_at')
-                    ->label(__('admin.verified'))
-                    ->boolean()
-                    ->getStateUsing(fn (Listing $r) => !is_null($r->verified_at)),
+                // Tables\Columns\IconColumn::make('verified_at')
+                //     ->label(__('admin.verified'))
+                //     ->boolean()
+                //     ->getStateUsing(fn (Listing $r) => !is_null($r->verified_at)),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('admin.created_at'))
                     ->dateTime()->sortable()->toggleable(),
             ])
             ->filters([
-                Tables\Filters\TernaryFilter::make('is_banned')->label('Banned'),
+                Tables\Filters\TernaryFilter::make('is_banned')->label(__('admin.banned')),
                 Tables\Filters\SelectFilter::make('moderation_status')
-                    ->options(['pending' => 'Pending', 'approved' => 'Approved', 'rejected' => 'Rejected']),
-                Tables\Filters\TernaryFilter::make('is_active')->label('Active'),
+                    ->options(['pending' => __('admin.pending'), 'approved' => __('admin.approved'), 'rejected' => __('admin.rejected')]),
+                Tables\Filters\TernaryFilter::make('is_active')->label(__('admin.active')),
                 Tables\Filters\Filter::make('verified')
-                    ->label('Verified')
+                    ->label(__('admin.verified'))
                     ->query(fn ($q) => $q->whereNotNull('verified_at')),
             ])
             ->actions([
                 Actions\ViewAction::make(),
                 Actions\EditAction::make(),
                 Actions\Action::make('ban')
-                    ->label('Ban')
+                    ->label(__('admin.ban'))
                     ->icon('heroicon-o-no-symbol')
                     ->color('danger')
                     ->requiresConfirmation()
                     ->visible(fn (Listing $r) => !$r->is_banned)
                     ->action(function (Listing $record) {
                         $record->update(['is_banned' => true, 'is_active' => false]);
-                        Notification::make()->title('Listing Banned')->danger()->send();
+                        Notification::make()->title(__('admin.listing_banned'))->danger()->send();
                     }),
                 Actions\Action::make('unban')
-                    ->label('Unban')
+                    ->label(__('admin.unban'))
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
                     ->visible(fn (Listing $r) => $r->is_banned)
                     ->action(function (Listing $record) {
                         $record->update(['is_banned' => false]);
-                        Notification::make()->title('Listing Unbanned')->success()->send();
+                        Notification::make()->title(__('admin.listing_unbanned'))->success()->send();
                     }),
                 Actions\Action::make('verify')
-                    ->label('Verify')
+                    ->label(__('admin.verify'))
                     ->icon('heroicon-o-shield-check')
                     ->color('info')
                     ->requiresConfirmation()
                     ->visible(fn (Listing $r) => is_null($r->verified_at))
                     ->action(function (Listing $record) {
                         $record->update(['verified_at' => now()]);
-                        Notification::make()->title('Listing verified')->success()->send();
+                        Notification::make()->title(__('admin.listing_verified'))->success()->send();
                     }),
                 Actions\Action::make('toggleActive')
-                    ->label(fn (Listing $r) => $r->is_active ? 'Deactivate' : 'Activate')
+                    ->label(fn (Listing $r) => $r->is_active ? __('admin.deactivate') : __('admin.activate'))
                     ->color(fn (Listing $r) => $r->is_active ? 'warning' : 'success')
                     ->icon('heroicon-o-power')
                     ->requiresConfirmation()
