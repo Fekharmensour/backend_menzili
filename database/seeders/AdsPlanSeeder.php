@@ -2,14 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\AdsPlan;
 use Illuminate\Database\Seeder;
+use App\Models\AdsPlan;
 
 class AdsPlanSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $plans = [
@@ -22,13 +19,13 @@ class AdsPlanSeeder extends Seeder
             [
                 'name' => 'Standard',
                 'coins' => 350,
-                'duration_days' => 30,
+                'duration_days' => 15,
                 'is_active' => true,
             ],
             [
                 'name' => 'Premium',
                 'coins' => 1000,
-                'duration_days' => 90,
+                'duration_days' => 30,
                 'is_active' => true,
             ],
         ];

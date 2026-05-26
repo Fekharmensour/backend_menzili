@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AdResource\Pages;
 use App\Models\Ad;
 use Filament\Forms\Components as FormComponents;
-use Filament\Infolists\Components as InfolistComponents;
+use Filament\Infolists\Components as InfolistComponents;   // Keep this
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components;
@@ -25,14 +25,17 @@ class AdResource extends Resource
     {
         return __('admin.finance');
     }
+
     public static function getNavigationLabel(): string
     {
         return __('admin.ads');
     }
+
     public static function getModelLabel(): string
     {
         return __('admin.ad');
     }
+
     public static function getPluralModelLabel(): string
     {
         return __('admin.ads');
@@ -42,23 +45,75 @@ class AdResource extends Resource
     {
         return $schema->components([
             Components\Section::make(__('admin.ad_info'))->schema([
-                FormComponents\TextInput::make('title')->required()->maxLength(255)->columnSpanFull(),
-                FormComponents\Textarea::make('description')->rows(3)->columnSpanFull(),
-                FormComponents\TextInput::make('external_url')->url()->label(__('admin.external_url'))->columnSpanFull(),
-                FormComponents\FileUpload::make('image_path')->image()->disk('public')->directory('ads')->columnSpanFull(),
+                FormComponents\TextInput::make('title')
+                    ->required()
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+
+                FormComponents\Textarea::make('description')
+                    ->rows(3)
+                    ->columnSpanFull(),
+
+                FormComponents\TextInput::make('external_url')
+                    ->url()
+                    ->label(__('admin.external_url'))
+                    ->columnSpanFull(),
+
+                // ==================== CURRENT IMAGE PREVIEW ====================
+                Components\Section::make(__('admin.image'))
+                    ->visible(fn (string $operation) => $operation === 'edit')
+                    ->schema([
+                        InfolistComponents\ImageEntry::make('image_path')   // Fixed here
+                        ->label(__('admin.image'))
+                            ->disk('public')
+                            ->height(250)
+                            ->columnSpanFull(),
+                    ]),
+
+                // Upload field for new image
+                FormComponents\FileUpload::make('image_path')
+                    ->label(__('admin.image') ?? 'New Banner Image')
+                    ->image()
+                    ->disk('public')
+                    ->directory('ads')
+                    ->imageEditor()
+                    ->columnSpanFull()
+//                    ->helperText(__('admin.replace_image_help') ?? 'Upload a new image to replace the current one')
+                ,
+                // ============================================================
             ]),
+
             Components\Section::make(__('admin.settings'))->schema([
                 FormComponents\Select::make('target_type')
-                    ->options(['listing' => __('admin.listing'), 'member' => __('admin.member'), 'external' => 'External'])
+                    ->options([
+                        'listing' => __('admin.listing'),
+                        'member' => __('admin.member'),
+                        'external' => 'External'
+                    ])
                     ->required(),
+
                 FormComponents\Select::make('status')
-                    ->options(['pending' => __('admin.pending'), 'active' => __('admin.active'), 'inactive' => 'Inactive', 'rejected' => __('admin.rejected')])
+                    ->options([
+                        'pending' => __('admin.pending'),
+                        'active' => __('admin.active'),
+                        'inactive' => 'Inactive',
+                        'rejected' => __('admin.rejected')
+                    ])
                     ->required(),
+
                 FormComponents\Select::make('ads_plan_id')
                     ->label(__('admin.ad_plan'))
-                    ->relationship('adsPlan', 'id')
-                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name_en)
+                    ->relationship('adsPlan', 'name_en')
+                    ->getOptionLabelFromRecordUsing(function ($record) {
+                        return $record->name_en
+                            ?? $record->name_ar
+                            ?? $record->name
+                            ?? 'Plan #' . $record->id;
+                    })
+                    ->searchable()
+                    ->preload()
                     ->required(),
+
                 FormComponents\DatePicker::make('start_date'),
                 FormComponents\DatePicker::make('end_date'),
             ])->columns(2),

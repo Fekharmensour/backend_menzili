@@ -11,25 +11,65 @@ class MemberSeeder extends Seeder
 {
     public function run(): void
     {
-        // Check if user already exists
-        $user = User::firstOrCreate(
-            ['phone' => '+213562695982'],
+        $members = [
             [
-                'name' => 'mensourfk',
-                'email' => 'mensourfekhar@gmail.com',
-                'password' => Hash::make('12345678'),
-                'is_active' => 1,
-                'phone_verified_at' => now(),
-
-            ]
-        );
-
-        // Create member if not exists
-        Member::firstOrCreate(
-            ['user_id' => $user->id],
+                'name'      => 'mensourfk',
+                'phone'     => '+213665001345',
+                'email'     => 'mensourfk@gmail.com',
+                'password'  => '12345678',
+                'is_admin'  => false,
+            ],
             [
-                'member_verified_at'=>now()
-            ]
-        );
+                'name'      => 'yacineZt',
+                'phone'     => '+213558769547',
+                'email'     => 'yacinezt@gmail.com',
+                'password'  => '12345678',
+                'is_admin'  => false,
+            ],
+            [
+                'name'      => 'youcef_G',
+                'phone'     => '+213776896637',
+                'email'     => 'youcef.g@gmail.com',
+                'password'  => '12345678',
+                'is_admin'  => false,
+            ],
+            [
+                'name'      => 'menzili',
+                'phone'     => '+213555555555',
+                'email'     => 'menzili@gmail.com',
+                'password'  => 'menzili',           // different password
+                'is_admin'  => true,
+            ],
+            [
+                'name'      => 'mensour Fekhar',
+                'phone'     => '+213562695982',
+                'email'     => 'mensourfekhar@gmail.com',
+                'password'  => '12345678',
+                'is_admin'  => false,
+            ],
+        ];
+
+        foreach ($members as $data) {
+            // Create or update User
+            $user = User::firstOrCreate(
+                ['phone' => $data['phone']],
+                [
+                    'name'              => $data['name'],
+                    'email'             => $data['email'],
+                    'password'          => Hash::make($data['password']),
+                    'is_active'         => 1,
+                    'phone_verified_at' => now(),
+                    'is_admin'          => $data['is_admin'] ?? false,   // if your User model has is_admin column
+                ]
+            );
+
+            // Create or update Member
+            Member::firstOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'member_verified_at' => now(),
+                ]
+            );
+        }
     }
 }

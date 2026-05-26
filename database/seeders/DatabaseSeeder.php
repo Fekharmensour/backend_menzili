@@ -16,19 +16,29 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             MemberSeeder::class,
+            
+            NotificationSeeder::class,
+
             CategoryListingSeeder::class,
             FeaturedListingSeeder::class,
             ListingTypeSeeder::class,
             NearPlaceSeeder::class,
             RentDurationSeeder::class,
 
+            // Coins and ad plans
+            PackageCoinSeeder::class,
+            AdsPlanSeeder::class,
+
             CountrySeeder::class,
             WilayaSeeder::class,
             CitySeeder::class,
-            NewWilayasCitiesSeeder::class, // Seeder pour les nouvelles wilayas et leurs villes
+            NewWilayasCitiesSeeder::class,
             MajorCitiesLocationsSeeder::class,
+            LocationSeeder::class,
 
+            
             ListingSeeder::class,
+            AdSeeder::class,
         ]);
     }
 }

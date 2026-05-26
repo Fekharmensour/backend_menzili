@@ -10,97 +10,110 @@ class ListingSeeder extends Seeder
 {
     public function run(): void
     {
-        $listings = [
-
-            [
-                'title' => 'شقة عصرية في وسط المدينة',
-                'description' => 'شقة جميلة ومجهزة بالكامل تقع في قلب المدينة، قريبة من جميع المرافق مثل المحلات التجارية ووسائل النقل. مناسبة للعائلات أو الأزواج.',
-                'price' => 45000,
-                'floor' => 3,
-                'surface' => 95,
-                'min_duration' => 6,
-                'number_rooms' => 3,
-                'number_persons' => 5,
+        // Titles and descriptions grouped by language
+        $titles = [
+            'ar' => [
+                'شقة عصرية في وسط المدينة',
+                'فيلا فاخرة مع مسبح خاص',
+                'استوديو مفروش بالقرب من الجامعة',
+                'منزل عائلي واسع في حي هادئ',
+                'شقة مطلة على البحر مفروشة',
             ],
-
-            [
-                'title' => 'فيلا فاخرة مع مسبح خاص',
-                'description' => 'فيلا راقية تحتوي على مسبح خاص وحديقة واسعة، تقع في حي هادئ وآمن. مثالية للعائلات الكبيرة.',
-                'price' => 180000,
-                'floor' => 1,
-                'surface' => 320,
-                'min_duration' => 12,
-                'number_rooms' => 6,
-                'number_persons' => 10,
+            'en' => [
+                'Modern apartment downtown',
+                'Luxury villa with private pool',
+                'Furnished studio near university',
+                'Spacious family house in quiet area',
+                'Furnished sea view apartment',
             ],
-
-            [
-                'title' => 'استوديو مفروش بالقرب من الجامعة',
-                'description' => 'استوديو صغير ومريح مفروش بالكامل، قريب جداً من الجامعة ووسائل النقل. مناسب للطلبة.',
-                'price' => 25000,
-                'floor' => 2,
-                'surface' => 45,
-                'min_duration' => 3,
-                'number_rooms' => 1,
-                'number_persons' => 2,
-            ],
-
-            [
-                'title' => 'منزل عائلي واسع في حي هادئ',
-                'description' => 'منزل عائلي بمساحة كبيرة يحتوي على حديقة وموقف سيارات، يقع في حي سكني هادئ وآمن.',
-                'price' => 90000,
-                'floor' => 2,
-                'surface' => 210,
-                'min_duration' => 12,
-                'number_rooms' => 5,
-                'number_persons' => 8,
-            ],
-
-            [
-                'title' => 'شقة مطلة على البحر مفروشة',
-                'description' => 'شقة راقية بإطلالة مباشرة على البحر، مفروشة بالكامل وجاهزة للسكن، قريبة من المطاعم والمقاهي.',
-                'price' => 120000,
-                'floor' => 5,
-                'surface' => 130,
-                'min_duration' => 6,
-                'number_rooms' => 4,
-                'number_persons' => 6,
+            'fr' => [
+                'Appartement moderne au centre-ville',
+                'Villa de luxe avec piscine privée',
+                'Studio meublé près de l’université',
+                'Grande maison familiale dans un quartier calme',
+                'Appartement meublé avec vue sur la mer',
             ],
         ];
 
-        $member = User::where('phone' , '=' , '+213562695982')->first()->member;
-        foreach ($listings as $index => $data) {
+        $descriptions = [
+            'ar' => [
+                'شقة جميلة ومجهزة بالكامل تقع في قلب المدينة، قريبة من جميع المرافق مثل المحلات التجارية ووسائل النقل. مناسبة للعائلات أو الأزواج.',
+                'فيلا راقية تحتوي على مسبح خاص وحديقة واسعة، تقع في حي هادئ وآمن. مثالية للعائلات الكبيرة.',
+                'استوديو صغير ومريح مفروش بالكامل، قريب جداً من الجامعة ووسائل النقل. مناسب للطلبة.',
+                'منزل عائلي بمساحة كبيرة يحتوي على حديقة وموقف سيارات، يقع في حي سكني هادئ وآمن.',
+                'شقة راقية بإطلالة مباشرة على البحر، مفروشة بالكامل وجاهزة للسكن، قريبة من المطاعم والمقاهي.',
+            ],
+            'en' => [
+                'A beautiful, fully equipped apartment in the heart of the city, close to all amenities. Perfect for families or couples.',
+                'A luxury villa with a private pool and large garden, located in a quiet and safe neighborhood. Ideal for large families.',
+                'A small, cozy, fully furnished studio, very close to the university and transport. Suitable for students.',
+                'A spacious family house with a garden and parking, located in a quiet and safe residential area.',
+                'A high-end apartment with direct sea view, fully furnished and ready to move in, close to restaurants and cafes.',
+            ],
+            'fr' => [
+                'Bel appartement entièrement équipé situé au cœur de la ville, proche de toutes commodités. Idéal pour familles ou couples.',
+                'Villa haut de gamme avec piscine privée et grand jardin, située dans un quartier calme et sécurisé. Parfait pour les grandes familles.',
+                'Petit studio confortable et entièrement meublé, très proche de l’université et des transports. Idéal pour les étudiants.',
+                'Grande maison familiale avec jardin et parking, située dans un quartier résidentiel calme et sécurisé.',
+                'Appartement haut de gamme avec vue directe sur la mer, entièrement meublé et prêt à emménager, proche des restaurants et cafés.',
+            ],
+        ];
+
+        // Category, feature, and near place IDs (from seeders)
+        $categoryIds = [1, 2, 3, 4, 5, 6];
+        $featureIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+        $nearPlaceIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+        $member = User::where('phone', '=', '+213562695982')->first()->member;
+        $languages = ['ar', 'en', 'fr'];
+        // Get all location IDs seeded by LocationSeeder
+        $locationIds = \App\Models\Location::pluck('id')->toArray();
+        for ($i = 0; $i < 30; $i++) {
+            $lang = $languages[array_rand($languages)];
+            $title = $titles[$lang][array_rand($titles[$lang])];
+            $description = $descriptions[$lang][array_rand($descriptions[$lang])];
+            $price = rand(20000, 200000);
+            $floor = rand(1, 6);
+            $surface = rand(40, 350);
+            $min_duration = [3, 6, 12][array_rand([3, 6, 12])];
+            $number_rooms = rand(1, 7);
+            $number_persons = rand(1, 12);
+            $type_id = rand(1, 3);
+            $main_image = 'listings/img-' . rand(1, 10) . '.jpg';
+            $location_id = $locationIds[array_rand($locationIds)];
 
             $listing = Listing::create([
-                'title' => $data['title'],
-                'description' => $data['description'],
-
-                'location_id' => 1,
+                'title' => $title,
+                'description' => $description,
+                'location_id' => $location_id,
                 'rent_duration_id' => 1,
-                'type_id' => 1,
-                'member_id' => $member? $member->id : 1,
-
-                'price' => $data['price'],
-                'floor' => $data['floor'],
-                'surface' => $data['surface'],
-                'min_duration' => $data['min_duration'],
-                'number_rooms' => $data['number_rooms'],
-                'number_persons' => $data['number_persons'],
-
+                'type_id' => $type_id,
+                'member_id' => $member ? $member->id : 1,
+                'price' => $price,
+                'floor' => $floor,
+                'surface' => $surface,
+                'min_duration' => $min_duration,
+                'number_rooms' => $number_rooms,
+                'number_persons' => $number_persons,
                 'is_active' => true,
                 'is_ready' => true,
-                'is_negotiable' => false,
+                'is_negotiable' => (bool)rand(0, 1),
                 'verified_at' => now(),
-//                'boost_level' => 1,
                 'moderation_status' => 'approved',
-
-                'main_image' => 'listings/img-' . ($index + 1) . '.jpg',
+                'main_image' => $main_image,
             ]);
 
-            // Attach relations (make sure IDs exist)
-            $listing->categories()->attach([1]);
-            $listing->features()->attach([1, 2]);
-            $listing->nearPlaces()->attach([1]);
+            // Attach random categories (1-2)
+            $cats = array_rand(array_flip($categoryIds), rand(1, 2));
+            $listing->categories()->attach((array)$cats);
+
+            // Attach random features (2-4)
+            $feats = array_rand(array_flip($featureIds), rand(2, 4));
+            $listing->features()->attach((array)$feats);
+
+            // Attach random near places (1-3)
+            $nps = array_rand(array_flip($nearPlaceIds), rand(1, 3));
+            $listing->nearPlaces()->attach((array)$nps);
         }
     }
 }
