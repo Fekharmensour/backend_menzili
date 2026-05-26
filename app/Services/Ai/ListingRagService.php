@@ -198,35 +198,12 @@ class ListingRagService
 
             return [
                 'listing' => $listing,
-//                'score' => $item->embedding ?? null,
                 'score' => $item->distance ?? null,
-                // 🔥 marketplace ranking boost
-                'boost' => $this->calculateBoost($listing),
+                'rank' => $listing->final_score ?? 0,
             ];
         })
             ->filter()
-            ->sortByDesc('boost')
+            ->sortByDesc('rank')
             ->values();
-    }
-
-    private function calculateBoost(Listing $listing): float
-    {
-        $boost = 0;
-
-        // verified listings
-        if ($listing->verified_at) {
-            $boost += 10;
-        }
-
-        // high engagement
-        $boost += min($listing->views / 100, 5);
-
-        // premium boost level
-//        $boost += $listing->boost_level ?? 0;
-
-        // fresh listings
-        $boost += max(0, 5 - now()->diffInDays($listing->created_at));
-
-        return $boost;
     }
 }

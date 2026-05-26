@@ -11,6 +11,17 @@ class ListingAgent implements Agent, Conversational
 {
     use Promptable;
 
+    protected array $history = [];
+
+    /**
+     * Set the conversation history.
+     */
+    public function withHistory(array $history): self
+    {
+        $this->history = $history;
+        return $this;
+    }
+
     public function instructions(): string
     {
         return "
@@ -115,6 +126,6 @@ Response:
 
     public function messages(): iterable
     {
-        return [];
+        return $this->history;
     }
 }

@@ -14,6 +14,7 @@ use App\Services\Ai\ListingRagService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Laravel\Ai\Messages\Message;
 
 class ChatController extends Controller
 {
@@ -66,7 +67,7 @@ class ChatController extends Controller
         $conversationId = $conversation->id;
 
         // 2. Save User Message
-        AgentConversationMessage::create([
+        $userMessage = AgentConversationMessage::create([
             'id' => (string) Str::uuid(),
             'conversation_id' => $conversationId,
             'user_id' => $userId,
@@ -80,7 +81,17 @@ class ChatController extends Controller
             'meta' => [],
         ]);
 
-        $agent = new ListingAgent();
+        // 3. Fetch History (last 10 messages)
+        $history = AgentConversationMessage::where('conversation_id', $conversationId)
+            ->where('id', '!=', $userMessage->id)
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get()
+            ->reverse()
+            ->map(fn($m) => new Message($m->role, $m->content))
+            ->toArray();
+
+        $agent = (new ListingAgent())->withHistory($history);
         $response = $agent->prompt($request->message);
 
         $text = $response->text;
@@ -89,7 +100,7 @@ class ChatController extends Controller
         $searchType = null;
 
         /**
-         * 3. Extract structured search block
+         * 4. Extract structured search block
          */
         if (preg_match('/\[SEARCH_LISTINGS\](.*?)\[\/SEARCH_LISTINGS\]/s', $text, $matches)) {
 
@@ -123,7 +134,7 @@ class ChatController extends Controller
             }
         }
 
-        // 4. Format Recommendations as requested
+        // 5. Format Recommendations as requested
         $formattedRecommendations = $recommendations->map(function ($item) {
             $listing = $item['listing'] ?? $item;
             return [
@@ -139,7 +150,7 @@ class ChatController extends Controller
             ];
         });
 
-        // 5. Save Bot Message
+        // 6. Save Bot Message
         $botMessage = AgentConversationMessage::create([
             'id' => (string) Str::uuid(),
             'conversation_id' => $conversationId,
@@ -161,7 +172,7 @@ class ChatController extends Controller
         event(new MessageReceived($botMessage));
 
         /**
-         * 6. Final response using ChatMessageResource with Envelope
+         * 7. Final response using ChatMessageResource with Envelope
          */
         return response()->json([
             'success' => true,
