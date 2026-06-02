@@ -37,6 +37,7 @@ class ListingController extends Controller
         $query = Listing::with([
             'rentDuration',
             'type',
+            'categories',
             'location.city.wilaya.country',
         ])->where('member_id', Auth::user()->member->id);
 

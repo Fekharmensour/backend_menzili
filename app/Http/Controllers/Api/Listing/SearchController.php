@@ -54,6 +54,8 @@ class SearchController extends Controller
         $query = Listing::where('is_active', true)
             ->with([
                 'rentDuration',
+                'categories',
+                'type',
                 'location.city.wilaya.country'
             ])
             ->orderByDesc('final_score');

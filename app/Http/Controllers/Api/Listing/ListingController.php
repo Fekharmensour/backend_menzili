@@ -57,6 +57,8 @@ class ListingController extends Controller
 
         $query = Listing::with([
             'rentDuration',
+            'categories',
+            'type',
             'location.city.wilaya.country'
         ]);
 
