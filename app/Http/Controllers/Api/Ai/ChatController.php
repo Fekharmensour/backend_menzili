@@ -9,7 +9,6 @@ use App\Http\Resources\Api\ChatMessageResource;
 use App\Http\Resources\Api\PaginateChatMessage;
 use App\Models\AgentConversation;
 use App\Models\AgentConversationMessage;
-use App\Models\Listing;
 use App\Services\Ai\ListingRagService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -53,7 +52,12 @@ class ChatController extends Controller
 
     public function handle(Request $request)
     {
+        $validated = $request->validate([
+            'message' => ['required', 'string'],
+        ]);
+
         $userId = Auth::user()->id;
+        $message = trim($validated['message']);
 
         // 1. Get or Create the single conversation for this user
         $conversation = AgentConversation::firstOrCreate(
@@ -73,7 +77,7 @@ class ChatController extends Controller
             'user_id' => $userId,
             'agent' => 'ListingAgent',
             'role' => 'user',
-            'content' => $request->message,
+            'content' => $message,
             'attachments' => [],
             'tool_calls' => [],
             'tool_results' => [],
@@ -92,45 +96,53 @@ class ChatController extends Controller
             ->toArray();
 
         $agent = (new ListingAgent())->withHistory($history);
-        $response = $agent->prompt($request->message);
+        $response = $agent->prompt($message);
 
-        $text = $response->text;
-        $filters = null;
+        $text = trim($response->text);
+        $filters = $this->extractSearchFilters($text);
+
+        if ($filters === null && $this->looksLikeSearchRequest($message)) {
+            $repairPrompt = <<<PROMPT
+The previous reply did not include a valid [SEARCH_LISTINGS] block.
+For the user's last request below, return:
+1. one short natural sentence in the user's language
+2. one valid [SEARCH_LISTINGS] block only
+
+User request: {$message}
+PROMPT;
+
+            $retryResponse = $agent->prompt($repairPrompt);
+            $retryText = trim($retryResponse->text);
+            $retryFilters = $this->extractSearchFilters($retryText);
+
+            if ($retryFilters !== null) {
+                $text = $retryText;
+                $filters = $retryFilters;
+            }
+        }
+
         $recommendations = collect();
         $searchType = null;
 
         /**
          * 4. Extract structured search block
          */
-        if (preg_match('/\[SEARCH_LISTINGS\](.*?)\[\/SEARCH_LISTINGS\]/s', $text, $matches)) {
+        if ($filters !== null) {
+            $results = app(ListingRagService::class)->search($filters);
 
-            $filters = json_decode(trim($matches[1]), true);
+            /**
+             * IMPORTANT:
+             * service returns ['type' => ..., 'items' => ...]
+             */
+            $recommendations = $results['items'];
+            $searchType = $results['type'];
 
-            if (json_last_error() !== JSON_ERROR_NONE || !is_array($filters)) {
-                $filters = null;
-            }
+            $text = $this->stripSearchBlock($text);
 
-            // safety check
-            if (json_last_error() === JSON_ERROR_NONE && is_array($filters)) {
-
-                $results = app(ListingRagService::class)->search($filters);
-
-                /**
-                 * IMPORTANT:
-                 * service returns ['type' => ..., 'items' => ...]
-                 */
-                $recommendations = $results['items'];
-                $searchType = $results['type'];
-
-                // remove block from AI message
-                $text = str_replace($matches[0], '', $text);
-
-                if ($searchType === 'no_results') {
-                    $text = trans('api.ai.chat.no_results');
-                } elseif ($searchType === 'price_relaxed' || $searchType === 'rooms_relaxed') {
-                    $relaxedNote = "\n\n" . trans('api.ai.chat.relaxed_results');
-                    $text .= $relaxedNote;
-                }
+            if ($searchType === 'no_results') {
+                $text = trans('api.ai.chat.no_results');
+            } elseif ($searchType === 'price_relaxed' || $searchType === 'rooms_relaxed') {
+                $text = trim($text . "\n\n" . trans('api.ai.chat.relaxed_results'));
             }
         }
 
@@ -157,7 +169,7 @@ class ChatController extends Controller
             'user_id' => $userId,
             'agent' => 'ListingAgent',
             'role' => 'assistant',
-            'content' => trim($text),
+            'content' => $text,
             'attachments' => [],
             'tool_calls' => [],
             'tool_results' => [],
@@ -179,5 +191,36 @@ class ChatController extends Controller
             'message' => trans('api.ai.chat.success'),
             'data' => new ChatMessageResource($botMessage)
         ]);
+    }
+
+    private function extractSearchFilters(string $text): ?array
+    {
+        if (! preg_match('/\[SEARCH_LISTINGS\](.*?)\[\/SEARCH_LISTINGS\]/s', $text, $matches)) {
+            return null;
+        }
+
+        $filters = json_decode(trim($matches[1]), true);
+
+        return json_last_error() === JSON_ERROR_NONE && is_array($filters)
+            ? $filters
+            : null;
+    }
+
+    private function stripSearchBlock(string $text): string
+    {
+        return trim((string) preg_replace('/\[SEARCH_LISTINGS\].*?\[\/SEARCH_LISTINGS\]/s', '', $text));
+    }
+
+    private function looksLikeSearchRequest(string $message): bool
+    {
+        $normalized = Str::lower($message);
+
+        $keywords = [
+            'apartment', 'appartement', 'house', 'home', 'studio', 'villa', 'flat', 'room',
+            'rent', 'sale', 'buy', 'sell', 'exchange',
+            'شقة', 'دار', 'منزل', 'كراء', 'للبيع', 'غرفة',
+        ];
+
+        return Str::contains($normalized, $keywords);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services\Ai;
 
 use App\Models\Listing;
+use App\Models\Wilaya;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Ai\Ai;
@@ -15,6 +16,8 @@ class ListingRagService
      */
     public function search(array $filters)
     {
+        $filters = $this->normalizeFilters($filters);
+
         // 1. TRY EXACT MATCH FIRST
         $results = $this->performSearch($filters);
 
@@ -25,7 +28,21 @@ class ListingRagService
             ];
         }
 
-        // 2. RELAXED SEARCH (Price OR Rooms)
+        // 2. LOCATION FALLBACK: try city if wilaya-first search found nothing
+        $cityFallbackFilters = $this->buildCityFallbackFilters($filters);
+
+        if ($cityFallbackFilters !== null) {
+            $cityFallbackResults = $this->performSearch($cityFallbackFilters);
+
+            if ($cityFallbackResults->isNotEmpty()) {
+                return [
+                    'type' => 'location_city_fallback',
+                    'items' => $cityFallbackResults,
+                ];
+            }
+        }
+
+        // 3. RELAXED SEARCH (Price OR Rooms)
         // Only if we have at least wilaya or purpose (Hard filters)
         $relaxedResults = collect();
         $relaxedType = null;
@@ -57,7 +74,7 @@ class ListingRagService
             ];
         }
 
-        // 3. NO RESULTS
+        // 4. NO RESULTS
         return [
             'type' => 'no_results',
             'items' => collect(),
@@ -205,5 +222,123 @@ class ListingRagService
             ->filter()
             ->sortByDesc('rank')
             ->values();
+    }
+
+    private function normalizeFilters(array $filters): array
+    {
+        $filters['city'] = $this->normalizeNullableString($filters['city'] ?? null);
+        $filters['wilaya'] = $this->normalizeNullableString($filters['wilaya'] ?? null);
+        $filters['purpose'] = $this->normalizePurpose($filters['purpose'] ?? null);
+        $filters['max_price'] = $this->normalizeNullableNumber($filters['max_price'] ?? null);
+        $filters['rooms'] = $this->normalizeNullableNumber($filters['rooms'] ?? null);
+        $filters['persons'] = $this->normalizeNullableNumber($filters['persons'] ?? null);
+        $filters['features'] = $this->normalizeStringList($filters['features'] ?? []);
+        $filters['near_places'] = $this->normalizeStringList($filters['near_places'] ?? []);
+
+        $filters = $this->promoteWilayaLocation($filters);
+
+        return $filters;
+    }
+
+    private function normalizeNullableString(mixed $value): ?string
+    {
+        if (! is_string($value)) {
+            return null;
+        }
+
+        $value = trim($value);
+
+        return $value !== '' ? $value : null;
+    }
+
+    private function normalizeNullableNumber(mixed $value): int|float|null
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        if (! is_numeric($value)) {
+            return null;
+        }
+
+        return $value + 0;
+    }
+
+    private function normalizeStringList(mixed $values): array
+    {
+        if (! is_array($values)) {
+            return [];
+        }
+
+        return collect($values)
+            ->filter(fn ($value) => is_string($value))
+            ->map(fn (string $value) => trim($value))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    private function normalizePurpose(mixed $value): ?string
+    {
+        $value = strtolower((string) $this->normalizeNullableString($value));
+
+        return match ($value) {
+            'rent', 'sale', 'exchange' => $value,
+            'sell' => 'sale',
+            default => null,
+        };
+    }
+
+    private function promoteWilayaLocation(array $filters): array
+    {
+        $normalizedWilaya = $this->resolveWilayaName($filters['wilaya']);
+        $normalizedCityAsWilaya = $this->resolveWilayaName($filters['city']);
+
+        if ($normalizedWilaya !== null) {
+            $filters['wilaya'] = $normalizedWilaya;
+        }
+
+        if ($normalizedCityAsWilaya !== null) {
+            $filters['wilaya'] ??= $normalizedCityAsWilaya;
+            $filters['city'] = null;
+        }
+
+        if (
+            $filters['city'] !== null &&
+            $filters['wilaya'] !== null &&
+            Str::lower($filters['city']) === Str::lower($filters['wilaya'])
+        ) {
+            $filters['city'] = null;
+        }
+
+        return $filters;
+    }
+
+    private function resolveWilayaName(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $wilaya = Wilaya::query()
+            ->whereRaw('LOWER(name_en) = ?', [Str::lower($value)])
+            ->orWhere('name_ar', $value)
+            ->first();
+
+        return $wilaya?->name_en;
+    }
+
+    private function buildCityFallbackFilters(array $filters): ?array
+    {
+        if ($filters['wilaya'] === null || $filters['city'] !== null) {
+            return null;
+        }
+
+        return [
+            ...$filters,
+            'city' => $filters['wilaya'],
+            'wilaya' => null,
+        ];
     }
 }
