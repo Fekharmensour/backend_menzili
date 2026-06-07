@@ -7,6 +7,7 @@ use App\Http\Resources\Api\Listing\ReviewResource;
 use App\Http\Resources\Api\Listing\Reviewpagination;
 use App\Models\Listing;
 use App\Models\Review;
+use App\Services\Notification\NotificationService;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\HeaderParameter;
 use Illuminate\Http\Request;
@@ -73,6 +74,12 @@ class ReviewController extends Controller
         ]);
 
         $listing->updateRating();
+
+        // ✅ Notify listing owner
+        app(NotificationService::class)->sendFromKey($listing->member->user, 'new_review', [
+            'rating' => $review->rating,
+            'title'  => $listing->title_en, // Or use a localized title if available
+        ], $listing, 'heroicon-o-star');
 
         return response()->json([
             'success' => true,

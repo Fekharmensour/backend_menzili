@@ -25,4 +25,24 @@ return [
         'title' => 'Pièces déduites',
         'body' => ':amount pièces ont été déduites de votre portefeuille pour la création de l\'annonce ":title".',
     ],
+    'new_review' => [
+        'title' => 'Nouvel avis',
+        'body' => 'Vous avez reçu un nouvel avis de :rating-star pour ":title".',
+    ],
+    'identity_approved' => [
+        'title' => 'Identité vérifiée',
+        'body' => 'Votre identité a été vérifiée avec succès.',
+    ],
+    'identity_rejected' => [
+        'title' => 'Échec de la vérification d\'identité',
+        'body' => 'Votre vérification d\'identité a été rejetée. Raison : :reason',
+    ],
+    'agent_approved' => [
+        'title' => 'Statut d\'agent vérifié',
+        'body' => 'Votre statut professionnel a été vérifié.',
+    ],
+    'agent_rejected' => [
+        'title' => 'Échec de la vérification d\'agent',
+        'body' => 'Votre vérification d\'agent a été rejetée. Raison : :reason',
+    ],
 ];

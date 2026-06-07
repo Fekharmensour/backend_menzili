@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ValidationMemberResource\Pages;
 use App\Models\Member;
+use App\Services\Notification\NotificationService;
 use Filament\Forms\Components as FormComponents;
 use Filament\Infolists\Components as InfolistComponents;
 use Filament\Notifications\Notification;
@@ -263,6 +264,12 @@ class ValidationMemberResource extends Resource
                             $title = __('admin.agent_approved');
                         }
                         Notification::make()->title($title)->success()->send();
+
+                        // ✅ Notify user
+                        $key = $record->identity_status === Member::STATUS_APPROVED && $record->agent_status === Member::STATUS_APPROVED 
+                            ? 'agent_approved' 
+                            : 'identity_approved';
+                        app(NotificationService::class)->sendFromKey($record->user, $key, [], $record, 'heroicon-o-check-circle');
                     }),
                 Actions\Action::make('reject')
                     ->label(__('admin.reject'))
@@ -292,6 +299,12 @@ class ValidationMemberResource extends Resource
                             ]);
                         }
                         Notification::make()->title(__('admin.rejected'))->danger()->send();
+
+                        // ✅ Notify user
+                        $key = $record->identity_status === Member::STATUS_REJECTED ? 'identity_rejected' : 'agent_rejected';
+                        app(NotificationService::class)->sendFromKey($record->user, $key, [
+                            'reason' => $data['reason']
+                        ], $record, 'heroicon-o-x-circle');
                     }),
             ])
             ->defaultSort('created_at', 'desc');

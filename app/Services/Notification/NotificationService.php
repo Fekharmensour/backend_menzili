@@ -2,6 +2,8 @@
 
 namespace App\Services\Notification;
 
+use App\Jobs\BroadcastPushNotificationJob;
+use App\Jobs\SendPushNotificationJob;
 use App\Models\FcmToken;
 use App\Models\Notification;
 use Illuminate\Database\Eloquent\Model;
@@ -32,22 +34,17 @@ class NotificationService
         ]);
 
         if ($sendPush) {
-            $tokens = $this->userTokens($user->id);
-            if (!empty($tokens)) {
-                $preferredLocale = $user->locale ?? app()->getLocale();
-                $locale = in_array($preferredLocale, ['en', 'fr', 'ar'], true) ? $preferredLocale : 'en';
-                $title = $titles[$locale] ?? $titles['en'] ?? '';
-                $body  = $bodies[$locale] ?? $bodies['en'] ?? '';
+            $preferredLocale = $user->locale ?? app()->getLocale();
+            $locale = in_array($preferredLocale, ['en', 'fr', 'ar'], true) ? $preferredLocale : 'en';
+            $title = $titles[$locale] ?? $titles['en'] ?? '';
+            $body  = $bodies[$locale] ?? $bodies['en'] ?? '';
 
-                foreach ($tokens as $token) {
-                    app(FirebaseService::class)->sendToToken(
-                        $token,
-                        $title,
-                        $body,
-                        $this->payloadData($notification)
-                    );
-                }
-            }
+            SendPushNotificationJob::dispatch(
+                $user->id,
+                $title,
+                $body,
+                $this->payloadData($notification)
+            );
         }
 
         return $notification;
@@ -75,7 +72,7 @@ class NotificationService
         $title = $titles['en'] ?? '';
         $body  = $bodies['en'] ?? '';
 
-        app(FirebaseService::class)->sendToTopic(
+        BroadcastPushNotificationJob::dispatch(
             'all_users',
             $title,
             $body,
@@ -105,20 +102,15 @@ class NotificationService
             'icon' => $icon,
         ]);
 
-        $tokens = $this->userTokens($user->id);
-        if (!empty($tokens)) {
-            $preferredLocale = $user->locale ?? app()->getLocale();
-            $locale = in_array($preferredLocale, ['en', 'fr', 'ar'], true) ? $preferredLocale : 'en';
+        $preferredLocale = $user->locale ?? app()->getLocale();
+        $locale = in_array($preferredLocale, ['en', 'fr', 'ar'], true) ? $preferredLocale : 'en';
 
-            foreach ($tokens as $token) {
-                app(FirebaseService::class)->sendToToken(
-                    $token,
-                    $titles[$locale] ?? $titles['en'] ?? '',
-                    $bodies[$locale] ?? $bodies['en'] ?? '',
-                    $this->payloadData($notification)
-                );
-            }
-        }
+        SendPushNotificationJob::dispatch(
+            $user->id,
+            $titles[$locale] ?? $titles['en'] ?? '',
+            $bodies[$locale] ?? $bodies['en'] ?? '',
+            $this->payloadData($notification)
+        );
 
         return $notification;
     }
@@ -139,7 +131,7 @@ class NotificationService
             'icon' => $icon,
         ]);
 
-        app(FirebaseService::class)->sendToTopic(
+        BroadcastPushNotificationJob::dispatch(
             'all_users',
             $titles['en'] ?? '',
             $bodies['en'] ?? '',
@@ -191,16 +183,5 @@ class NotificationService
         }
 
         return [null, null];
-    }
-
-    private function userTokens(int $userId): array
-    {
-        return FcmToken::query()
-            ->where('user_id', $userId)
-            ->pluck('token')
-            ->filter()
-            ->unique()
-            ->values()
-            ->all();
     }
 }
