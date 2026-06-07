@@ -774,6 +774,44 @@
                             }
                         }
                     },
+                    "402": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "const": 402
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message",
+                                        "status"
+                                    ]
+                                }
+                            }
+                        }
+                    },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
                     },
@@ -2833,9 +2871,27 @@
                 "tags": [
                     "Chat"
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "message"
+                                ]
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "6. Final response using ChatMessageResource with Envelope",
+                        "description": "7. Final response using ChatMessageResource with Envelope",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2859,6 +2915,9 @@
                                 }
                             }
                         }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
@@ -3934,6 +3993,74 @@
                 }
             }
         },
+        "/members/recent-activity": {
+            "get": {
+                "operationId": "memberActivity.index",
+                "summary": "Get recent activities for the authenticated member",
+                "tags": [
+                    "MemberActivity"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `ActivityResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ActivityResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "null"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/notifications": {
             "get": {
                 "operationId": "notification.index",
@@ -4821,6 +4948,180 @@
                 }
             }
         },
+        "/members/{member}": {
+            "get": {
+                "operationId": "publicProfile.show",
+                "summary": "Display the specified member",
+                "tags": [
+                    "PublicProfile"
+                ],
+                "parameters": [
+                    {
+                        "name": "member",
+                        "in": "path",
+                        "required": true,
+                        "description": "The member ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/PublicMemberResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    }
+                }
+            }
+        },
+        "/members/{member}/listings": {
+            "get": {
+                "operationId": "publicProfile.listings",
+                "summary": "Get listings of the member by pagination",
+                "tags": [
+                    "PublicProfile"
+                ],
+                "parameters": [
+                    {
+                        "name": "member",
+                        "in": "path",
+                        "required": true,
+                        "description": "The member ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/PaginateResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    }
+                }
+            }
+        },
+        "/members/{member}/reviews": {
+            "get": {
+                "operationId": "publicProfile.reviews",
+                "summary": "Get reviews for the member's listings",
+                "tags": [
+                    "PublicProfile"
+                ],
+                "parameters": [
+                    {
+                        "name": "member",
+                        "in": "path",
+                        "required": true,
+                        "description": "The member ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "stats": {
+                                            "type": "object",
+                                            "properties": {
+                                                "avg_rating": {
+                                                    "type": "number"
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "avg_rating",
+                                                "total"
+                                            ]
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Reviewpagination"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "stats",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    }
+                }
+            }
+        },
         "/listings/top-boosted": {
             "get": {
                 "operationId": "search.topBoosted",
@@ -4844,6 +5145,40 @@
                                             "items": {
                                                 "$ref": "#/components/schemas/ListingResource"
                                             }
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/settings": {
+            "get": {
+                "operationId": "setting.index",
+                "summary": "Get all system settings",
+                "tags": [
+                    "Setting"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
                                         }
                                     },
                                     "required": [
@@ -4963,6 +5298,58 @@
     },
     "components": {
         "schemas": {
+            "ActivityResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string"
+                    },
+                    "title_full": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "success",
+                            "pending"
+                        ]
+                    },
+                    "change": {
+                        "type": "object",
+                        "properties": {
+                            "income": {
+                                "type": "boolean"
+                            },
+                            "valuer_coins": {
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "income",
+                            "valuer_coins"
+                        ]
+                    },
+                    "date": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "icon",
+                    "title_full",
+                    "type",
+                    "status",
+                    "change",
+                    "date"
+                ],
+                "title": "ActivityResource"
+            },
             "AdResource": {
                 "type": "object",
                 "properties": {
@@ -6538,6 +6925,76 @@
                     "pagination"
                 ],
                 "title": "PaginateResource"
+            },
+            "PublicMemberResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "profile_image": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "verification": {
+                        "type": "object",
+                        "properties": {
+                            "is_member_verified": {
+                                "type": "boolean"
+                            },
+                            "is_agent_verified": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "is_member_verified",
+                            "is_agent_verified"
+                        ]
+                    },
+                    "views": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "integer",
+                                "enum": [
+                                    0
+                                ]
+                            }
+                        ]
+                    },
+                    "rating": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "number",
+                                "const": 4.5
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "profile_image",
+                    "email",
+                    "phone",
+                    "verification",
+                    "views",
+                    "rating"
+                ],
+                "title": "PublicMemberResource"
             },
             "RentDurationResource": {
                 "type": "object",
