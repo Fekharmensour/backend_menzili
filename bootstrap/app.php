@@ -30,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->api(append: [
             'api.localize',
+            'throttle:api',
         ]);
 
         $middleware->web(append: [

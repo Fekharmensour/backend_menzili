@@ -5,5 +5,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/chatbot', [ChatController::class, 'index']);
-    Route::post('/chatbot', [ChatController::class, 'handle']);
+    Route::post('/chatbot', [ChatController::class, 'handle'])->middleware('throttle:ai');
 });
