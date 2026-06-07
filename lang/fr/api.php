@@ -10,6 +10,7 @@ return [
         ],
         'store' => [
             'success' => 'Annonce créée avec succès',
+            'insufficient_balance' => 'Solde de pièces insuffisant pour créer une annonce. Vous avez besoin de :amount pièces.',
         ],
         'update' => [
             'success' => 'Annonce mise à jour avec succès',
@@ -63,5 +64,29 @@ return [
             'required_target_parameter' => 'Le champ :field est obligatoire lorsque target_type est :type.',
         ],
     ],
+    'report' => [
+        'sent_success' => 'Signalement envoyé avec succès',
+        'already_reported' => 'Vous avez déjà signalé cet élément',
+    ],
+    'boost' => [
+        'success' => 'Annonce boostée avec succès',
+        'score_breakdown' => 'Détails du score récupérés avec succès',
+    ],
+    'reviews' => [
+        'store_success' => 'Avis soumis avec succès',
+        'store_already_reviewed' => 'Vous avez déjà évalué cette annonce',
+        'self_review_not_allowed' => 'Vous ne pouvez pas évaluer votre propre annonce',
+        'delete_success' => 'Avis supprimé avec succès',
+        'member_not_found' => 'Membre non trouvé',
+        'review_not_found' => 'Avis non trouvé',
+        'unauthorized' => 'Vous n\'êtes pas autorisé à effectuer cette opération',
+    ],
 
+    'activities' => [
+        'listing_creation' => 'Créé une nouvelle annonce : :title',
+        'coin_purchase' => 'Achat d\'un pack de pièces',
+        'ad_publication' => 'Publication d\'une nouvelle publicité',
+        'initial_bonus' => 'Bonus de bienvenue',
+        'boost' => 'Boost de l\'annonce : :title',
+    ],
 ];

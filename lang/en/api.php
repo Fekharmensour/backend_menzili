@@ -10,6 +10,7 @@ return [
         ],
         'store' => [
             'success' => 'Listing created successfully',
+            'insufficient_balance' => 'Insufficient coins balance to create a listing. You need :amount coins.',
         ],
         'update' => [
             'success' => 'Listing updated successfully',
@@ -69,5 +70,29 @@ return [
             'required_target_parameter' => 'The :field field is required when target_type is :type.',
         ],
     ],
+    'report' => [
+        'sent_success' => 'Report sent successfully',
+        'already_reported' => 'You have already reported this item',
+    ],
+    'boost' => [
+        'success' => 'Listing boosted successfully',
+        'score_breakdown' => 'Score breakdown retrieved successfully',
+    ],
+    'reviews' => [
+        'store_success' => 'Review submitted successfully',
+        'store_already_reviewed' => 'You have already reviewed this listing',
+        'self_review_not_allowed' => 'You cannot review your own listing',
+        'delete_success' => 'Review deleted successfully',
+        'member_not_found' => 'Member not found',
+        'review_not_found' => 'Review not found',
+        'unauthorized' => 'You are not authorized to perform this operation',
+    ],
 
+    'activities' => [
+        'listing_creation' => 'Created a new listing: :title',
+        'coin_purchase' => 'Purchased coins bundle',
+        'ad_publication' => 'Published a new advertisement',
+        'initial_bonus' => 'Account welcome bonus',
+        'boost' => 'Boosted listing: :title',
+    ],
 ];

@@ -26,4 +26,6 @@ return [
     'account_disabled' => 'هذا الحساب معطل.',
     'login_success' => 'تم تسجيل الدخول بنجاح.',
     'otp_failed' => 'فشل في إرسال رمز التحقق.',
+    'otp_resent' => 'تم إعادة إرسال رمز التحقق بنجاح.',
+    'fcm_token_updated' => 'تم تحديث رمز FCM بنجاح.',
 ];

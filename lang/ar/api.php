@@ -10,6 +10,7 @@ return [
         ],
         'store' => [
             'success' => 'تم إضافة الإعلان بنجاح',
+            'insufficient_balance' => 'رصيد العملات غير كافٍ لإنشاء إعلان. تحتاج إلى :amount عملة.',
         ],
         'update' => [
             'success' => 'تم تحديث الإعلان بنجاح',
@@ -69,5 +70,29 @@ return [
             'required_target_parameter' => 'الحقل :field مطلوب عندما تكون قيمة target_type هي :type.',
         ],
     ],
+    'report' => [
+        'sent_success' => 'تم إرسال البلاغ بنجاح',
+        'already_reported' => 'لقد قمت بالإبلاغ عن هذا العنصر مسبقاً',
+    ],
+    'boost' => [
+        'success' => 'تم تمييز الإعلان بنجاح',
+        'score_breakdown' => 'تم جلب تفاصيل النتيجة بنجاح',
+    ],
+    'reviews' => [
+        'store_success' => 'تم إضافة التقييم بنجاح',
+        'store_already_reviewed' => 'لقد قمت بتقييم هذا الإعلان مسبقاً',
+        'self_review_not_allowed' => 'لا يمكنك تقييم إعلانك الخاص',
+        'delete_success' => 'تم حذف التقييم بنجاح',
+        'member_not_found' => 'لم يتم العثور على العضو',
+        'review_not_found' => 'لم يتم العثور على التقييم',
+        'unauthorized' => 'غير مصرح لك بالقيام بهذه العملية',
+    ],
 
+    'activities' => [
+        'listing_creation' => 'إنشاء إعلان جديد : :title',
+        'coin_purchase' => 'شراء باقة عملات',
+        'ad_publication' => 'نشر إعلان ترويجي جديد',
+        'initial_bonus' => 'هدية ترحيبية',
+        'boost' => 'ترقية الإعلان : :title',
+    ],
 ];

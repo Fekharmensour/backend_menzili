@@ -19,7 +19,11 @@ class RankingService
         }
 
         // Deduct coins
-        $member->forceWithdraw($coins, ['reason' => 'listing_boost']);
+        $member->forceWithdraw($coins, [
+            'reason' => 'listing_boost',
+            'listing_id' => $listing->id,
+            'listing_title' => $listing->title,
+        ]);
 
         // Create boost
         $boost = Boost::create([
@@ -58,7 +62,8 @@ class RankingService
     public function recalculateAllScores(): void
     {
         Listing::where('is_active', true)
-               ->chunk(100, function ($listings) {
+               ->chunk(100, function (\Illuminate\Database\Eloquent\Collection $listings) {
+                   /** @var \App\Models\Listing $listing */
                    foreach ($listings as $listing) {
                        $listing->updateFinalScore();
                    }

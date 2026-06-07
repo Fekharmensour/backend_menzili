@@ -27,4 +27,5 @@ return [
     'login_success' => 'Logged in successfully.',
     'otp_failed' => 'Failed to send verification code.',
     'otp_resent' => 'Verification code resent successfully.',
+    'fcm_token_updated' => 'FCM token updated successfully.',
 ];

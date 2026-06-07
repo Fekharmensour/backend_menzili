@@ -263,4 +263,6 @@ return [
     'english' => 'Anglais',
     'french' => 'Français',
     'country' => 'Pays',
+    'key' => 'Clé',
+    'value' => 'Valeur',
 ];

@@ -13,6 +13,8 @@ use App\Http\Resources\Api\Listing\PaginateMyListing;
 use App\Http\Resources\Api\Listing\PaginateResource;
 use App\Models\Listing;
 use App\Models\Location;
+use App\Models\Setting;
+use App\Services\Notification\NotificationService;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -73,11 +75,21 @@ class ListingController extends Controller
 
     }
 
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request, NotificationService $notificationService)
     {
         $validated = $request->validated();
+        $member = Auth::user()->member;
+        $cost = (int) Setting::get('coin_cost', 0);
 
-        $listing = DB::transaction(function () use ($validated, $request) {
+        if ($member->balance < $cost) {
+            return response()->json([
+                'success' => false,
+                'message' => __('api.listings.store.insufficient_balance', ['amount' => $cost]),
+                'status'  => 402,
+            ], 402);
+        }
+
+        $listing = DB::transaction(function () use ($validated, $request, $member, $cost, $notificationService) {
 
             // 1️⃣ Create Location first
             $location = Location::create([
@@ -113,11 +125,12 @@ class ListingController extends Controller
 
                 'main_image'       => $imagePath,
 
-                'member_id'        => Auth::user()->member->id, // secure
+                'member_id'        => $member->id, // secure
                 'rent_duration_id' => $validated['rent_duration_id'],
                 'type_id'          => $validated['type_id'],
                 'location_id'      => $location->id,
             ]);
+
             if ($request->hasFile('images')) {
 
                 foreach ($request->file('images') as $image) {
@@ -140,6 +153,20 @@ class ListingController extends Controller
 
             if (!empty($validated['near_places'])) {
                 $listing->nearPlaces()->sync($validated['near_places']);
+            }
+
+            // 5️⃣ Deduct Fee & Notify
+            if ($cost > 0) {
+                $member->withdraw($cost, ['description' => 'Listing creation fee: ' . $listing->title]);
+
+                $notificationService->sendFromKey(
+                    user: $member->user,
+                    key: 'listing_fee_deducted',
+                    params: ['amount' => $cost, 'title' => $listing->title],
+                    reference: $listing,
+                    icon: 'wallet',
+                    sendPush: false
+                );
             }
 
             return $listing;

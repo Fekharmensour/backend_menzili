@@ -1,11 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Member\PublicProfileController;
 
 Route::get('/members/coin-packages', [\App\Http\Controllers\Api\Member\CoinPackageController::class, 'index']);
+
+// Move dynamic routes below static ones to avoid conflicts
 Route::prefix('members')->middleware(['auth:sanctum','fill_name'])->group(function () {
     Route::get('ads/plans', [\App\Http\Controllers\Api\Ad\AdController::class, 'plans']);
     Route::get('ads', [\App\Http\Controllers\Api\Ad\AdController::class, 'memberAds']);
+    Route::get('recent-activity', [\App\Http\Controllers\Api\Member\MemberActivityController::class, 'index']);
 
 
     // Get packages & buy
@@ -27,6 +31,10 @@ Route::prefix('members')->middleware(['auth:sanctum','fill_name'])->group(functi
 
 
 });
+
+Route::get('/members/{member}', [PublicProfileController::class, 'show'])->where('member', '[0-9]+');
+Route::get('/members/{member}/listings', [PublicProfileController::class, 'listings'])->where('member', '[0-9]+');
+Route::get('/members/{member}/reviews', [PublicProfileController::class, 'reviews'])->where('member', '[0-9]+');
 
 Route::prefix('wallet')->middleware(['auth:sanctum','fill_name'])->group(function () {
 

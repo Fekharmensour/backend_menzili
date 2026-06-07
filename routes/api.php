@@ -43,6 +43,7 @@ Require __DIR__.'/ApiRouters/Profile.php';
 Require __DIR__.'/ApiRouters/ai.php';
 Require __DIR__.'/ApiRouters/Report.php';
 Require __DIR__.'/ApiRouters/Notification.php';
+Require __DIR__.'/ApiRouters/Setting.php';
 
 
 

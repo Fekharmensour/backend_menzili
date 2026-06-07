@@ -12,7 +12,7 @@ class NotificationService
     /**
      * Create a user notification from translation key and dispatch FCM.
      */
-    public function sendFromKey($user, string $key, array $params = [], $reference = null, ?string $icon = null): Notification
+    public function sendFromKey($user, string $key, array $params = [], $reference = null, ?string $icon = null, bool $sendPush = true): Notification
     {
         $titles = $this->localizedText($key, 'title', $params);
         $bodies = $this->localizedText($key, 'body', $params);
@@ -31,20 +31,22 @@ class NotificationService
             'icon' => $icon,
         ]);
 
-        $tokens = $this->userTokens($user->id);
-        if (!empty($tokens)) {
-            $preferredLocale = $user->locale ?? app()->getLocale();
-            $locale = in_array($preferredLocale, ['en', 'fr', 'ar'], true) ? $preferredLocale : 'en';
-            $title = $titles[$locale] ?? $titles['en'] ?? '';
-            $body  = $bodies[$locale] ?? $bodies['en'] ?? '';
+        if ($sendPush) {
+            $tokens = $this->userTokens($user->id);
+            if (!empty($tokens)) {
+                $preferredLocale = $user->locale ?? app()->getLocale();
+                $locale = in_array($preferredLocale, ['en', 'fr', 'ar'], true) ? $preferredLocale : 'en';
+                $title = $titles[$locale] ?? $titles['en'] ?? '';
+                $body  = $bodies[$locale] ?? $bodies['en'] ?? '';
 
-            foreach ($tokens as $token) {
-                app(FirebaseService::class)->sendToToken(
-                    $token,
-                    $title,
-                    $body,
-                    $this->payloadData($notification)
-                );
+                foreach ($tokens as $token) {
+                    app(FirebaseService::class)->sendToToken(
+                        $token,
+                        $title,
+                        $body,
+                        $this->payloadData($notification)
+                    );
+                }
             }
         }
 

@@ -21,4 +21,8 @@ return [
         'title' => 'Listing created',
         'body' => 'Your listing ":title" is now live.',
     ],
+    'listing_fee_deducted' => [
+        'title' => 'Coins deducted',
+        'body' => ':amount coins have been deducted from your wallet for creating the listing ":title".',
+    ],
 ];

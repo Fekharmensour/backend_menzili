@@ -265,4 +265,6 @@ return [
     'english' => 'English',
     'french' => 'French',
     'country' => 'Country',
+    'key' => 'Key',
+    'value' => 'Value',
 ];

@@ -21,4 +21,8 @@ return [
         'title' => 'Annonce creee',
         'body' => 'Votre annonce ":title" est maintenant publiee.',
     ],
+    'listing_fee_deducted' => [
+        'title' => 'Pièces déduites',
+        'body' => ':amount pièces ont été déduites de votre portefeuille pour la création de l\'annonce ":title".',
+    ],
 ];

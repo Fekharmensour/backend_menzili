@@ -26,5 +26,6 @@ return [
     'account_disabled' => 'Ce compte est désactivé.',
     'login_success' => 'Connexion réussie.',
     'otp_failed' => 'Échec de l\'envoi du code de vérification.',
-    'otp_resend' => 'Code de vérification renvoyé.',
+    'otp_resent' => 'Code de vérification renvoyé.',
+    'fcm_token_updated' => 'Jeton FCM mis à jour avec succès.',
 ];

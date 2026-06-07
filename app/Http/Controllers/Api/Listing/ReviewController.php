@@ -44,6 +44,14 @@ class ReviewController extends Controller
             ], 403);
         }
 
+        // ❌ prevent self-review
+        if ($listing->member_id === $member->id) {
+            return response()->json([
+                'success' => false,
+                'message' => trans('api.reviews.self_review_not_allowed'),
+            ], 422);
+        }
+
         // ❌ prevent duplicate
         $exists = Review::where('member_id', $member->id)
             ->where('listing_id', $listing->id)
