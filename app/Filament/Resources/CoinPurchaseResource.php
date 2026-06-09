@@ -115,6 +115,10 @@ class CoinPurchaseResource extends Resource
                         'success' => 'completed',
                         'danger'  => 'failed',
                     ]),
+                Tables\Columns\TextColumn::make('reference_code')
+                    ->label(__('admin.code_cash'))
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('admin.created_at'))
                     ->dateTime()->sortable(),

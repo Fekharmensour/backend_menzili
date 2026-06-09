@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\Auth;
 
 class CoinPackageController extends Controller
 {
-    public function __construct(protected ChargilyService $chargily) {}
+    public function __construct(protected ChargilyService $chargily)
+    {
+    }
 
     public function index()
     {
@@ -31,6 +33,8 @@ class CoinPackageController extends Controller
     {
         $validated = $request->validate([
             'payment_method' => 'required|in:cash,baridimob,chargily',
+            'success_url' => 'nullable|string',
+            'failure_url' => 'nullable|string',
         ]);
 
         $member = Auth::user()->member;
@@ -51,7 +55,12 @@ class CoinPackageController extends Controller
 
         // Handle payment method
         if ($validated['payment_method'] === 'chargily') {
-            return $this->handleChargilyCheckout($purchase, $package);
+            return $this->handleChargilyCheckout(
+                $purchase,
+                $package,
+                $validated['success_url'] ?? null,
+                $validated['failure_url'] ?? null
+            );
         } elseif ($validated['payment_method'] === 'baridimob') {
             return $this->handleBaridimobInitiate($purchase, $package);
         } elseif ($validated['payment_method'] === 'cash') {
@@ -59,8 +68,14 @@ class CoinPackageController extends Controller
         }
     }
 
-    private function handleChargilyCheckout(CoinPurchase $purchase, PackageCoin $package)
+    private function handleChargilyCheckout(CoinPurchase $purchase, PackageCoin $package, $successUrl = null, $failureUrl = null)
     {
+        // Append purchase_id to successUrl for frontend verification
+        if ($successUrl) {
+            $separator = (str_contains($successUrl, '?')) ? '&' : '?';
+            $successUrl .= $separator . "purchase_id=" . $purchase->id;
+        }
+
         try {
             // Create ChargilyPayment record
             $chargilyPayment = \App\Models\ChargilyPayment::create([
@@ -74,7 +89,7 @@ class CoinPackageController extends Controller
             $purchase->update(['chargily_payment_id' => $chargilyPayment->id]);
 
             // Create Chargily checkout
-            $checkout = $this->chargily->createCheckout($chargilyPayment);
+            $checkout = $this->chargily->createCheckout($chargilyPayment, $successUrl, $failureUrl);
 
             return response()->json([
                 'success' => true,
@@ -192,7 +207,11 @@ class CoinPackageController extends Controller
                 'id' => $purchase->id,
                 'status' => $purchase->status,
                 'coins' => $purchase->packageCoin->coins,
+                'package_name' => $purchase->packageCoin->name,
+                'amount' => $purchase->packageCoin->price,
+                'currency' => 'DZD',
                 'payment_method' => $purchase->payment_method,
+                'created_at' => $purchase->created_at->toDateTimeString(),
             ],
         ]);
     }

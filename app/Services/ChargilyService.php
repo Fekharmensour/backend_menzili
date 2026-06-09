@@ -17,7 +17,7 @@ class ChargilyService
         ]));
     }
 
-    public function createCheckout($payment)
+    public function createCheckout($payment, $successUrl = null, $failureUrl = null)
     {
         $locale = app()->getLocale();
         return $this->client()->checkouts()->create([
@@ -28,9 +28,9 @@ class ChargilyService
             "currency" => $payment->currency,
             "description" => "Payment ID={$payment->id}",
 
-            // ✅ IMPORTANT
-            "success_url" => config('app.url')."/{$locale}/success",
-            "failure_url" => config('app.url')."/{$locale}/failed",
+            // ✅ Use provided URLs or fallback to backend routes
+            "success_url" => $successUrl ?? config('app.url')."/{$locale}/success",
+            "failure_url" => $failureUrl ?? config('app.url')."/{$locale}/failed",
             "webhook_endpoint" => config('app.url')."/api/webhook",
         ]);
     }
@@ -43,7 +43,7 @@ class ChargilyService
     {
         \Log::info("🔥 WEBHOOK HIT");
 
-        $webhook = $this->chargily->handleWebhook();
+        $webhook = $this->handleWebhook();
         if (!$webhook) {
             return response()->json(["error" => "Invalid"], 403);
         }
