@@ -23,41 +23,42 @@ class UpdateRequest extends FormRequest
     {
         return [
 
-            'title' => ['sometimes','string','max:255'],
-            'description' => ['nullable','string'],
+            'title' => ['sometimes', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
 
-            'price' => ['sometimes','numeric','min:0'],
-            'floor' => ['nullable','integer','min:0'],
-            'surface' => ['sometimes','numeric','min:0'],
+            'price' => ['sometimes', 'numeric', 'min:0'],
+            'floor' => ['nullable', 'integer', 'min:0'],
+            'surface' => ['sometimes', 'numeric', 'min:0'],
 
-//            'boost_level'=> ['nullable','integer','min:1','max:10'],
+            //            'boost_level'=> ['nullable','integer','min:1','max:10'],
 
-            'min_duration' => ['nullable','integer','min:1'],
-            'number_rooms' => ['nullable','integer','min:1'],
-            'number_persons' => ['nullable','integer','min:1'],
+            'min_duration' => ['nullable', 'integer', 'min:1'],
+            'number_rooms' => ['nullable', 'integer', 'min:1'],
+            'number_persons' => ['nullable', 'integer', 'min:1'],
 
-            'is_ready' => ['sometimes','boolean'],
-            'is_active' => ['sometimes','boolean'],
-            'is_negotiable' => ['sometimes','boolean'],
+            'is_ready' => ['sometimes', 'boolean'],
+            'is_active' => ['sometimes', 'boolean'],
+            'is_negotiable' => ['sometimes', 'boolean'],
 
-            'main_image' => ['nullable','image','mimes:jpg,jpeg,png,webp','max:10240'],
+            'main_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
 
-            'location' => ['sometimes','array'],
-            'location.latitude' => ['required_with:location','numeric'],
-            'location.longitude' => ['required_with:location','numeric'],
-            'location.city_id' => ['required_with:location','exists:cities,id'],
+            'location' => ['sometimes', 'array'],
+            'location.latitude' => ['required_with:location', 'numeric'],
+            'location.longitude' => ['required_with:location', 'numeric'],
+            'location.city_id' => ['required_with:location', 'exists:cities,id'],
+            'location.zip_code' => ['required_with:location', 'string', 'max:20'],
 
-            'categories' => ['nullable','array'],
+            'categories' => ['sometimes', 'nullable', 'array'],
             'categories.*' => ['exists:categories,id'],
 
-            'features' => ['nullable','array'],
+            'features' => ['sometimes', 'nullable', 'array'],
             'features.*' => ['exists:features,id'],
 
-            'near_places' => ['nullable','array'],
+            'near_places' => ['sometimes', 'nullable', 'array'],
             'near_places.*' => ['exists:near_places,id'],
 
-            'images' => ['nullable','array','max:5'],
-            'images.*' => ['image','mimes:jpg,jpeg,png,webp','max:10240'],
+            'images' => ['nullable', 'array', 'max:5'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
         ];
     }
 }

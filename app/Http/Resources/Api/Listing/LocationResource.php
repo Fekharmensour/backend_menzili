@@ -15,14 +15,16 @@ class LocationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'   => $this->id,
-            'latitude' => $this->latitude,
-            'longitude'=> $this->longitude ,
-            'zip_code'=> $this->zip_code,
-            'city' => $this->city->name,
-            'wilaya'=>$this->city->wilaya->name,
-            'Wilaya_code'=>$this->city->wilaya->code,
-            'country'=>$this->city->wilaya->country->name,
+            'id'          => $this->id,
+            'latitude'    => $this->latitude,
+            'longitude'   => $this->longitude,
+            'altitude'    => $this->altitude,
+            'zip_code'    => $this->zip_code,
+            'city_id'     => $this->city_id,
+            'city'        => $this->city->name,
+            'wilaya'      => $this->city->wilaya->name,
+            'Wilaya_code' => $this->city->wilaya->code,
+            'country'     => $this->city->wilaya->country->name,
         ];
     }
 }

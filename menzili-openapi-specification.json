@@ -6197,11 +6197,20 @@
                     "longitude": {
                         "type": "string"
                     },
+                    "altitude": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
                     "zip_code": {
                         "type": [
                             "string",
                             "null"
                         ]
+                    },
+                    "city_id": {
+                        "type": "integer"
                     },
                     "city": {
                         "type": "string"
@@ -6223,7 +6232,9 @@
                     "id",
                     "latitude",
                     "longitude",
+                    "altitude",
                     "zip_code",
+                    "city_id",
                     "city",
                     "wilaya",
                     "Wilaya_code",
@@ -7632,6 +7643,10 @@
                             },
                             "city_id": {
                                 "type": "integer"
+                            },
+                            "zip_code": {
+                                "type": "string",
+                                "maxLength": 20
                             }
                         }
                     },

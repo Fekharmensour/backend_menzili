@@ -213,13 +213,13 @@ class ListingController extends Controller
             );
 
 
-            if (isset($validated['location']) && $listing->location) {
+            if (array_key_exists('location', $validated) && $listing->location) {
                 $listing->location->update([
-                    'latitude' => $validated['location']['latitude'],
+                    'latitude'  => $validated['location']['latitude'],
                     'longitude' => $validated['location']['longitude'],
-                    'altitude' => $validated['location']['altitude'] ?? null,
-                    'zip_code' => $validated['location']['zip_code'] ?? null,
-                    'city_id' => $validated['location']['city_id'],
+                    'altitude'  => $validated['location']['altitude'] ?? null,
+                    'zip_code'  => $validated['location']['zip_code'] ?? null,
+                    'city_id'   => $validated['location']['city_id'],
                 ]);
             }
 
@@ -248,20 +248,30 @@ class ListingController extends Controller
             }
 
 
-            if (isset($validated['categories'])) {
-                $listing->categories()->sync($validated['categories']);
+            if (array_key_exists('categories', $validated)) {
+                $listing->categories()->sync($validated['categories'] ?? []);
             }
 
-            if (isset($validated['features'])) {
-                $listing->features()->sync($validated['features']);
+            if (array_key_exists('features', $validated)) {
+                $listing->features()->sync($validated['features'] ?? []);
             }
 
-            if (isset($validated['near_places'])) {
-                $listing->nearPlaces()->sync($validated['near_places']);
+            if (array_key_exists('near_places', $validated)) {
+                $listing->nearPlaces()->sync($validated['near_places'] ?? []);
             }
 
 
         });
+
+        $listing->load([
+            'categories',
+            'features',
+            'nearPlaces',
+            'location.city.wilaya.country',
+            'rentDuration',
+            'type',
+            'images',
+        ]);
 
         return response()->json([
             'success' => true,
