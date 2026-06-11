@@ -223,11 +223,7 @@ class ListingController extends Controller
             }
 
             if ($request->hasFile('main_image')) {
-
-                $listing->main_image = $listing->updateMainImage(
-                    $request->file('main_image')
-                );
-                $listing->save();
+                $listing->updateMainImage($request->file('main_image'));
             }
 
 

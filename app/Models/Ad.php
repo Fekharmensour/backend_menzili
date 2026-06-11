@@ -109,6 +109,11 @@ class Ad extends Model
             \Illuminate\Support\Facades\Storage::disk('public')->delete($this->image_path);
         }
 
-        return app(\App\Services\Image\ImageService::class)->storeAsWebp($file, 'ads');
+        $path = app(\App\Services\Image\ImageService::class)->storeAsWebp($file, 'ads');
+        
+        $this->image_path = $path;
+        $this->save();
+
+        return $path;
     }
 }

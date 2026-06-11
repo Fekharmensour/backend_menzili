@@ -101,7 +101,8 @@ class AdController extends Controller
         $data = $adTargetTypeService->normalizeTargetPayload($data, $ad);
 
         if ($request->hasFile('image')) {
-            $data['image_path'] = $ad->updateImage($request->file('image'));
+            $ad->updateImage($request->file('image'));
+            unset($data['image_path']);
         }
 
         $ad->update($data);

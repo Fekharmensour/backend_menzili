@@ -64,6 +64,9 @@ class ListingResource extends Resource
                     ->image()
                     ->disk('public')
                     ->directory('listings')
+                    ->saveUploadedFileUsing(function ($file) {
+                        return app(\App\Services\Image\ImageService::class)->storeAsWebp($file, 'listings');
+                    })
                     ->imageEditor()
                     ->openable()
                     ->downloadable()
@@ -132,6 +135,9 @@ class ListingResource extends Resource
                             ->image()
                             ->disk('public')
                             ->directory('listings/gallery')
+                            ->saveUploadedFileUsing(function ($file) {
+                                return app(\App\Services\Image\ImageService::class)->storeAsWebp($file, 'listings/gallery');
+                            })
                             ->imageEditor()
                             ->openable()
                             ->downloadable()

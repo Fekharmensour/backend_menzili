@@ -28,8 +28,9 @@ class ImageService
      */
     public function storeAsWebp(UploadedFile $file, string $directory, string $disk = 'public', int $quality = 80): string
     {
-        $filename = pathinfo($file->hashName(), PATHINFO_FILENAME) . '.webp';
+        $filename = \Illuminate\Support\Str::random(40) . '.webp';
         $path = $directory . '/' . $filename;
+        \Illuminate\Support\Facades\Log::info("WebP Conversion: Saving {$file->getClientOriginalName()} to {$path}");
 
         $image = $this->manager->decodePath($file->getRealPath());
         $encoded = $image->encode(new WebpEncoder($quality));

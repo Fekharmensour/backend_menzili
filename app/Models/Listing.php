@@ -95,7 +95,12 @@ class Listing extends Model
             Storage::disk('public')->delete($this->main_image);
         }
 
-        return app(\App\Services\Image\ImageService::class)->storeAsWebp($file, 'listings');
+        $path = app(\App\Services\Image\ImageService::class)->storeAsWebp($file, 'listings');
+        
+        $this->main_image = $path;
+        $this->save();
+
+        return $path;
     }
     public function deleteWithMedia(): void
     {
