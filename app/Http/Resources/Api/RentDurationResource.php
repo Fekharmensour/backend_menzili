@@ -17,6 +17,11 @@ class RentDurationResource extends JsonResource
         return [
             'id'   => $this->id,
             'name' => $this->name,
+            'all_langs' => [
+                'ar' => $this->name_ar ,
+                'fr' => $this->name_fr ,
+                'en' => $this->name_en ,
+            ],
         ];
     }
 }

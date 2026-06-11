@@ -5767,12 +5767,32 @@
                             "null"
                         ],
                         "description": "dynamic from accessor"
+                    },
+                    "all_langs": {
+                        "type": "object",
+                        "properties": {
+                            "ar": {
+                                "type": "string"
+                            },
+                            "fr": {
+                                "type": "string"
+                            },
+                            "en": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "ar",
+                            "fr",
+                            "en"
+                        ]
                     }
                 },
                 "required": [
                     "id",
                     "name",
-                    "icon_path"
+                    "icon_path",
+                    "all_langs"
                 ],
                 "title": "CategoryResource"
             },
@@ -5834,6 +5854,24 @@
                     "name": {
                         "type": "string"
                     },
+                    "all_langs": {
+                        "type": "object",
+                        "properties": {
+                            "ar": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "en": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "ar",
+                            "en"
+                        ]
+                    },
                     "country": {
                         "$ref": "#/components/schemas/CountryResource"
                     },
@@ -5843,7 +5881,8 @@
                 },
                 "required": [
                     "id",
-                    "name"
+                    "name",
+                    "all_langs"
                 ],
                 "title": "CityResource"
             },
@@ -5917,12 +5956,32 @@
                             "null"
                         ],
                         "description": "dynamic from accessor"
+                    },
+                    "all_langs": {
+                        "type": "object",
+                        "properties": {
+                            "ar": {
+                                "type": "string"
+                            },
+                            "fr": {
+                                "type": "string"
+                            },
+                            "en": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "ar",
+                            "fr",
+                            "en"
+                        ]
                     }
                 },
                 "required": [
                     "id",
                     "name",
-                    "icon_path"
+                    "icon_path",
+                    "all_langs"
                 ],
                 "title": "FeatureResource"
             },
@@ -6640,12 +6699,32 @@
                             "null"
                         ],
                         "description": "dynamic from accessor"
+                    },
+                    "all_langs": {
+                        "type": "object",
+                        "properties": {
+                            "ar": {
+                                "type": "string"
+                            },
+                            "fr": {
+                                "type": "string"
+                            },
+                            "en": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "ar",
+                            "fr",
+                            "en"
+                        ]
                     }
                 },
                 "required": [
                     "id",
                     "name",
-                    "icon_path"
+                    "icon_path",
+                    "all_langs"
                 ],
                 "title": "NearPlaceResource"
             },
@@ -7044,11 +7123,31 @@
                     },
                     "name": {
                         "type": "string"
+                    },
+                    "all_langs": {
+                        "type": "object",
+                        "properties": {
+                            "ar": {
+                                "type": "string"
+                            },
+                            "fr": {
+                                "type": "string"
+                            },
+                            "en": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "ar",
+                            "fr",
+                            "en"
+                        ]
                     }
                 },
                 "required": [
                     "id",
-                    "name"
+                    "name",
+                    "all_langs"
                 ],
                 "title": "RentDurationResource"
             },
@@ -7498,12 +7597,32 @@
                             "null"
                         ],
                         "description": "dynamic from accessor"
+                    },
+                    "all_langs": {
+                        "type": "object",
+                        "properties": {
+                            "ar": {
+                                "type": "string"
+                            },
+                            "fr": {
+                                "type": "string"
+                            },
+                            "en": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "ar",
+                            "fr",
+                            "en"
+                        ]
                     }
                 },
                 "required": [
                     "id",
                     "name",
-                    "icon_path"
+                    "icon_path",
+                    "all_langs"
                 ],
                 "title": "TypeResource"
             },
@@ -7746,6 +7865,24 @@
                         ],
                         "description": "dynamic from accessor"
                     },
+                    "all_langs": {
+                        "type": "object",
+                        "properties": {
+                            "ar": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "en": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "ar",
+                            "en"
+                        ]
+                    },
                     "country": {
                         "$ref": "#/components/schemas/CountryResource"
                     }
@@ -7753,7 +7890,8 @@
                 "required": [
                     "id",
                     "name",
-                    "code"
+                    "code",
+                    "all_langs"
                 ],
                 "title": "WilayaResource"
             }

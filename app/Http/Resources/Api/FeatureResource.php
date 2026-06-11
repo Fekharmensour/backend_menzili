@@ -19,6 +19,11 @@ class FeatureResource extends JsonResource
             'id'   => $this->id,
             'name' => $this->name, // dynamic from accessor
             'icon_path' => $this->icon_path,
+            'all_langs' => [
+                'ar' => $this->name_ar ,
+                'fr' => $this->name_fr ,
+                'en' => $this->name_en ,
+            ],
         ];
     }
 

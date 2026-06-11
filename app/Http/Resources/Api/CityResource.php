@@ -17,6 +17,10 @@ class CityResource extends JsonResource
         return [
             'id'   => $this->id,
             'name' => $this->name,
+            'all_langs' => [
+                'ar' => $this->name_ar ,
+                'en' => $this->name_en ,
+            ],
             'country'=> new CountryResource($this->whenLoaded('country')),
             'wilaya'=> new WilayaResource($this->whenLoaded('wilaya')),
         ];

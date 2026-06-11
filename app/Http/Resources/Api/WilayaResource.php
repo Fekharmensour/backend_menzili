@@ -18,6 +18,10 @@ class WilayaResource extends JsonResource
             'id'   => $this->id,
             'name' => $this->name, // dynamic from accessor
             'code' => $this->code,
+            'all_langs' => [
+                'ar' => $this->name_ar ,
+                'en' => $this->name_en ,
+            ],
             'country'=> new CountryResource($this->whenLoaded('country')),
         ];
     }
