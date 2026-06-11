@@ -75,7 +75,7 @@ class ListingController extends Controller
 
     }
 
-    public function store(StoreRequest $request, NotificationService $notificationService)
+    public function store(StoreRequest $request, NotificationService $notificationService, \App\Services\Image\ImageService $imageService)
     {
         $validated = $request->validated();
         $member = Auth::user()->member;
@@ -85,50 +85,49 @@ class ListingController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => __('api.listings.store.insufficient_balance', ['amount' => $cost]),
-                'status'  => 402,
+                'status' => 402,
             ], 402);
         }
 
-        $listing = DB::transaction(function () use ($validated, $request, $member, $cost, $notificationService) {
+        $listing = DB::transaction(function () use ($validated, $request, $member, $cost, $notificationService, $imageService) {
 
             // 1️⃣ Create Location first
             $location = Location::create([
-                'latitude'  => $validated['location']['latitude'],
+                'latitude' => $validated['location']['latitude'],
                 'longitude' => $validated['location']['longitude'],
-                'altitude'  => $validated['location']['altitude'] ?? null,
-                'zip_code'  => $validated['location']['zip_code'] ?? null,
-                'city_id'   => $validated['location']['city_id'],
+                'altitude' => $validated['location']['altitude'] ?? null,
+                'zip_code' => $validated['location']['zip_code'] ?? null,
+                'city_id' => $validated['location']['city_id'],
             ]);
 
             // 2️⃣ Handle image upload
             $imagePath = null;
             if ($request->hasFile('main_image')) {
-                $imagePath = $request->file('main_image')
-                    ->store('listings', 'public');
+                $imagePath = $imageService->storeAsWebp($request->file('main_image'), 'listings');
             }
 
             // 3️⃣ Create Listing explicitly
             $listing = Listing::create([
-                'title'            => $validated['title'],
-                'description'      => $validated['description'] ?? null,
-                'price'            => $validated['price'],
-                'floor'            => $validated['floor'] ?? 1,
-                'surface'          => $validated['surface'] ?? null,
-                'min_duration'     => $validated['min_duration'] ?? 1,
-                'number_rooms'     => $validated['number_rooms'] ?? 1,
-                'number_persons'   => $validated['number_persons'] ?? 2,
+                'title' => $validated['title'],
+                'description' => $validated['description'] ?? null,
+                'price' => $validated['price'],
+                'floor' => $validated['floor'] ?? 1,
+                'surface' => $validated['surface'] ?? null,
+                'min_duration' => $validated['min_duration'] ?? 1,
+                'number_rooms' => $validated['number_rooms'] ?? 1,
+                'number_persons' => $validated['number_persons'] ?? 2,
 
-                'is_ready'         => $validated['is_ready'] ?? true,
-                'is_negotiable'    => $validated['is_negotiable'] ?? false,
+                'is_ready' => $validated['is_ready'] ?? true,
+                'is_negotiable' => $validated['is_negotiable'] ?? false,
 
-//                'boost_level'      => $validated['boost_level'] ?? 7 ,      // system default
+                //                'boost_level'      => $validated['boost_level'] ?? 7 ,      // system default
 
-                'main_image'       => $imagePath,
+                'main_image' => $imagePath,
 
-                'member_id'        => $member->id, // secure
+                'member_id' => $member->id, // secure
                 'rent_duration_id' => $validated['rent_duration_id'],
-                'type_id'          => $validated['type_id'],
-                'location_id'      => $location->id,
+                'type_id' => $validated['type_id'],
+                'location_id' => $location->id,
             ]);
 
             if ($request->hasFile('images')) {
@@ -136,7 +135,7 @@ class ListingController extends Controller
                 foreach ($request->file('images') as $image) {
 
                     $listing->images()->create([
-                        'path' => $image->store('listings/gallery', 'public')
+                        'path' => $imageService->storeAsWebp($image, 'listings/gallery')
                     ]);
 
                 }
@@ -188,10 +187,10 @@ class ListingController extends Controller
     /**
      * @requestMediaType application/json
      */
-    public function update(UpdateRequest $request, Listing $listing)
+    public function update(UpdateRequest $request, Listing $listing, \App\Services\Image\ImageService $imageService)
     {
         $member = Auth::user()->member;
-        if(!$member || $listing->member_id != $member->id){
+        if (!$member || $listing->member_id != $member->id) {
             return response()->json([
                 'success' => false,
                 'message' => __('api.listings.update.unauthorized'),
@@ -199,7 +198,7 @@ class ListingController extends Controller
         }
         $validated = $request->validated();
 
-        DB::transaction(function () use ($validated, $request, $listing) {
+        DB::transaction(function () use ($validated, $request, $listing, $imageService) {
 
             $listing->update(
                 collect($validated)->except([
@@ -215,11 +214,11 @@ class ListingController extends Controller
 
             if (array_key_exists('location', $validated) && $listing->location) {
                 $listing->location->update([
-                    'latitude'  => $validated['location']['latitude'],
+                    'latitude' => $validated['location']['latitude'],
                     'longitude' => $validated['location']['longitude'],
-                    'altitude'  => $validated['location']['altitude'] ?? null,
-                    'zip_code'  => $validated['location']['zip_code'] ?? null,
-                    'city_id'   => $validated['location']['city_id'],
+                    'altitude' => $validated['location']['altitude'] ?? null,
+                    'zip_code' => $validated['location']['zip_code'] ?? null,
+                    'city_id' => $validated['location']['city_id'],
                 ]);
             }
 
@@ -242,7 +241,7 @@ class ListingController extends Controller
                 foreach ($request->file('images') as $file) {
 
                     $listing->images()->create([
-                        'path' => $file->store('listings/gallery', 'public')
+                        'path' => $imageService->storeAsWebp($file, 'listings/gallery')
                     ]);
                 }
             }
@@ -285,7 +284,7 @@ class ListingController extends Controller
     public function destroy(Listing $listing)
     {
         $member = Auth::user()->member;
-        if(!$member || $listing->member_id != $member->id){
+        if (!$member || $listing->member_id != $member->id) {
             return response()->json([
                 'success' => false,
                 'message' => __('api.listings.update.unauthorized'),
@@ -319,7 +318,7 @@ class ListingController extends Controller
     public function toggleStatus(Listing $listing)
     {
         $member = Auth::user()->member;
-        if(!$member || $listing->member_id != $member->id){
+        if (!$member || $listing->member_id != $member->id) {
             return response()->json([
                 'success' => false,
                 'message' => __('api.listings.update.unauthorized'),

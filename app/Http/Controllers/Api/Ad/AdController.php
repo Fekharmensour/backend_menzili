@@ -63,7 +63,7 @@ class AdController extends Controller
         $adData = [
             'title' => $data['title'],
             'description' => $data['description'] ?? null,
-            'image_path' => $request->file('image')->store('ads', 'public'),
+            'image_path' => app(\App\Services\Image\ImageService::class)->storeAsWebp($request->file('image'), 'ads'),
             'target_type' => $data['target_type'],
             'listing_id' => $data['listing_id'] ?? null,
             'external_url' => $data['external_url'] ?? null,
@@ -101,8 +101,7 @@ class AdController extends Controller
         $data = $adTargetTypeService->normalizeTargetPayload($data, $ad);
 
         if ($request->hasFile('image')) {
-            \Storage::disk('public')->delete($ad->image_path);
-            $data['image_path'] = $request->file('image')->store('ads', 'public');
+            $data['image_path'] = $ad->updateImage($request->file('image'));
         }
 
         $ad->update($data);

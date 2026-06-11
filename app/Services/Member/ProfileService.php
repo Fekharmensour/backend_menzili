@@ -20,7 +20,7 @@ class ProfileService
             Storage::disk('public')->delete($user->profile_image);
         }
 
-        $path = $file->store('profiles', 'public');
+        $path = app(\App\Services\Image\ImageService::class)->storeAsWebp($file, 'profiles');
         return $user->update(['profile_image' => $path]);
     }
 

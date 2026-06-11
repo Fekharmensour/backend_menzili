@@ -15,8 +15,8 @@ use Filament\Tables\Table;
 class NearPlaceResource extends Resource
 {
     protected static ?string $model = NearPlace::class;
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-map-pin';
-    protected static string | \UnitEnum | null $navigationGroup = null;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map-pin';
+    protected static string|\UnitEnum|null $navigationGroup = null;
     protected static ?int $navigationSort = 4;
 
     public static function getNavigationGroup(): ?string
@@ -48,6 +48,9 @@ class NearPlaceResource extends Resource
                     ->image()
                     ->disk('public')
                     ->directory('near_places')
+                    ->saveUploadedFileUsing(function ($file) {
+                        return app(\App\Services\Image\ImageService::class)->storeAsWebp($file, 'near_places');
+                    })
                     ->columnSpanFull(),
                 FormComponents\TextInput::make('icon')->label(__('admin.icon_class')),
                 FormComponents\Textarea::make('description')->rows(2)->columnSpanFull(),
@@ -64,7 +67,7 @@ class NearPlaceResource extends Resource
                 Tables\Columns\ImageColumn::make('icon_path')
                     ->label(__('admin.icon'))
                     ->disk('public')
-                    ->getStateUsing(fn ($record) => str_replace('/storage/', '', $record->icon_path))
+                    ->getStateUsing(fn($record) => str_replace('/storage/', '', $record->icon_path))
                     ->circular(),
                 Tables\Columns\TextColumn::make('name_ar')->label(__('admin.arabic')),
                 Tables\Columns\TextColumn::make('name_en')->label(__('admin.english'))->searchable(),
@@ -74,10 +77,10 @@ class NearPlaceResource extends Resource
             ->actions([
                 Actions\EditAction::make(),
                 Actions\Action::make('toggle')
-                    ->label(fn (NearPlace $r) => $r->is_active ? __('admin.deactivate') : __('admin.activate'))
-                    ->color(fn (NearPlace $r) => $r->is_active ? 'danger' : 'success')
+                    ->label(fn(NearPlace $r) => $r->is_active ? __('admin.deactivate') : __('admin.activate'))
+                    ->color(fn(NearPlace $r) => $r->is_active ? 'danger' : 'success')
                     ->icon('heroicon-o-power')
-                    ->action(fn (NearPlace $r) => $r->update(['is_active' => !$r->is_active])),
+                    ->action(fn(NearPlace $r) => $r->update(['is_active' => !$r->is_active])),
                 Actions\DeleteAction::make(),
             ])
             ->bulkActions([Actions\BulkActionGroup::make([Actions\DeleteBulkAction::make()])]);
@@ -86,9 +89,9 @@ class NearPlaceResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListNearPlaces::route('/'),
+            'index' => Pages\ListNearPlaces::route('/'),
             'create' => Pages\CreateNearPlace::route('/create'),
-            'edit'   => Pages\EditNearPlace::route('/{record}/edit'),
+            'edit' => Pages\EditNearPlace::route('/{record}/edit'),
         ];
     }
 }

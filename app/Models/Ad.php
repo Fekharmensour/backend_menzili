@@ -102,4 +102,13 @@ class Ad extends Model
             default => null,
         };
     }
+
+    public function updateImage($file): string
+    {
+        if ($this->image_path) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($this->image_path);
+        }
+
+        return app(\App\Services\Image\ImageService::class)->storeAsWebp($file, 'ads');
+    }
 }
