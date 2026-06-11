@@ -76,9 +76,6 @@ class AdResource extends Resource
                     ->image()
                     ->disk('public')
                     ->directory('ads')
-                    ->saveUploadedFileUsing(function ($file) {
-                        return app(\App\Services\Image\ImageService::class)->storeAsWebp($file, 'ads');
-                    })
                     ->imageEditor()
                     ->columnSpanFull()
 //                    ->helperText(__('admin.replace_image_help') ?? 'Upload a new image to replace the current one')

@@ -30,21 +30,15 @@ RUN apt-get update && apt-get install -y \
     nginx \
     libicu-dev \
     libzip-dev \
-    zip \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libwebp-dev \
-    libfreetype6-dev
+    zip
 
 # Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
 RUN docker-php-ext-install \
     pdo \
     pdo_pgsql \
     opcache \
     intl \
-    zip \
-    gd
+    zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

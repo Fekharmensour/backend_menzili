@@ -27,12 +27,7 @@ class ListingImage extends Model
             Storage::disk('public')->delete($this->path);
         }
 
-        $path = app(\App\Services\Image\ImageService::class)->storeAsWebp($file, 'listings/gallery');
-        
-        $this->path = $path;
-        $this->save();
-
-        return $path;
+        return $file->store('listings/gallery', 'public');
     }
     public function deleteWithFile(): void
     {
@@ -43,7 +38,7 @@ class ListingImage extends Model
         $this->delete();
     }
 
-    public function listing(): belongsTo
+    public function listing():belongsTo
     {
         return $this->belongsTo(Listing::class);
     }
