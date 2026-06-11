@@ -30,15 +30,21 @@ RUN apt-get update && apt-get install -y \
     nginx \
     libicu-dev \
     libzip-dev \
-    zip
+    zip \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libwebp-dev \
+    libfreetype6-dev
 
 # Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
 RUN docker-php-ext-install \
     pdo \
     pdo_pgsql \
     opcache \
     intl \
-    zip
+    zip \
+    gd
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -57,7 +63,7 @@ COPY --from=frontend /app/public/build /var/www/html/public/build
 
 # PHP upload config
 COPY docker/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
-
+    
 # Set permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 

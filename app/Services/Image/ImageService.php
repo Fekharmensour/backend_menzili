@@ -5,8 +5,9 @@ namespace App\Services\Image;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\WebpEncoder;
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
 
 class ImageService
 {
@@ -14,7 +15,13 @@ class ImageService
 
     public function __construct()
     {
-        $this->manager = new ImageManager(new Driver());
+        $driver = extension_loaded('gd') ? new GdDriver() : (extension_loaded('imagick') ? new ImagickDriver() : null);
+
+        if (!$driver) {
+            throw new \RuntimeException("Neither GD nor Imagick PHP extensions are available. Please install one of them to process images.");
+        }
+
+        $this->manager = new ImageManager($driver);
     }
 
     /**
