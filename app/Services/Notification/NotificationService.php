@@ -3,6 +3,7 @@
 namespace App\Services\Notification;
 
 use App\Jobs\BroadcastPushNotificationJob;
+use App\Jobs\BroadcastToAllTokensJob;
 use App\Jobs\SendPushNotificationJob;
 use App\Models\FcmToken;
 use App\Models\Notification;
@@ -72,10 +73,9 @@ class NotificationService
         $title = $titles['en'] ?? '';
         $body  = $bodies['en'] ?? '';
 
-        BroadcastPushNotificationJob::dispatch(
-            'all_users',
-            $title,
-            $body,
+        BroadcastToAllTokensJob::dispatch(
+            $titles,
+            $bodies,
             $this->payloadData($notification)
         );
 
@@ -131,10 +131,11 @@ class NotificationService
             'icon' => $icon,
         ]);
 
-        BroadcastPushNotificationJob::dispatch(
-            'all_users',
-            $titles['en'] ?? '',
-            $bodies['en'] ?? '',
+        // We switch from Topic-based broadcast to Token-based broadcast
+        // to ensure delivery even if users aren't subscribed to 'all_users' topic.
+        BroadcastToAllTokensJob::dispatch(
+            $titles,
+            $bodies,
             $this->payloadData($notification)
         );
 

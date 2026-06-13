@@ -45,4 +45,12 @@ return [
         'title' => 'Échec de la vérification d\'agent',
         'body' => 'Votre vérification d\'agent a été rejetée. Raison : :reason',
     ],
+    'coin_purchase_approved' => [
+        'title' => 'Achat Approuvé',
+        'body' => 'Votre achat de :coins pièces a été approuvé et ajouté à votre portefeuille.',
+    ],
+    'coin_purchase_rejected' => [
+        'title' => 'Achat Rejeté',
+        'body' => 'Votre demande d\'achat de pièces a été rejetée.',
+    ],
 ];

@@ -34,6 +34,19 @@ Route::post('/test/listing-created/{listing}', function (Listing $listing) {
     ]);
 });
 
+Route::get('/test-push-all', function () {
+    $service = app(\App\Services\Notification\NotificationService::class);
+    $service->broadcastAll(
+        ['en' => 'Test Notification', 'ar' => 'إشعار تجريبي', 'fr' => 'Notification de test'],
+        ['en' => 'This is a test notification for all users.', 'ar' => 'هذا إشعار تجريبي لجميع المستخدمين', 'fr' => 'Ceci est une notification de test pour tous les utilisateurs']
+    );
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Broadcast push notification job dispatched to queue.',
+    ]);
+});
+
 
 
 Require __DIR__.'/ApiRouters/Auth.php';

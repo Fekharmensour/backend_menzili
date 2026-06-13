@@ -47,6 +47,7 @@ class SendPushNotificationJob implements ShouldQueue
             ->all();
 
         if (empty($tokens)) {
+            Log::info('No FCM tokens found for user.', ['userId' => $this->userId]);
             return;
         }
 

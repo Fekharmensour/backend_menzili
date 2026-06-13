@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CoinPurchaseResource\Pages;
 use App\Models\CoinPurchase;
+use App\Services\Notification\NotificationService;
 use Filament\Infolists\Components as InfolistComponents;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -140,6 +141,15 @@ class CoinPurchaseResource extends Resource
                         $record->update(['status' => 'completed']);
                         $record->member->deposit($record->packageCoin->coins, ['reason' => 'coin_purchase', 'payment_method' => $record->payment_method]);
                         Notification::make()->title(__('admin.purchase_approved'))->success()->send();
+
+                        // ✅ Notify user via Push
+                        app(NotificationService::class)->sendFromKey(
+                            $record->member->user, 
+                            'coin_purchase_approved', 
+                            ['coins' => $record->packageCoin->coins], 
+                            $record, 
+                            'heroicon-o-currency-dollar'
+                        );
                     }),
                 Actions\Action::make('reject')
                     ->label(__('admin.reject'))
@@ -150,6 +160,15 @@ class CoinPurchaseResource extends Resource
                     ->action(function (CoinPurchase $record) {
                         $record->update(['status' => 'failed']);
                         Notification::make()->title(__('admin.purchase_rejected'))->danger()->send();
+
+                        // ✅ Notify user via Push
+                        app(NotificationService::class)->sendFromKey(
+                            $record->member->user, 
+                            'coin_purchase_rejected', 
+                            [], 
+                            $record, 
+                            'heroicon-o-x-circle'
+                        );
                     }),
             ])
             ->defaultSort('created_at', 'desc');

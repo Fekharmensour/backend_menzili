@@ -14,13 +14,13 @@ class RentDurationSeeder extends Seeder
     {
         $durations = [
             [
-                'name_ar' => 'يومي',
+                'name_ar' => 'يوم',
                 'name_en' => 'Day',
                 'name_fr' => 'Jour',
                 'active' => true,
             ],
             [
-                'name_ar' => 'شهري',
+                'name_ar' => 'شهر',
                 'name_en' => 'Month',
                 'name_fr' => 'Mois',
                 'active' => true,

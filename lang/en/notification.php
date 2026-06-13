@@ -45,4 +45,12 @@ return [
         'title' => 'Agent Verification Failed',
         'body' => 'Your agent verification was rejected. Reason: :reason',
     ],
+    'coin_purchase_approved' => [
+        'title' => 'Purchase Approved',
+        'body' => 'Your purchase of :coins coins has been approved and added to your wallet.',
+    ],
+    'coin_purchase_rejected' => [
+        'title' => 'Purchase Rejected',
+        'body' => 'Your coin purchase request was rejected.',
+    ],
 ];
