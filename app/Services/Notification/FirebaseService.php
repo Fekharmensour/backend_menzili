@@ -61,19 +61,29 @@ class FirebaseService
         } catch (Throwable $e) {
             $msg = $e->getMessage();
             
-            // Check for invalid tokens or entities not found (common when app is uninstalled)
+            // 1. Handle global authentication errors (like 'invalid_grant')
+            if (str_contains($msg, 'invalid_grant')) {
+                Log::critical('FCM: Server failed to authenticate with Google. Check Service Account JSON and system clock.', [
+                    'error' => $msg,
+                ]);
+                throw $e; // Do NOT delete tokens. Fail the job to retry/investigate.
+            }
+
+            // 2. Check for invalid tokens or entities not found (actual device token issues)
             if (str_contains($msg, 'Requested entity was not found') || 
-                str_contains($msg, 'invalid') || 
+                str_contains($msg, 'registration token is invalid') || 
                 str_contains($msg, 'registration token is not a valid')) {
                 
                 Log::info('FCM: Deleting invalid token from database.', [
                     'token_prefix' => substr($token, 0, 10),
+                    'reason' => $msg,
                 ]);
                 
                 \App\Models\FcmToken::where('token', $token)->delete();
             } else {
                 Log::warning('FCM push failed for token.', [
                     'error' => $msg,
+                    'token_prefix' => substr($token, 0, 10),
                 ]);
             }
 

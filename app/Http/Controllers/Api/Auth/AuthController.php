@@ -222,12 +222,18 @@ class AuthController extends Controller
             return;
         }
 
-        FcmToken::query()->updateOrCreate(
+        $fcmTokenModel = FcmToken::query()->updateOrCreate(
             ['token' => $fcmToken],
             [
                 'user_id' => $userId,
                 'device_type' => $deviceType,
             ]
         );
+
+        \Illuminate\Support\Facades\Log::info('FCM: Token saved/updated for user.', [
+            'user_id' => $userId,
+            'token_prefix' => substr($fcmToken, 0, 10),
+            'was_recently_created' => $fcmTokenModel->wasRecentlyCreated,
+        ]);
     }
 }

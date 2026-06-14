@@ -22,14 +22,23 @@ try {
     $messaging->send([
         'topic' => 'test-connection',
         'notification' => [
-            'title' => 'Test',
+            'mensour@mensour-ASUS-TUF-Gaming-A15:~/workflow/laravel/backend_menzili$ php test_firebase.php
+Error: invalid_grant
+mensour@mensour-ASUS-TUF-Gaming-A15:~/workflow/laravel/backend_menzili$ 
+
+title' => 'Test',
             'body' => 'Test',
         ],
     ]);
     echo "Connection successful (or at least no auth error yet)\n";
 } catch (\Throwable $e) {
-    echo "Error: " . $e->getMessage() . "\n";
-    if (method_exists($e, 'getResponse')) {
+    echo "Error Type: " . get_class($e) . "\n";
+    echo "Message: " . $e->getMessage() . "\n";
+    if ($e->getPrevious()) {
+        echo "Previous Error: " . $e->getPrevious()->getMessage() . "\n";
+    }
+    if (method_exists($e, 'getResponse') && $e->getResponse()) {
         echo "Response: " . $e->getResponse()->getBody()->getContents() . "\n";
     }
+    // echo "Trace: " . $e->getTraceAsString() . "\n";
 }
