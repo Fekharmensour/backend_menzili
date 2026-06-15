@@ -38,7 +38,8 @@ class DatabaseSeeder extends Seeder
             LocationSeeder::class,
 
             
-            ListingSeeder::class,
+            // ListingSeeder::class,
+            ScrapedListingSeeder::class,
             AdSeeder::class,
         ]);
     }

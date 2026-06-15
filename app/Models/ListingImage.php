@@ -38,7 +38,7 @@ class ListingImage extends Model
         $this->delete();
     }
 
-    public function listing():belongsTo
+    public function listing(): belongsTo
     {
         return $this->belongsTo(Listing::class);
     }

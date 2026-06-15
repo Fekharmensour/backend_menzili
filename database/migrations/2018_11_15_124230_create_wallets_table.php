@@ -41,10 +41,19 @@ return new class() extends Migration
         });
     }
 
+    // public function down(): void
+    // {
+    //     Schema::disableForeignKeyConstraints();
+    //         Schema::dropIfExists($this->table());
+    // }
     public function down(): void
     {
         Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists($this->table());
+        if (config('database.default') === 'pgsql') {
+            \Illuminate\Support\Facades\DB::statement('DROP TABLE IF EXISTS ' . $this->table() . ' CASCADE');
+        } else {
+            Schema::dropIfExists($this->table());
+        }
     }
 
     private function table(): string

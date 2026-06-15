@@ -31,7 +31,7 @@ class Listing extends Model
         'is_ready',
         'is_negotiable',
         'verified_at',
-//        'boost_level',
+        //        'boost_level',
         'moderation_status',
         'main_image',
         'rating_avg',
@@ -41,7 +41,7 @@ class Listing extends Model
         'final_score'
     ];
 
-//    protected $with = [
+    //    protected $with = [
 //        'rentDuration',
 //        'location.city.wilaya.country'
 //    ];
@@ -54,7 +54,7 @@ class Listing extends Model
             'is_ready' => 'boolean',
             'is_negotiable' => 'boolean',
             'verified_at' => 'datetime',
-//            'boost_level' => 'integer',
+            //            'boost_level' => 'integer',
             'price' => 'float',
             'floor' => 'integer',
             'surface' => 'float',
@@ -75,7 +75,7 @@ class Listing extends Model
     protected function isBoosted(): \Illuminate\Database\Eloquent\Casts\Attribute
     {
         return \Illuminate\Database\Eloquent\Casts\Attribute::make(
-            get: fn () => (bool) $this->active_boost_id,
+            get: fn() => (bool) $this->active_boost_id,
         );
     }
 
@@ -144,7 +144,7 @@ class Listing extends Model
         return $this->belongsToMany(NearPlace::class);
     }
 
-    public function images():HasMany
+    public function images(): HasMany
     {
         return $this->hasMany(ListingImage::class);
     }

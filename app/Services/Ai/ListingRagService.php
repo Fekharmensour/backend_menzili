@@ -94,7 +94,7 @@ class ListingRagService
         if (!empty($filters['wilaya'])) {
             $query->whereHas('location.city.wilaya', function ($q) use ($filters) {
                 $q->where('name_en', 'like', $filters['wilaya'])
-                  ->orWhere('name_ar', 'like', $filters['wilaya']);
+                    ->orWhere('name_ar', 'like', $filters['wilaya']);
             });
         }
 
@@ -102,10 +102,11 @@ class ListingRagService
         if (!empty($filters['purpose'])) {
             $query->whereHas('type', function ($q) use ($filters) {
                 $purpose = $filters['purpose'];
-                if (strtolower($purpose) === 'sale') $purpose = 'sell';
+                if (strtolower($purpose) === 'sale')
+                    $purpose = 'sell';
                 $q->where('name_en', 'like', $purpose)
-                  ->orWhere('name_fr', 'like', $purpose)
-                  ->orWhere('name_ar', 'like', $purpose);
+                    ->orWhere('name_fr', 'like', $purpose)
+                    ->orWhere('name_ar', 'like', $purpose);
             });
         }
 
@@ -113,7 +114,7 @@ class ListingRagService
         if (!empty($filters['city'])) {
             $query->whereHas('location.city', function ($q) use ($filters) {
                 $q->where('name_en', 'like', '%' . $filters['city'] . '%')
-                  ->orWhere('name_ar', 'like', '%' . $filters['city'] . '%');
+                    ->orWhere('name_ar', 'like', '%' . $filters['city'] . '%');
             });
         }
 
@@ -137,8 +138,8 @@ class ListingRagService
             foreach ($filters['features'] as $feature) {
                 $query->whereHas('features', function ($q) use ($feature) {
                     $q->where('name_en', 'like', '%' . $feature . '%')
-                      ->orWhere('name_fr', 'like', '%' . $feature . '%')
-                      ->orWhere('name_ar', 'like', '%' . $feature . '%');
+                        ->orWhere('name_fr', 'like', '%' . $feature . '%')
+                        ->orWhere('name_ar', 'like', '%' . $feature . '%');
                 });
             }
         }
@@ -148,8 +149,8 @@ class ListingRagService
             foreach ($filters['near_places'] as $place) {
                 $query->whereHas('nearPlaces', function ($q) use ($place) {
                     $q->where('name_en', 'like', '%' . $place . '%')
-                      ->orWhere('name_fr', 'like', '%' . $place . '%')
-                      ->orWhere('name_ar', 'like', '%' . $place . '%');
+                        ->orWhere('name_fr', 'like', '%' . $place . '%')
+                        ->orWhere('name_ar', 'like', '%' . $place . '%');
                 });
             }
         }
@@ -211,7 +212,8 @@ class ListingRagService
 
             $listing = $listings[$item->listing_id] ?? null;
 
-            if (!$listing) return null;
+            if (!$listing)
+                return null;
 
             return [
                 'listing' => $listing,
@@ -242,7 +244,7 @@ class ListingRagService
 
     private function normalizeNullableString(mixed $value): ?string
     {
-        if (! is_string($value)) {
+        if (!is_string($value)) {
             return null;
         }
 
@@ -257,7 +259,7 @@ class ListingRagService
             return null;
         }
 
-        if (! is_numeric($value)) {
+        if (!is_numeric($value)) {
             return null;
         }
 
@@ -266,13 +268,13 @@ class ListingRagService
 
     private function normalizeStringList(mixed $values): array
     {
-        if (! is_array($values)) {
+        if (!is_array($values)) {
             return [];
         }
 
         return collect($values)
-            ->filter(fn ($value) => is_string($value))
-            ->map(fn (string $value) => trim($value))
+            ->filter(fn($value) => is_string($value))
+            ->map(fn(string $value) => trim($value))
             ->filter()
             ->unique()
             ->values()

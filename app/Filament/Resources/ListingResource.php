@@ -20,8 +20,8 @@ use Illuminate\Support\Str;
 class ListingResource extends Resource
 {
     protected static ?string $model = Listing::class;
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-home';
-    protected static string | \UnitEnum | null $navigationGroup = null;
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-home';
+    protected static string|\UnitEnum|null $navigationGroup = null;
     protected static ?int $navigationSort = 1;
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
@@ -67,12 +67,12 @@ class ListingResource extends Resource
                     ->imageEditor()
                     ->openable()
                     ->downloadable()
-                    ->formatStateUsing(fn ($state) => str_replace('/storage/', '', $state))
+                    ->formatStateUsing(fn($state) => str_replace('/storage/', '', $state))
                     ->columnSpanFull(),
                 FormComponents\Select::make('location_id')
                     ->label(__('admin.city'))
                     ->relationship('location', 'id')
-                    ->getOptionLabelFromRecordUsing(fn ($record) => optional($record->city)->name ?? "ID: {$record->id}")
+                    ->getOptionLabelFromRecordUsing(fn($record) => optional($record->city)->name ?? "ID: {$record->id}")
                     ->searchable()
                     ->required(),
                 FormComponents\TextInput::make('price')
@@ -95,20 +95,20 @@ class ListingResource extends Resource
                 FormComponents\Select::make('member_id')
                     ->label(__('admin.member'))
                     ->relationship('member', 'id')
-                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->user->name)
+                    ->getOptionLabelFromRecordUsing(fn($record) => $record->user->name)
                     ->searchable()
                     ->required(),
                 FormComponents\Select::make('type_id')
                     ->label(__('admin.type'))
                     ->relationship('type', 'id')
-                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
+                    ->getOptionLabelFromRecordUsing(fn($record) => $record->name)
                     ->required()
                     ->live(),
                 FormComponents\Select::make('rent_duration_id')
                     ->label(__('admin.rent_duration'))
                     ->relationship('rentDuration', 'id')
-                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
-                    ->visible(fn (Get $get) => Str::contains(optional(\App\Models\Type::find($get('type_id')))->name_en, 'Rent', true)),
+                    ->getOptionLabelFromRecordUsing(fn($record) => $record->name)
+                    ->visible(fn(Get $get) => Str::contains(optional(\App\Models\Type::find($get('type_id')))->name_en, 'Rent', true)),
                 FormComponents\Select::make('moderation_status')
                     ->label(__('admin.moderation_status'))
                     ->options([
@@ -135,7 +135,7 @@ class ListingResource extends Resource
                             ->imageEditor()
                             ->openable()
                             ->downloadable()
-                            ->formatStateUsing(fn ($state) => str_replace('/storage/', '', $state))
+                            ->formatStateUsing(fn($state) => str_replace('/storage/', '', $state))
                             ->required(),
                     ])
                     ->grid(3)
@@ -143,12 +143,12 @@ class ListingResource extends Resource
                 FormComponents\CheckboxList::make('features')
                     ->label(__('admin.features'))
                     ->relationship('features', 'id')
-                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
+                    ->getOptionLabelFromRecordUsing(fn($record) => $record->name)
                     ->columns(3),
                 FormComponents\CheckboxList::make('nearPlaces')
                     ->label(__('admin.near_places'))
                     ->relationship('nearPlaces', 'id')
-                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name)
+                    ->getOptionLabelFromRecordUsing(fn($record) => $record->name)
                     ->columns(3),
             ]),
         ]);
@@ -162,7 +162,7 @@ class ListingResource extends Resource
                     InfolistComponents\ImageEntry::make('main_image')
                         ->label(__('admin.main_image'))
                         ->disk('public')
-                        ->getStateUsing(fn (Listing $record) => str_replace('/storage/', '', $record->main_image))
+                        ->getStateUsing(fn(Listing $record) => str_replace('/storage/', '', $record->main_image))
                         ->height(250)
                         ->extraImgAttributes([
                             'class' => 'rounded-xl shadow-lg object-cover',
@@ -186,7 +186,7 @@ class ListingResource extends Resource
                             ->label(__('admin.type')),
                         InfolistComponents\TextEntry::make('rentDuration.name')
                             ->label(__('admin.rent_duration'))
-                            ->visible(fn ($record) => $record->rent_duration_id),
+                            ->visible(fn($record) => $record->rent_duration_id),
                         InfolistComponents\TextEntry::make('member.user.name')
                             ->label(__('admin.owner')),
                     ])->columnSpan(2),
@@ -241,18 +241,18 @@ class ListingResource extends Resource
                     ->label(false)
                     ->badge()
                     ->columnSpanFull(),
-            ])->visible(fn ($record) => $record->features->count() > 0),
+            ])->visible(fn($record) => $record->features->count() > 0),
             Components\Section::make(__('admin.near_places'))->schema([
                 InfolistComponents\TextEntry::make('nearPlaces.name')
                     ->label(false)
                     ->badge()
                     ->columnSpanFull(),
-            ])->visible(fn ($record) => $record->nearPlaces->count() > 0),
+            ])->visible(fn($record) => $record->nearPlaces->count() > 0),
             Components\Section::make(__('admin.gallery'))->schema([
                 InfolistComponents\ImageEntry::make('images.path')
                     ->label(false)
                     ->disk('public')
-                    ->getStateUsing(fn (Listing $record) => $record->images->pluck('path')->map(fn ($p) => str_replace('/storage/', '', $p))->toArray())
+                    ->getStateUsing(fn(Listing $record) => $record->images->pluck('path')->map(fn($p) => str_replace('/storage/', '', $p))->toArray())
                     ->height(120)
                     ->extraImgAttributes([
                         'style' => 'max-width: 100%; width: auto; height: 120px; object-fit: cover;',
@@ -269,7 +269,7 @@ class ListingResource extends Resource
                 Tables\Columns\ImageColumn::make('main_image')
                     ->label(__('admin.image'))
                     ->disk('public')
-                    ->getStateUsing(fn (Listing $record) => str_replace('/storage/', '', $record->main_image))
+                    ->getStateUsing(fn(Listing $record) => str_replace('/storage/', '', $record->main_image))
                     ->circular(),
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('admin.title'))
@@ -304,7 +304,7 @@ class ListingResource extends Resource
                     ->numeric(2)->sortable()->toggleable(),
                 Tables\Columns\BadgeColumn::make('is_banned')
                     ->label(__('admin.ban_status'))
-                    ->getStateUsing(fn (Listing $r) => $r->is_banned ? __('admin.banned') : __('admin.safe'))
+                    ->getStateUsing(fn(Listing $r) => $r->is_banned ? __('admin.banned') : __('admin.safe'))
                     ->colors([
                         'danger' => __('admin.banned'),
                         'success' => __('admin.safe'),
@@ -334,7 +334,7 @@ class ListingResource extends Resource
                 Tables\Filters\TernaryFilter::make('is_active')->label(__('admin.active')),
                 Tables\Filters\Filter::make('verified')
                     ->label(__('admin.verified'))
-                    ->query(fn ($q) => $q->whereNotNull('verified_at')),
+                    ->query(fn($q) => $q->whereNotNull('verified_at')),
             ])
             ->actions([
                 Actions\ViewAction::make(),
@@ -344,7 +344,7 @@ class ListingResource extends Resource
                     ->icon('heroicon-o-no-symbol')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->visible(fn (Listing $r) => !$r->is_banned)
+                    ->visible(fn(Listing $r) => !$r->is_banned)
                     ->action(function (Listing $record) {
                         $record->update(['is_banned' => true, 'is_active' => false]);
                         Notification::make()->title(__('admin.listing_banned'))->danger()->send();
@@ -354,7 +354,7 @@ class ListingResource extends Resource
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->visible(fn (Listing $r) => $r->is_banned)
+                    ->visible(fn(Listing $r) => $r->is_banned)
                     ->action(function (Listing $record) {
                         $record->update(['is_banned' => false]);
                         Notification::make()->title(__('admin.listing_unbanned'))->success()->send();
@@ -364,19 +364,19 @@ class ListingResource extends Resource
                     ->icon('heroicon-o-shield-check')
                     ->color('info')
                     ->requiresConfirmation()
-                    ->visible(fn (Listing $r) => is_null($r->verified_at))
+                    ->visible(fn(Listing $r) => is_null($r->verified_at))
                     ->action(function (Listing $record) {
                         $record->update(['verified_at' => now()]);
                         Notification::make()->title(__('admin.listing_verified'))->success()->send();
                     }),
                 Actions\Action::make('toggleActive')
-                    ->label(fn (Listing $r) => $r->is_active ? __('admin.deactivate') : __('admin.activate'))
-                    ->color(fn (Listing $r) => $r->is_active ? 'warning' : 'success')
+                    ->label(fn(Listing $r) => $r->is_active ? __('admin.deactivate') : __('admin.activate'))
+                    ->color(fn(Listing $r) => $r->is_active ? 'warning' : 'success')
                     ->icon('heroicon-o-power')
                     ->requiresConfirmation()
-                    ->action(fn (Listing $r) => $r->update(['is_active' => !$r->is_active])),
+                    ->action(fn(Listing $r) => $r->update(['is_active' => !$r->is_active])),
                 Actions\DeleteAction::make()
-                    ->action(fn (Listing $r) => $r->deleteWithMedia()),
+                    ->action(fn(Listing $r) => $r->deleteWithMedia()),
             ])
             ->bulkActions([
                 Actions\BulkActionGroup::make([

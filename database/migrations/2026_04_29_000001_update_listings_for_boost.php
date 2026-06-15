@@ -27,7 +27,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('listings', function (Blueprint $table) {
-            $table->dropForeignKeyIfExists(['active_boost_id']);
+            // $table->dropForeignKeyIfExists(['active_boost_id']);
+            $table->dropForeign(['active_boost_id']);
             $table->dropColumn('active_boost_id');
             $table->dropIndex(['final_score']);
             $table->dropColumn('final_score');
