@@ -39,14 +39,14 @@ class AuthController extends Controller
         );
 
         $otp = $user->generateOtp(minutes: 5, length: 6);
-//        $whatsapp->sendOtp($phone, $otp);
+        $whatsapp->sendOtp($phone, $otp);
         return response()->json([
             'success' => true,
             'message' => __('auth.otp_sent'),
-            'status'  => 200,
-            'data' => [
-                'otp_code' => $otp,
-            ],
+            'status'  => 200
+//            'data' => [
+//                'otp_code' => $otp,
+//            ],
         ]);
         }catch(\Exception $e){
             return $this->apiError('auth.otp_failed', 500, ['error' => $e->getMessage()]);

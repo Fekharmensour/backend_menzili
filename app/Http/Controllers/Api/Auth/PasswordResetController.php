@@ -31,11 +31,11 @@ class PasswordResetController extends Controller
 
         $user = $result['user'];
         $otp = $user->generateOtp(length: 6, minutes: 10);
-//        $whatsapp->sendOtp($user->phone, $otp);
+        $whatsapp->sendOtp($user->phone, $otp);
         return response()->json([
             'success' => true,
-            'message' => trans('auth.otp_sent'),
-            'data'    => ['otp_code' => $otp] // For development only
+            'message' => trans('auth.otp_sent')
+//            'data'    => ['otp_code' => $otp] // For development only
         ]);
     }
 
